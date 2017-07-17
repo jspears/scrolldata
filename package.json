@@ -2,18 +2,23 @@
   "name": "scrolldata",
   "version": "1.0.0",
   "description": "",
-  "main": "",
+  "main": "lib/index",
   "dependencies": {
     "bh-ui-styles": "^4.0.0",
     "nib": "^1.1.2",
     "stylus-loader": "^3.0.1"
   },
-  "author": "",
-  "license": "",
+  "author": "Justin Spears <speajus@gmail.com>",
+  "license": "BSD",
   "devDependencies": {
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "subschema-dev-support": "^2.2.9"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*",
+    "prop-types": "*"
   },
   "scripts": {
     "karma": "subschema-karma",
@@ -21,7 +26,7 @@
     "server": "subschema-webpack-dev-server",
     "demo": "subschema-webpack --demo ./docs --open",
     "gh-pages": "git subtree push --prefix docs origin gh-pages",
-    "dist": "subschema-webpack",
+    "dist": "subschema-webpack  --devtool source-map",
     "preversion": "npm run dist && npm run test"
   }
 }
