@@ -61,13 +61,24 @@ function toString(val) {
 const Slider = ({ label, type = 'range', min = 0, value, name, ...rest }) => {
     return (<div className='form-group'>
         <label htmlFor={name}>{label} ({toString(value[name])})</label>
-        <input type={type}
-               className='form-control'
-               id={name}
-               name={name}
-               min={min}
-               value={value[name]}
-               {...rest}/>
+        <div className='input-group'>
+            {type === 'range' && <div class="input-group-addon"><input
+                key={`form-txt-${type}`}
+                className='form-control'
+                id={name + 'text'}
+                name={name}
+                min={min}
+                value={value[name]}
+                {...rest}/></div>}
+            <input type={type}
+                   key={`form-${type}`}
+                   className='form-control'
+                   id={name}
+                   name={name}
+                   min={min}
+                   value={value[name]}
+                   {...rest}/>
+        </div>
     </div>)
 };
 
@@ -79,6 +90,7 @@ class ExampleState extends Component {
         scrollTo  : 0,
         rowHeight : 50,
         height    : 600,
+        width     : 900,
         rowCount  : example.length,
         renderItem: Render,
         fakeFetch : 0
@@ -117,6 +129,9 @@ class ExampleState extends Component {
                     max={example.length}
                     onChange={this.handleNumChange}/>
             <Slider name='height' label='Height' value={this.state}
+                    max={1600}
+                    onChange={this.handleNumChange}/>
+            <Slider name='width' label='Width' value={this.state}
                     max={1600}
                     onChange={this.handleNumChange}/>
             <Slider name='renderItem'

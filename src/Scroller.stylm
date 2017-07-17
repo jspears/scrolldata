@@ -3,7 +3,7 @@
 .scroller
     position relative
     box-sizing border-box
-    overflow-y scroll
+    overflow scroll
     top 0
     -webkit-overflow-scrolling: auto
 
@@ -11,7 +11,6 @@
     box-sizing border-box
     transform translate3d(0, 0, 0)
     will-change transform
-    1px solid green
     width 100%
 
 html, body

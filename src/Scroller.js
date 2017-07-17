@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { viewport, scroller, container, sizer } from './Scroller.stylm';
-import { any, number, func, oneOfType, array } from 'prop-types';
+import {
+    any, number, func, string, oneOfType, array, object
+} from 'prop-types';
 import { findDOMNode } from 'react-dom';
 
 const result = (val, ...args) => typeof val === 'function' ? val(...args) : val;
@@ -11,7 +13,13 @@ const EMPTY_ARRAY = Object.freeze([]);
 
 
 export default class Scroller extends PureComponent {
-    static propTypes = {
+    static propTypes    = {
+        //style to be applied to root component
+        style    : object,
+        //className to be applied to root component
+        className: string,
+
+
         //height of container
         height              : numOrFunc,
         //Total number of rows
@@ -38,6 +46,10 @@ export default class Scroller extends PureComponent {
         scrollDelay         : numOrFunc,
 
     };
+    static defaultProps = {
+        scrollTo : 0,
+        className: ''
+    };
 
     state = {
         page        : {
@@ -45,17 +57,12 @@ export default class Scroller extends PureComponent {
             rowIndex: 0,
             data    : EMPTY_ARRAY
         },
-        //where in the data array to render
-        start       : 0,
-        //where in the data array to end
-        end         : 0,
         //data for the currently showing items
         data        : [],
         rowOffset   : 0,
         offsetHeight: 0,
         totalHeight : 0,
-        scrollTo    : this.props.scrollTo,
-        fetching    : false
+        scrollTo    : this.props.scrollTo
     };
 
     scrollDelay(from, to) {
@@ -150,14 +157,13 @@ export default class Scroller extends PureComponent {
         const scrollTop = isTracking ? this.offsetTop : _scrollTop;
         const bottom    = scrollTop + height;
 
-        const { isFetching } = this.state;
-        const data           = [];
-        let totalHeight      = 0;
-        let rowOffset        = -1;
-        let inView           = false, outView = false;
-        let viewRowCount     = 0;
-        let withinBottom     = false;
-        let withinTop        = false;
+        const data       = [];
+        let totalHeight  = 0;
+        let rowOffset    = -1;
+        let outView      = false;
+        let viewRowCount = 0;
+        let withinBottom = false;
+        let withinTop    = false;
         for (let rowIndex = 0, r = 0; rowIndex < count; rowIndex++) {
             const rHeight = result(rowHeight, rowIndex);
 
@@ -224,22 +230,30 @@ export default class Scroller extends PureComponent {
 
     renderItems() {
         const {
-                  state: { data, rowOffset, scrolling, start, page },
+                  state: { data, page },
 
-                  props: { rowCount, scrollTo, renderItem, renderBlank, rowData, ...props }
+                  props: { height, width, rowCount, scrollTo, renderItem, renderBlank, className, style, rowData, ...props }
               } = this;
 
-        const ret = Array(data.length);
+        const ret = Array(data.length / 2);
 
         let startIndex = page.rowIndex;
         let rowsData   = page.data;
+        let rowOd      = -1;
+
+        for (let i = 0, l = rowsData.length; i < l; i++) {
+            if (startIndex++ === data[0]) {
+                rowOd = i;
+                break;
+            }
+        }
 
 
-        for (let i = 0, r = 0, l = data.length; i < l; i += 2, r++) {
+        for (let i = 0, s = 0, r = 0, l = data.length; i < l; i += 2, r++) {
             const rowIndex  = data[i];
             const rowHeight = data[i + 1];
-            const _rowData  = startIndex === rowIndex
-                ? rowsData[(startIndex++, r)] : null;
+            const _rowData  = rowOd !== -1
+                ? rowsData[rowOd++] : null;
 
             const Renderer = _rowData == null && renderBlank ? renderBlank
                 : renderItem;
@@ -255,23 +269,26 @@ export default class Scroller extends PureComponent {
 
 
     render() {
-        const { props: { height }, state: { totalHeight, offsetHeight = 0 } } = this;
+        const { props: { height, width, className }, state: { totalHeight, offsetHeight = 0 } } = this;
 
         const style = {
             transform: `translate3d(0,${offsetHeight}px,0)`
         };
 
-        return (<div className={container}>
-            <div className={scroller} onScroll={this.handleScroll}
+
+        return (<div className={`${container} ${className}`}
+                     style={this.props.style}>
+            <div className={scroller || ''} onScroll={this.handleScroll}
                  ref={this.innerOffsetNode}
-                 style={{ height: `${height}px` }}>
+                 style={{ height, width }}>
                 <div className={sizer}
                      style={{ height: totalHeight }}>
-                    <div className={viewport} style={style}>
+                    <div className={viewport || ''} style={style}>
                         {this.renderItems()}
                     </div>
                 </div>
             </div>
-        </div>);
+        </div>)
+            ;
     }
 }
