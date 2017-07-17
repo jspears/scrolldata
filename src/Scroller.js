@@ -235,7 +235,7 @@ export default class Scroller extends PureComponent {
         let rowsData   = page.data;
 
 
-        for (let i = 0, r = 0, l = data.length; i < l; i += 2) {
+        for (let i = 0, r = 0, l = data.length; i < l; i += 2, r++) {
             const rowIndex  = data[i];
             const rowHeight = data[i + 1];
             const _rowData  = startIndex === rowIndex
@@ -244,7 +244,7 @@ export default class Scroller extends PureComponent {
             const Renderer = _rowData == null && renderBlank ? renderBlank
                 : renderItem;
 
-            ret[r++] = <Renderer
+            ret[r] = <Renderer
                 key={`scroller-row-index-${rowIndex}`} {...props}
                 rowIndex={rowIndex}
                 data={_rowData}

@@ -5,11 +5,7 @@
     box-sizing border-box
     overflow-y scroll
     top 0
-    outline 1px solid blue
     -webkit-overflow-scrolling: auto
-
-.sizer
-    outline 1px solid purple
 
 .viewport
     box-sizing border-box
