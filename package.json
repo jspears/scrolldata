@@ -1,0 +1,27 @@
+{
+  "name": "scrolldata",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "dependencies": {
+    "bh-ui-styles": "^4.0.0",
+    "nib": "^1.1.2",
+    "stylus-loader": "^3.0.1"
+  },
+  "author": "",
+  "license": "",
+  "devDependencies": {
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "subschema-dev-support": "^2.2.9"
+  },
+  "scripts": {
+    "karma": "subschema-karma",
+    "test": "subschema-karma --single-run --browsers Firefox",
+    "server": "subschema-webpack-dev-server",
+    "demo": "subschema-webpack --demo ./docs --open",
+    "gh-pages": "git subtree push --prefix docs origin gh-pages",
+    "dist": "subschema-webpack",
+    "preversion": "npm run dist && npm run test"
+  }
+}
