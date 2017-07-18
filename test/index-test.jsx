@@ -2,7 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import {renderIntoDocument} from 'react-dom/test-utils';
 import expect from "expect";
-import App from '../public/Scroller.jsx';
+import App from '../public/ScrollerExample';
 
 //insert app into dom.
 function into(node, debug) {
