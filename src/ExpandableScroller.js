@@ -26,14 +26,14 @@ export class ToggleItem extends PureComponent {
         this.props.onToggle(this.props.rowIndex)
     };
 
-    isExpanded = () => this.props.isExpanded(this.props.rowIndex);
-
     render() {
-        return this.props.render({
-            ...this.props,
-            isExpanded: this.isExpanded,
-            onToggle  : this.handleToggle
-        });
+        const { render, isExpanded, rowIndex, ...props } = this.props;
+        const Item                                       = render;
+        return <Item {...props}
+                     isExpanded={isExpanded(rowIndex)}
+                     onToggle={this.handleToggle}
+                     rowIndex={rowIndex}
+        />
     }
 }
 
@@ -43,18 +43,26 @@ export default class ExpandableScroller extends PureComponent {
         ...Scroller.propTypes,
         //accepts an array of rowIndexes that will be Toggled
         //if returns false toggle is canceled.
-        onExpandToggle : func,
+        onExpandToggle: func,
         //a function or an array of RowIndexes, function results in an array of
         // RowIndexes.
         expanded,
         //How tall to make expanded item.  A function will receive the rowIndex
-        expandedHeight : numOrFunc.isRequired,
-        expandedContent: func,
+        expandedHeight: numOrFunc.isRequired,
     };
     static defaultProps = {
         ...Scroller.defaultProps,
         expanded: []
     };
+
+    render() {
+        const { expanded, onExpandToggle, renderItem, expandedHeight, renderBlank, rowHeight, ...props } = this.props;
+        return <Scroller {...props}
+                         hash={this.state.expanded.join(' ')}
+                         rowHeight={this.rowHeight}
+                         renderItem={this.renderItem}
+                         renderBlank={this.renderBlank}/>
+    }
 
     state = {
         expanded: result(this.props.expanded) || EMPTY_ARRAY
@@ -70,19 +78,17 @@ export default class ExpandableScroller extends PureComponent {
         if (props.expanded !== this.props.expanded) {
             this.setState({ expanded: result(props.expanded) || EMPTY_ARRAY })
         }
-        if (props.expandedContent !== this.props.expandedContent
-            || props.renderItem !== this.props.renderItem
+        if (props.renderItem !== this.props.renderItem
             || props.renderBlank !== this.props.renderBlank) {
             this.setup(props);
         }
     }
 
-    setup({ renderBlank, renderItem, expandedContent }) {
+    setup({ renderBlank, renderItem, }) {
         const { isExpanded, handleToggleExpand, } = this;
 
         this.renderItem = (props) => (
             <ToggleItem {...props}
-                        expandedContent={expandedContent}
                         isExpanded={isExpanded}
                         onToggle={handleToggleExpand}
                         render={renderItem}/>);
@@ -90,7 +96,6 @@ export default class ExpandableScroller extends PureComponent {
         if (renderBlank) {
             this.renderBlank = (props) => (
                 <ToggleItem {...props}
-                            expandedContent={expandedContent}
                             isExpanded={isExpanded}
                             onToggle={handleToggleExpand}
                             render={renderBlank}/>);
@@ -112,12 +117,5 @@ export default class ExpandableScroller extends PureComponent {
         }
     };
 
-    render() {
-        const { expanded, expandedContent, onExpandToggle, renderItem, renderBlank, rowHeight, ...props } = this.props;
-        return <Scroller {...props}
-                         hash={this.state.expanded.join(' ')}
-                         rowHeight={this.rowHeight}
-                         renderItem={this.renderItem}
-                         renderBlank={this.renderBlank}/>
-    }
+
 }

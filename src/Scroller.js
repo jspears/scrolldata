@@ -4,59 +4,82 @@ import {
     any, number, func, string, oneOfType, array, object
 } from 'prop-types';
 import { findDOMNode } from 'react-dom';
-import { numOrFunc, result, EMPTY_ARRAY } from './util';
+import { numOrFunc, result, indexOf, EMPTY_ARRAY } from './util';
 
+const propTypes    = {
+    //What to render item
+    renderItem: func.isRequired,
+    //Total number of rows
+    rowCount  : numOrFunc.isRequired,
+    //Fetch row data
+    rowData   : func.isRequired,
+    //Fetch row height
+    rowHeight : numOrFunc.isRequired,
 
-export default class Scroller extends PureComponent {
-    static propTypes    = {
-        //style to be applied to root component
-        style    : object,
-        //className to be applied to root component
-        className: string,
+    //height of container
+    height: numOrFunc.isRequired,
 
+    //style to be applied to root component
+    style    : object,
+    //className to be applied to root component
+    className: string,
 
-        //height of container
-        height              : numOrFunc,
-        //Total number of rows
-        rowCount            : numOrFunc,
-        //Where to initialize table at
-        scrollTo            : numOrFunc,
-        //What to render item
-        renderItem          : func,
-        //If defined when scrolling these blanks will be used
-        renderBlank         : func,
-        //Height of the blank
-        renderBlankRowHeight: numOrFunc,
-        //Fetch row data
-        rowData             : func,
-        //Fetch row height
-        rowHeight           : numOrFunc,
-        //hash is a way to trigger a change when the underlying
-        //data has changed but none of the parameters we care about
-        //change
-        hash                : any,
-        //
-        onScrollToChanged   : func,
-        //Controls how much time to use when scrolling
-        scrollDelay         : numOrFunc,
-        //How many extra items to request before render for better scrolling
-        bufferSize          : numOrFunc,
-        //When the event fires, returning false will cancel the scroll
-        onScrollContainer   : func
+    //Where to initialize table at
+    scrollTo            : numOrFunc,
+    //If defined when scrolling these blanks will be used
+    renderBlank         : func,
+    //Height of the blank
+    renderBlankRowHeight: numOrFunc,
+    //hash is a way to trigger a change when the underlying
+    //data has changed but none of the parameters we care about
+    //change
+    hash                : any,
+    //
+    onScrollToChanged   : func,
+    //Controls how much time to use when scrolling
+    scrollDelay         : numOrFunc,
+    //How many extra items to request before render for better scrolling
+    bufferSize          : numOrFunc,
+    //When the event fires, returning false will cancel the scroll
+    onScrollContainer   : func
 
-    };
-    static defaultProps = {
-        scrollTo  : 0,
-        bufferSize: 0,
-        className : '',
-        page      : {
-            count   : 0,
-            rowIndex: 0,
-            data    : EMPTY_ARRAY
+};
+const defaultProps = {
+    scrollTo  : 0,
+    bufferSize: 0,
+    className : '',
+    hash      : '',
+    page      : {
+        count   : 0,
+        rowIndex: 0,
+        data    : EMPTY_ARRAY
+    }
+};
+
+const ignoreKeys = [...Object.keys(propTypes), ...Object.keys(defaultProps)]
+    .reduce(function (ret, key) {
+        if (indexOf(ret, key) == -1) {
+            ret.push(key);
         }
-    };
+        return ret;
+    }, []);
 
-    state     = {
+const ignore = (obj) => {
+    if (!obj) {
+        return obj;
+    }
+    return Object.keys(obj).reduce(function (ret, key) {
+        if (indexOf(ignoreKeys, key) == -1) {
+            ret[key] = obj[key];
+        }
+        return ret;
+    }, {});
+};
+export default class Scroller extends PureComponent {
+    static propTypes    = propTypes;
+    static defaultProps = defaultProps;
+
+    state = {
         page        : this.props.page,
         //data for the currently showing items
         data        : [],
@@ -75,8 +98,8 @@ export default class Scroller extends PureComponent {
         return Math.min(Math.abs(from - to), 2);
     }
 
-    componentWillMount() {
-        this.calculate(this.props, 0, false);
+    componentDidMount() {
+        this.scrollTo(this.props.scrollTo, this.props);
     }
 
     componentWillReceiveProps(props) {
@@ -105,34 +128,42 @@ export default class Scroller extends PureComponent {
         const {
                   rowHeight,
                   rowCount,
+                  height,
               } = props || this.props;
 
-        const count     = result(rowCount);
-        let totalHeight = 0;
-        let scrollTop   = 0;
+        const count      = result(rowCount);
+        let totalHeight  = 0;
+        let offsetHeight = 0;
 
         for (let rowIndex = 0; rowIndex < count; rowIndex++) {
             if (rowIndex === scrollTo) {
-                scrollTop = totalHeight;
-                break;
+                offsetHeight = totalHeight;
             }
             totalHeight += result(rowHeight, rowIndex);
         }
-        //this triggers a rerender = the innerScrollTop triggers the scroll
-        //event which does the actual calculation.
-        if (this.offsetTop !== scrollTop) {
-            this.offsetTop = scrollTop;
+        /**
+         * Story time -
+         * So if there is no scroll, than the scroll event won't fire.  So
+         * we need to force it.
+         *
+         * In theory we could not recalculate the total height again,
+         * but... whatever its relatively cheap.
+         */
+        if (totalHeight > height && this.offsetTop !== offsetHeight) {
+            this.offsetTop = offsetHeight;
             this.setState({
                 scrollTo,
-                offsetHeight: scrollTop
+                totalHeight,
+                offsetHeight
             }, this._innerScrollTop);
         } else {
-            this.calculate(props, scrollTop, false);
+            this.calculate(props, offsetHeight, false);
         }
     }
 
-    _innerScrollTop = () =>
-        findDOMNode(this._innerOffsetNode).scrollTop = this.state.offsetHeight;
+    _innerScrollTop = () => {
+        this._innerOffsetNode.scrollTop = this.state.offsetHeight;
+    };
 
     innerOffsetNode = (node) => this._innerOffsetNode = node;
 
@@ -163,11 +194,11 @@ export default class Scroller extends PureComponent {
 
     calculate({ rowHeight, rowCount, height, }, _scrollTop,
               isTracking) {
-        const count     = result(rowCount);
-        const scrollTop = isTracking ? this.offsetTop : _scrollTop;
-        const bottom    = scrollTop + height;
+        const count        = result(rowCount);
+        const offsetHeight = isTracking ? this.offsetTop : _scrollTop;
+        const bottom       = offsetHeight + height;
 
-        const data        = this.state.data;
+        let data          = this.state.data;
         let totalHeight   = 0;
         let rowOffset     = -1;
         let outView       = false;
@@ -179,7 +210,7 @@ export default class Scroller extends PureComponent {
             const rHeight = result(rowHeight, rowIndex);
 
             withinBottom = totalHeight < bottom;
-            withinTop    = totalHeight >= scrollTop;
+            withinTop    = totalHeight >= offsetHeight;
 
             if (withinTop && withinBottom) {
                 viewRowCount++;
@@ -193,13 +224,15 @@ export default class Scroller extends PureComponent {
                     if (!hasDataChange && (data[r + 1] !== rowIndex
                                            || data[r + 2] !== rHeight)) {
                         hasDataChange = true;
+                        data          = data.splice(0, r)
                     }
                     data[r++] = rowIndex;
                     data[r++] = rHeight;
-
                 }
             }
-            if (!(isTracking) && withinTop && !withinBottom && !outView) {
+            if (!(isTracking) && withinTop &&
+                (!withinBottom || rowIndex === count - 1 )
+                && !outView) {
                 outView = true;
                 this._fetchPage(rowOffset, viewRowCount);
             }
@@ -210,17 +243,19 @@ export default class Scroller extends PureComponent {
             this.handleScrollToChange(rowOffset);
         }
         this.setState({
-            data        : hasDataChange ? data.concat() : data,
+            data,
             rowOffset,
-            totalHeight : `${totalHeight}px`,
-            offsetHeight: scrollTop
+            totalHeight,
+            offsetHeight
         })
     }
 
     handleScrollToChange(scrollTo) {
         if (scrollTo != this.state.scrollTo) {
-            this.props.onScrollToChanged(scrollTo);
+            this.props.onScrollToChanged && this.props.onScrollToChanged(
+                scrollTo);
         }
+
     }
 
     tracking = (scrollTop) => {
@@ -252,7 +287,7 @@ export default class Scroller extends PureComponent {
         const {
                   state: { data, page },
 
-                  props: { height, width, rowCount, scrollTo, onScrollToChanged, renderItem, renderBlank, className, style, rowData, ...props }
+                  props
               } = this;
 
         const ret = Array(data.length / 2);
@@ -275,11 +310,12 @@ export default class Scroller extends PureComponent {
             const _rowData  = rowOd !== -1
                 ? rowsData[rowOd++] : null;
 
-            const Renderer = _rowData == null && renderBlank ? renderBlank
-                : renderItem;
+            const Renderer = _rowData == null && props.renderBlank
+                ? props.renderBlank
+                : props.renderItem;
 
             ret[r] = <Renderer
-                key={`scroller-row-index-${r}-${rowIndex}`} {...props}
+                key={`scroller-row-index-${r}-${rowIndex}`} {...ignore(props)}
                 rowIndex={rowIndex}
                 data={_rowData}
                 rowHeight={rowHeight}/>
@@ -294,15 +330,15 @@ export default class Scroller extends PureComponent {
         const style = {
             transform: `translate3d(0,${offsetHeight}px,0)`
         };
-
-
         return (<div className={`${container} ${className}`}
                      style={this.props.style}>
             <div className={scroller || ''} onScroll={this.handleScroll}
                  ref={this.innerOffsetNode}
                  style={{ height, width, maxWidth: width }}>
                 <div className={sizer}
-                     style={{ height: totalHeight }}>
+                     style={{
+                         height: totalHeight
+                     }}>
                     <div className={viewport || ''} style={style}>
                         {this.renderItems()}
                     </div>

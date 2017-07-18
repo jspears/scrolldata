@@ -18,7 +18,7 @@ const Render = ({ rowIndex, isExpanded, onToggle, rowHeight, data: { requestId, 
             <div className={style.cell}>{fulfillmentPartner}</div>
             <div className={style.cell}>{movieId}</div>
         </div>
-        {isExpanded() && <div key='expanded-content'
+        {isExpanded && <div key='expanded-content'
                               className={style.expandedContent}>This is expanded
             content</div>}
     </div>
@@ -33,14 +33,6 @@ const Blank = ({ rowHeight }) => {
         <div className={style.blank}>&nbsp;</div>
     </div>
 };
-
-function toString(val) {
-    if (typeof val === 'function') {
-        return val.name;
-    }
-    return String(val);
-}
-
 
 const wait = (timeout, value) => new Promise(
     r => setTimeout(r, timeout * 1000, value));
@@ -89,7 +81,7 @@ export default class TogglerExample extends Component {
     };
 
     handleScrollToClick = ({ target: { dataset: { rowIndex } } }) => {
-        this.handleScrollTo(rowIndex);
+        this.handleScrollTo(parseInt(rowIndex, 10));
     };
 
     render() {
