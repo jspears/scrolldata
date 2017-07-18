@@ -58,7 +58,7 @@ export default class ExpandableScroller extends PureComponent {
     render() {
         const { expanded, onExpandToggle, renderItem, expandedHeight, renderBlank, rowHeight, ...props } = this.props;
         return <Scroller {...props}
-                         hash={this.state.expanded.join(' ')}
+                         hash={this.state.expanded.join(' ')+this.props.expandedHeight}
                          rowHeight={this.rowHeight}
                          renderItem={this.renderItem}
                          renderBlank={this.renderBlank}/>
