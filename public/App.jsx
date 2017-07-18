@@ -62,9 +62,9 @@ const Slider = ({ label, type = 'range', min = 0, value, name, ...rest }) => {
     return (<div className='form-group'>
         <label htmlFor={name}>{label} ({toString(value[name])})</label>
         <div className='input-group'>
-            {type === 'range' && <div class="input-group-addon"><input
+            {type === 'range' && <div className="input-group-addon"><input
                 key={`form-txt-${type}`}
-                className='form-control'
+                className='addon'
                 id={name + 'text'}
                 name={name}
                 min={min}
@@ -93,7 +93,8 @@ class ExampleState extends Component {
         width     : 900,
         rowCount  : example.length,
         renderItem: Render,
-        fakeFetch : 0
+        fakeFetch : 0,
+        bufferSize: 0
     };
 
     handleNumChange = ({ target: { value, name } }) =>
@@ -134,6 +135,9 @@ class ExampleState extends Component {
             <Slider name='width' label='Width' value={this.state}
                     max={1600}
                     onChange={this.handleNumChange}/>
+            <Slider name='bufferSize' label='Buffer size' value={this.state}
+                    max={example.length}
+                    onChange={this.handleNumChange}/>
             <Slider name='renderItem'
                     type='checkbox'
                     label='Change Render'
@@ -149,7 +153,7 @@ class ExampleState extends Component {
                     onChange={this.handleNumChange}
             />
             <h1>Virtualized</h1>
-            <Scroller renderItem={Render}
+            <Scroller className={style.container} renderItem={Render}
                       renderBlank={Blank}
                       rowData={this.rowData}
                       onScrollToChanged={this.handleScrollTo}

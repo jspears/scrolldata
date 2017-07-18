@@ -5,10 +5,9 @@ import {
 } from 'prop-types';
 import { findDOMNode } from 'react-dom';
 
-const result = (val, ...args) => typeof val === 'function' ? val(...args) : val;
-
-const numOrFunc = oneOfType([number, func]);
-
+const result      = (val, ...args) => typeof val === 'function' ? val(...args)
+    : val;
+const numOrFunc   = oneOfType([number, func]);
 const EMPTY_ARRAY = Object.freeze([]);
 
 
@@ -44,19 +43,25 @@ export default class Scroller extends PureComponent {
         onScrollToChanged   : func,
         //Controls how much time to use when scrolling
         scrollDelay         : numOrFunc,
+        //How many extra items to request before render for better scrolling
+        bufferSize          : numOrFunc,
+        //When the event fires, returning false will cancel the scroll
+        onScrollContainer   : func
 
     };
     static defaultProps = {
-        scrollTo : 0,
-        className: ''
-    };
-
-    state = {
-        page        : {
+        scrollTo  : 0,
+        bufferSize: 0,
+        className : '',
+        page      : {
             count   : 0,
             rowIndex: 0,
             data    : EMPTY_ARRAY
-        },
+        }
+    };
+
+    state = {
+        page        : this.props.page,
         //data for the currently showing items
         data        : [],
         rowOffset   : 0,
@@ -80,6 +85,7 @@ export default class Scroller extends PureComponent {
         const {
                   rowCount, scrollTo, renderItem,
                   renderBlank, rowData, rowHeight,
+                  height,
                   hash
               } = this.props;
         if (!(rowCount === props.rowCount &&
@@ -123,22 +129,23 @@ export default class Scroller extends PureComponent {
         }, this._innerScrollTop);
     }
 
-    _innerScrollTop = () => {
+    _innerScrollTop = () =>
         findDOMNode(this._innerOffsetNode).scrollTop = this.state.offsetHeight;
 
-    };
-
-    innerOffsetNode = (node) => {
-        this._innerOffsetNode = node;
-    };
+    innerOffsetNode = (node) => this._innerOffsetNode = node;
 
     _fetchPage(rowIndex, rowCount) {
-        const ret = this.props.rowData(rowIndex, rowCount);
+        const bufferSize = result(this.props.bufferSize, rowIndex, rowCount);
+
+        let newRowIndex = bufferSize === 0 ? rowIndex : Math.max(
+            rowIndex - Math.floor(bufferSize / 2), 0);
+
+        const ret = this.props.rowData(newRowIndex, rowCount + bufferSize);
         if (Array.isArray(ret)) {
             this.setState({
                 page: {
-                    data: ret,
-                    rowIndex,
+                    data    : ret,
+                    rowIndex: newRowIndex,
                 }
             })
         }
@@ -146,24 +153,26 @@ export default class Scroller extends PureComponent {
                .then((data) => this.setState({
                    page: {
                        data,
-                       rowIndex,
+                       rowIndex: newRowIndex,
                    }
                }));
     };
 
-    calculate({ rowHeight, rowCount, rowData, height, scrollTo }, _scrollTop,
+
+    calculate({ rowHeight, rowCount, height, }, _scrollTop,
               isTracking) {
         const count     = result(rowCount);
         const scrollTop = isTracking ? this.offsetTop : _scrollTop;
         const bottom    = scrollTop + height;
 
-        const data       = [];
-        let totalHeight  = 0;
-        let rowOffset    = -1;
-        let outView      = false;
-        let viewRowCount = 0;
-        let withinBottom = false;
-        let withinTop    = false;
+        const data        = this.state.data;
+        let totalHeight   = 0;
+        let rowOffset     = -1;
+        let outView       = false;
+        let viewRowCount  = 0;
+        let withinBottom  = false;
+        let withinTop     = false;
+        let hasDataChange = false;
         for (let rowIndex = 0, r = 0; rowIndex < count; rowIndex++) {
             const rHeight = result(rowHeight, rowIndex);
 
@@ -179,6 +188,10 @@ export default class Scroller extends PureComponent {
                     rowCount = rowIndex;
                 }
                 if (rowIndex <= count) {
+                    if (!hasDataChange && (data[r + 1] !== rowIndex
+                                           || data[r + 2] !== rHeight)) {
+                        hasDataChange = true;
+                    }
                     data[r++] = rowIndex;
                     data[r++] = rHeight;
 
@@ -195,7 +208,7 @@ export default class Scroller extends PureComponent {
             this.handleScrollToChange(rowOffset);
         }
         this.setState({
-            data,
+            data        : hasDataChange ? data.concat() : data,
             rowOffset,
             totalHeight : `${totalHeight}px`,
             offsetHeight: scrollTop
@@ -223,8 +236,13 @@ export default class Scroller extends PureComponent {
         }, this.scrollDelay(origOffsetTop, scrollTop));
     };
 
-    handleScroll = ({ target: { scrollTop } }) => {
-        this.tracking(scrollTop);
+    handleScroll = (e) => {
+        if (this.props.onScrollContainer ? this.props.onScrollContainer(e)
+                                           !== false : true) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.tracking(e.target.scrollTop);
+        }
     };
 
 
@@ -240,16 +258,16 @@ export default class Scroller extends PureComponent {
         let startIndex = page.rowIndex;
         let rowsData   = page.data;
         let rowOd      = -1;
-
+        const data0    = data[0];
         for (let i = 0, l = rowsData.length; i < l; i++) {
-            if (startIndex++ === data[0]) {
+            if (startIndex++ === data0) {
                 rowOd = i;
                 break;
             }
         }
 
 
-        for (let i = 0, s = 0, r = 0, l = data.length; i < l; i += 2, r++) {
+        for (let i = 0, r = 0, l = data.length; i < l; i += 2, r++) {
             const rowIndex  = data[i];
             const rowHeight = data[i + 1];
             const _rowData  = rowOd !== -1
@@ -280,7 +298,7 @@ export default class Scroller extends PureComponent {
                      style={this.props.style}>
             <div className={scroller || ''} onScroll={this.handleScroll}
                  ref={this.innerOffsetNode}
-                 style={{ height, width }}>
+                 style={{ height, width, maxWidth: width }}>
                 <div className={sizer}
                      style={{ height: totalHeight }}>
                     <div className={viewport || ''} style={style}>
@@ -288,7 +306,6 @@ export default class Scroller extends PureComponent {
                     </div>
                 </div>
             </div>
-        </div>)
-            ;
+        </div>);
     }
 }
