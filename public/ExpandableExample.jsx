@@ -19,8 +19,10 @@ const Render = ({ rowIndex, isExpanded, onToggle, rowHeight, data: { requestId, 
             <div className={style.cell}>{movieId}</div>
         </div>
         {isExpanded && <div key='expanded-content'
-                              className={style.expandedContent}>This is expanded
-            content</div>}
+                              className={style.expandedContent}>
+            <span style={style.centerable}>This is expanded
+                content</span>
+        </div>}
     </div>
 };
 
