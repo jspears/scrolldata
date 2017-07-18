@@ -1,43 +1,26 @@
 import React, { Component, PureComponent } from 'react';
+import Expandable from '../src/ExpandableScroller';
+import style from './App.stylm';
+import Slider from './Slider';
 import example from './exampleDataset.json';
 
-import Scroller from '../src/Scroller';
-import style from './App.stylm';
 
+const Render = ({ rowIndex, isExpanded, onToggle, rowHeight, data: { requestId, contentPartnerId, fulfillmentPartner, movieId }, }) => {
 
-/**
- * requestId: 'dacd989b-3cdd-44ca-bdbf-0632321b9cd6',
- packageId: 1275303,
- contentPartnerId: 'df7400c0-29c0-11e6-bd8f-22000bfa24f9',
- contentPartner: 'Olaf Productions, Inc.',
- fulfillmentPartnerId: '66d36460-b9c2-11e2-a747-12313d0489f0',
- fulfillmentPartner: 'Deluxe LA - NPV',
- catalogId: '',
- movieId: 80114995,
- movieType: 'tv_episode',
- movieTitle: 'A Series of Unfortunate Events: Season 1: "The Wide Window: Part Two"',
- releaseYear: 2017,
- showName: 'A Series of Unfortunate Events',
- seasonName: 'Season 1',
- episodeName: 'The Wide Window: Part Two',
- * @param props
- * @returns {XML}
- * @constructor
- */
-example.forEach(function (v, i) {
-    //see if data lines up.
-    v.requestId = `${i}-${v.requestId}`;
-});
+    return <div style={{ height: rowHeight }}
 
-
-const Render = ({ rowIndex, rowHeight, data: { requestId, contentPartnerId, fulfillmentPartner, movieId }, }) => {
-
-    return <div className={style.row} style={{ height: rowHeight }}>
-        <div className={`${style.cell} ${style.index}`}>{rowIndex}</div>
-        <div className={style.cell}>{requestId}</div>
-        <div className={style.cell}>{contentPartnerId}</div>
-        <div className={style.cell}>{fulfillmentPartner}</div>
-        <div className={style.cell}>{movieId}</div>
+                className={style.expandableContainer}>
+        <div key={`expandable-row-${rowIndex}`} className={style.expandableRow}
+             onClick={onToggle}>
+            <div className={`${style.cell} ${style.index}`}>{rowIndex}</div>
+            <div className={style.cell}>{requestId}</div>
+            <div className={style.cell}>{contentPartnerId}</div>
+            <div className={style.cell}>{fulfillmentPartner}</div>
+            <div className={style.cell}>{movieId}</div>
+        </div>
+        {isExpanded() && <div key='expanded-content'
+                              className={style.expandedContent}>This is expanded
+            content</div>}
     </div>
 };
 
@@ -58,43 +41,22 @@ function toString(val) {
     return String(val);
 }
 
-const Slider = ({ label, type = 'range', min = 0, value, name, ...rest }) => {
-    return (<div className='form-group'>
-        <label htmlFor={name}>{label} ({toString(value[name])})</label>
-        <div className='input-group'>
-            {type === 'range' && <div className="input-group-addon"><input
-                key={`form-txt-${type}`}
-                className='addon'
-                id={name + 'text'}
-                name={name}
-                min={min}
-                value={value[name]}
-                {...rest}/></div>}
-            <input type={type}
-                   key={`form-${type}`}
-                   className='form-control'
-                   id={name}
-                   name={name}
-                   min={min}
-                   value={value[name]}
-                   {...rest}/>
-        </div>
-    </div>)
-};
 
 const wait = (timeout, value) => new Promise(
     r => setTimeout(r, timeout * 1000, value));
 
-class ExampleState extends Component {
+export default class TogglerExample extends Component {
     state = {
-        scrollTo  : 0,
-        rowHeight : 50,
-        height    : 600,
-        width     : 900,
-        rowCount  : example.length,
-        renderItem: Render,
-        fakeFetch : 0,
-        bufferSize: 0
+        scrollTo      : 0,
+        rowHeight     : 50,
+        expandedHeight: 200,
+        height        : 600,
+        width         : 900,
+        rowCount      : example.length,
+        renderItem    : Render,
+        fakeFetch     : 0,
+        bufferSize    : 0,
+        expanded      : []
     };
 
     handleNumChange = ({ target: { value, name } }) =>
@@ -115,6 +77,20 @@ class ExampleState extends Component {
     handleRenderItem = ({ target: { checked, name } }) => {
         this.setState({ [name]: checked ? Render : Blank });
     };
+    handleToggle     = (expanded) => {
+        this.setState({ expanded });
+    };
+
+    renderExpandedNumber(rowIndex, idx) {
+        return <btn className="btn btn-default" role="group"
+                    key={`expanded-row-${rowIndex}`}
+                    onClick={this.handleScrollToClick}
+                    data-row-index={rowIndex}>{rowIndex}</btn>
+    };
+
+    handleScrollToClick = ({ target: { dataset: { rowIndex } } }) => {
+        this.handleScrollTo(rowIndex);
+    };
 
     render() {
         //don't pass in fakeFetch
@@ -124,6 +100,10 @@ class ExampleState extends Component {
                     max={this.state.rowCount}
                     onChange={this.handleNumChange}/>
             <Slider name='rowHeight' label='Row Height' value={this.state}
+                    max={600}
+                    onChange={this.handleNumChange}/>
+            <Slider name='expandedHeight' label='Expanded Row Height'
+                    value={this.state}
                     max={600}
                     onChange={this.handleNumChange}/>
             <Slider name='rowCount' label='Row Count' value={this.state}
@@ -145,6 +125,7 @@ class ExampleState extends Component {
                     value={this.state}
                     onChange={this.handleRenderItem}
             />
+
             <Slider name='fakeFetch'
                     label='Time to delay fetch (s)'
                     value={this.state}
@@ -152,22 +133,22 @@ class ExampleState extends Component {
                     max={10}
                     onChange={this.handleNumChange}
             />
-            <h1>Virtualized</h1>
-            <Scroller className={style.container} renderItem={Render}
-                      renderBlank={Blank}
-                      rowData={this.rowData}
-                      onScrollToChanged={this.handleScrollTo}
-                      {...props}/>
+            <h1>Virtualized Expandable</h1>
+            <div>
+                <div className="btn-group">{this.state.expanded.length
+                    ? this.state.expanded.map(
+                        this.renderExpandedNumber, this) : <button
+                                                className='btn btn-disabled'>
+                                                None Selected</button>
+                }
+                </div>
+            </div>
+            <Expandable className={style.container} renderItem={Render}
+                        renderBlank={Blank}
+                        rowData={this.rowData}
+                        onExpandToggle={this.handleToggle}
+                        onScrollToChanged={this.handleScrollTo}
+                        {...props}/>
         </form>
-    }
-}
-
-export default class App extends PureComponent {
-    render() {
-        return <div>
-            <h3>Scrolldata</h3>
-            <p>This is a little example to show how it would work</p>
-            <ExampleState/>
-        </div>
     }
 }

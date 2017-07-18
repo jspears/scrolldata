@@ -36,6 +36,22 @@
     margin auto 10px
 
 
-.container {
+.container
     border 2px solid blueviolet
-}
+
+
+.expandable-container
+    display: flex;
+    flex-direction: column;
+
+.expandable-row
+    @extend .row
+    max-height 50px
+    cursor pointer
+
+.expanded-content
+    flex-direction column
+    flex 1
+    width 100%
+    justify-content space-around
+    border 1px solid green

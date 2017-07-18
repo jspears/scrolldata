@@ -3,6 +3,7 @@
   "version": "1.0.3",
   "description": "",
   "main": "lib/index",
+  "source": "src/index",
   "dependencies": {
     "bh-ui-styles": "^4.0.0",
     "nib": "^1.1.2",

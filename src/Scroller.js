@@ -4,11 +4,7 @@ import {
     any, number, func, string, oneOfType, array, object
 } from 'prop-types';
 import { findDOMNode } from 'react-dom';
-
-const result      = (val, ...args) => typeof val === 'function' ? val(...args)
-    : val;
-const numOrFunc   = oneOfType([number, func]);
-const EMPTY_ARRAY = Object.freeze([]);
+import { numOrFunc, result, EMPTY_ARRAY } from './util';
 
 
 export default class Scroller extends PureComponent {
@@ -60,7 +56,7 @@ export default class Scroller extends PureComponent {
         }
     };
 
-    state = {
+    state     = {
         page        : this.props.page,
         //data for the currently showing items
         data        : [],
@@ -69,6 +65,8 @@ export default class Scroller extends PureComponent {
         totalHeight : 0,
         scrollTo    : this.props.scrollTo
     };
+
+    offsetTop = 0;
 
     scrollDelay(from, to) {
         if (this.props.scrollDelay != null) {
@@ -122,11 +120,15 @@ export default class Scroller extends PureComponent {
         }
         //this triggers a rerender = the innerScrollTop triggers the scroll
         //event which does the actual calculation.
-        this.offsetTop = scrollTop;
-        this.setState({
-            scrollTo,
-            offsetHeight: scrollTop
-        }, this._innerScrollTop);
+        if (this.offsetTop !== scrollTop) {
+            this.offsetTop = scrollTop;
+            this.setState({
+                scrollTo,
+                offsetHeight: scrollTop
+            }, this._innerScrollTop);
+        } else {
+            this.calculate(props, scrollTop, false);
+        }
     }
 
     _innerScrollTop = () =>
@@ -250,7 +252,7 @@ export default class Scroller extends PureComponent {
         const {
                   state: { data, page },
 
-                  props: { height, width, rowCount, scrollTo, renderItem, renderBlank, className, style, rowData, ...props }
+                  props: { height, width, rowCount, scrollTo, onScrollToChanged, renderItem, renderBlank, className, style, rowData, ...props }
               } = this;
 
         const ret = Array(data.length / 2);
@@ -277,7 +279,7 @@ export default class Scroller extends PureComponent {
                 : renderItem;
 
             ret[r] = <Renderer
-                key={`scroller-row-index-${rowIndex}`} {...props}
+                key={`scroller-row-index-${r}-${rowIndex}`} {...props}
                 rowIndex={rowIndex}
                 data={_rowData}
                 rowHeight={rowHeight}/>
