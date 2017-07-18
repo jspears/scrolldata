@@ -224,6 +224,7 @@ export default class Scroller extends PureComponent {
                     if (!hasDataChange && (data[r + 1] !== rowIndex
                                            || data[r + 2] !== rHeight)) {
                         hasDataChange = true;
+                        //copy the data if its changed this could be better
                         data          = data.splice(0, r)
                     }
                     data[r++] = rowIndex;
@@ -247,7 +248,7 @@ export default class Scroller extends PureComponent {
             rowOffset,
             totalHeight,
             offsetHeight
-        })
+        });
     }
 
     handleScrollToChange(scrollTo) {

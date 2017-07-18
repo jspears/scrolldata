@@ -112,13 +112,6 @@ export default class TogglerExample extends Component {
             <Slider name='bufferSize' label='Buffer size' value={this.state}
                     max={example.length}
                     onChange={this.handleNumChange}/>
-            <Slider name='renderItem'
-                    type='checkbox'
-                    label='Change Render'
-                    checked={this.state.renderItem === Render}
-                    value={this.state}
-                    onChange={this.handleRenderItem}
-            />
 
             <Slider name='fakeFetch'
                     label='Time to delay fetch (s)'
@@ -127,6 +120,7 @@ export default class TogglerExample extends Component {
                     max={10}
                     onChange={this.handleNumChange}
             />
+
             <h1>Virtualized Expandable</h1>
             <div>
                 <div className="btn-group">{this.state.expanded.length
