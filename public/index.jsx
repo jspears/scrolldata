@@ -40,9 +40,9 @@ class App extends PureComponent {
         return <div>
             <h2>Scrolldata</h2>
             <p>This is a little example to show how it would work&nbsp;
-                <a href='/#Scroller'>Scroller</a>
-                | <a href='/#Expandable'>Expandable</a> |
-                <a href='/#Slideout'>Slideout</a>
+                <a href='#Scroller'>Scroller</a>
+                | <a href='#Expandable'>Expandable</a> |
+                <a href='#Slideout'>Slideout</a>
             </p>
             <Example/>
         </div>
