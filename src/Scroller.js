@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { viewport, scroller, container, sizer } from './Scroller.stylm';
 import {
-    any, number, func, string, oneOfType, array, object
+    any, number, func, string, oneOfType, array, object, oneOf,
 } from 'prop-types';
 import { findDOMNode } from 'react-dom';
 import { numOrFunc, result, indexOf, EMPTY_ARRAY } from './util';
@@ -41,8 +41,10 @@ const propTypes    = {
     //How many extra items to request before render for better scrolling
     bufferSize          : numOrFunc,
     //When the event fires, returning false will cancel the scroll
-    onScrollContainer   : func
-
+    onScrollContainer   : func,
+    //Choose between top and translate, chrome sticky has a bug with translate
+    //but translate renders a little faster.  So... pick your poison
+    viewPort            : oneOf(['top', 'translate']),
 };
 const defaultProps = {
     scrollTo  : 0,
@@ -53,6 +55,17 @@ const defaultProps = {
         count   : 0,
         rowIndex: 0,
         data    : EMPTY_ARRAY
+    },
+    viewPort  : 'top',
+    translateViewPort(top){
+        return {
+            transform: `translate3d(0,${top}px,0)`
+        }
+    },
+    topViewPort(top){
+        return {
+            top
+        }
     }
 };
 
@@ -91,12 +104,6 @@ export default class Scroller extends PureComponent {
 
     offsetTop = 0;
 
-    scrollDelay(from, to) {
-        if (this.props.scrollDelay != null) {
-            return result(this.props.scrollDelay, from, to);
-        }
-        return Math.min(Math.abs(from - to), 2);
-    }
 
     componentDidMount() {
         this.scrollTo(this.props.scrollTo, this.props);
@@ -121,6 +128,13 @@ export default class Scroller extends PureComponent {
             )) {
             this.scrollTo(props.scrollTo, props);
         }
+    }
+
+    scrollDelay(from, to) {
+        if (this.props.scrollDelay != null) {
+            return result(this.props.scrollDelay, from, to);
+        }
+        return Math.min(Math.abs(from - to), 2);
     }
 
 
@@ -277,8 +291,9 @@ export default class Scroller extends PureComponent {
     handleScroll = (e) => {
         if (this.props.onScrollContainer ? this.props.onScrollContainer(e)
                                            !== false : true) {
-            e.preventDefault();
-            e.stopPropagation();
+            // e.preventDefault();
+            // e.stopPropagation();
+            // this.setState({ scrollLeft: e.target.scrollLeft });
             this.tracking(e.target.scrollTop);
         }
     };
@@ -328,21 +343,22 @@ export default class Scroller extends PureComponent {
     render() {
         const { props: { height, width, className }, state: { totalHeight, offsetHeight = 0 } } = this;
 
-        const style = {
-            transform: `translate3d(0,${offsetHeight}px,0)`
-        };
+        const viewPortStyle = this.props[`${this.props.viewPort}ViewPort`](
+            offsetHeight);
         return (<div className={`${container} ${className}`}
-                     style={this.props.style}>
+                     style={{ ...this.props.style, height, width }}>
+
             <div className={scroller || ''} onScroll={this.handleScroll}
                  ref={this.innerOffsetNode}
                  style={{ height, width, maxWidth: width }}>
                 <div className={sizer}
                      style={{
-                         height: totalHeight
+                         height: totalHeight,
+                         right : 0
                      }}>
-                    <div className={viewport || ''} style={style}>
-                        {this.renderItems()}
-                    </div>
+                </div>
+                <div className={viewport || ''} style={viewPortStyle}>
+                    {this.renderItems()}
                 </div>
             </div>
         </div>);

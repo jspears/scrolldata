@@ -3,7 +3,7 @@ import Expandable from '../src/ExpandableScroller';
 import style from './App.stylm';
 import Slider from './Slider';
 import example from './exampleDataset.json';
-
+import Configure, { numberChange } from './Configure';
 
 const Render = ({ rowIndex, isExpanded, onToggle, rowHeight, data: { requestId, contentPartnerId, fulfillmentPartner, movieId }, }) => {
 
@@ -19,7 +19,7 @@ const Render = ({ rowIndex, isExpanded, onToggle, rowHeight, data: { requestId, 
             <div className={style.cell}>{movieId}</div>
         </div>
         {isExpanded && <div key='expanded-content'
-                              className={style.expandedContent}>
+                            className={style.expandedContent}>
             <span style={style.centerable}>This is expanded
                 content</span>
         </div>}
@@ -40,21 +40,24 @@ const wait = (timeout, value) => new Promise(
     r => setTimeout(r, timeout * 1000, value));
 
 export default class TogglerExample extends Component {
+
     state = {
         scrollTo      : 0,
         rowHeight     : 50,
-        expandedHeight: 200,
         height        : 600,
         width         : 900,
-        rowCount      : example.length,
-        renderItem    : Render,
         fakeFetch     : 0,
         bufferSize    : 0,
+        rowCount      : example.length,
+        expandedHeight: 200,
         expanded      : []
     };
 
-    handleNumChange = ({ target: { value, name } }) =>
-        this.setState({ [name]: parseInt(value, 10) });
+    handleState = (state) => this.setState(state);
+
+    handleScrollTo = (scrollTo) => {
+        this.setState({ scrollTo })
+    };
 
     rowData = (rowIndex, count = 1) => {
         console.log(`rowData`, rowIndex, count);
@@ -65,71 +68,45 @@ export default class TogglerExample extends Component {
 
     };
 
-    handleScrollTo   = (scrollTo) => {
-        this.setState({ scrollTo });
-    };
-    handleRenderItem = ({ target: { checked, name } }) => {
-        this.setState({ [name]: checked ? Render : Blank });
-    };
-    handleToggle     = (expanded) => {
+    handleToggle = (expanded) => {
         this.setState({ expanded });
     };
 
-    renderExpandedNumber(rowIndex, idx) {
+    renderExpandedNumberNum(rowIndex, idx) {
         return <btn className="btn btn-default" role="group"
                     key={`expanded-row-${rowIndex}`}
                     onClick={this.handleScrollToClick}
                     data-row-index={rowIndex}>{rowIndex}</btn>
     };
 
+    renderExpandedNumber() {
+        return this.state.expanded.length
+            ? this.state.expanded.map(this.renderExpandedNumberNum
+                , this) : <button className='btn btn-disabled'>
+                   None Selected</button>
+
+    }
+
     handleScrollToClick = ({ target: { dataset: { rowIndex } } }) => {
         this.handleScrollTo(parseInt(rowIndex, 10));
     };
 
+    handleNumChange = numberChange(state => this.setState(state));
+
     render() {
         //don't pass in fakeFetch
         const { fakeFetch, ...props } = this.state;
-        return <form className='inline-form'>
-            <Slider name='scrollTo' label='Scroll To' value={this.state}
-                    max={this.state.rowCount}
-                    onChange={this.handleNumChange}/>
-            <Slider name='rowHeight' label='Row Height' value={this.state}
-                    max={600}
-                    onChange={this.handleNumChange}/>
-            <Slider name='expandedHeight' label='Expanded Row Height'
-                    value={this.state}
-                    max={600}
-                    onChange={this.handleNumChange}/>
-            <Slider name='rowCount' label='Row Count' value={this.state}
-                    max={example.length}
-                    onChange={this.handleNumChange}/>
-            <Slider name='height' label='Height' value={this.state}
-                    max={1600}
-                    onChange={this.handleNumChange}/>
-            <Slider name='width' label='Width' value={this.state}
-                    max={1600}
-                    onChange={this.handleNumChange}/>
-            <Slider name='bufferSize' label='Buffer size' value={this.state}
-                    max={example.length}
-                    onChange={this.handleNumChange}/>
-
-            <Slider name='fakeFetch'
-                    label='Time to delay fetch (s)'
-                    value={this.state}
-                    min={0}
-                    max={10}
-                    onChange={this.handleNumChange}
-            />
-
-            <h1>Virtualized Expandable</h1>
+        return <div>
+            <Configure onSetState={this.handleState}
+                       data={example} {...this.state}>
+                <Slider name='expandedHeight' label='Expanded Row Height'
+                        value={this.state}
+                        max={600}
+                        onChange={this.handleNumChange}/>
+            </Configure>
+            <h3>Virtualized Expandable</h3>
             <div>
-                <div className="btn-group">{this.state.expanded.length
-                    ? this.state.expanded.map(
-                        this.renderExpandedNumber, this) : <button
-                                                className='btn btn-disabled'>
-                                                None Selected</button>
-                }
-                </div>
+                <div className="btn-group">{this.renderExpandedNumber()}</div>
             </div>
             <Expandable className={style.container} renderItem={Render}
                         renderBlank={Blank}
@@ -137,6 +114,6 @@ export default class TogglerExample extends Component {
                         onExpandToggle={this.handleToggle}
                         onScrollToChanged={this.handleScrollTo}
                         {...props}/>
-        </form>
+        </div>
     }
 }

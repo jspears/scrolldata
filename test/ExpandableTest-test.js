@@ -117,4 +117,19 @@ describe.only("ExpandableScroller", function () {
         />, true);
         expect(app).toExist();
     });
+
+    it.only('should rowCount 20 scrollTo 20 expanded 11,20', function () {
+        const app = into(<ExpandableScroller expandedHeight={100}
+                                             expanded={[11,20]}
+                                             rowHeight={20}
+                                             rowData={rowData}
+                                             scrollDelay={0}
+                                             renderItem={renderItem}
+                                             rowCount={20}
+                                             height={200}
+                                             width={500}
+                                             scrollTo={19}
+        />, true);
+        expect(app).toExist();
+    });
 });
