@@ -1,5 +1,5 @@
 import React, { Component, PureComponent } from 'react';
-import Scroller from '../src/Scroller';
+import TableScroller from '../src/table/TableScroller';
 import style from './App.stylm';
 import Configure from './Configure';
 import example from './exampleDataset.json';
@@ -86,9 +86,8 @@ export default class ScrollerExample extends Component {
         return <div>
             <Configure onSetState={this.handleState}
                        data={example} {...this.state}/>
-            <h3>Virtualized Slideout Menu</h3>
-            <Scroller className={style.container} renderItem={Render}
-                      renderBlank={Blank}
+            <h3>Virtualized Table</h3>
+            <TableScroller className={style.container}
                       rowData={this.rowData}
                       onScrollToChanged={this.handleScrollTo}
                       onMenuItemClick={this.handleMenuClick}

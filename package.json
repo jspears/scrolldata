@@ -5,7 +5,6 @@
   "main": "lib/index",
   "source": "src/index",
   "dependencies": {
-    "bh-ui-styles": "^4.0.0",
     "nib": "^1.1.2",
     "stylus-loader": "^3.0.1"
   },
@@ -14,6 +13,7 @@
   "devDependencies": {
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "subschema": "^2.2.9",
     "subschema-dev-support": "^2.2.9"
   },
   "peerDependencies": {

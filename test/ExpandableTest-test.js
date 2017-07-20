@@ -1,19 +1,7 @@
 import React from 'react';
-import { render } from 'react-dom';
-import { renderIntoDocument } from 'react-dom/test-utils';
 import expect from "expect";
 import ExpandableScroller from '../src/ExpandableScroller';
-import examples from '../public/exampleDataset.json';
-
-//insert app into dom.
-function into(node, debug) {
-    if (debug === true) {
-        debug = document.createElement('div');
-        document.body.appendChild(debug);
-        return render(node, debug);
-    }
-    return renderIntoDocument(node);
-}
+import { into } from './support';
 
 const rowData = (rowIndex, count) => {
     const ret = Array(count);
@@ -43,7 +31,7 @@ const renderItem = (r) => {
     ` : ret}</div>
 };
 
-describe.only("ExpandableScroller", function () {
+describe("ExpandableScroller", function () {
     this.timeout(50000);
 
     it('should render', function () {
@@ -52,7 +40,7 @@ describe.only("ExpandableScroller", function () {
                                              rowData={rowData}
                                              renderItem={(rowIndex, height,
                                                           ...props) =>
-                                                 <div {...props}/> }
+                                                 <div {...props}/>}
                                              rowCount={0} height={500}
                                              width={500}/>, true);
         expect(app).toExist();
@@ -105,7 +93,7 @@ describe.only("ExpandableScroller", function () {
     });
     it('should rowCount 20 scrollTo 10 expanded 11,20', function () {
         const app = into(<ExpandableScroller expandedHeight={100}
-                                             expanded={[11,20]}
+                                             expanded={[11, 20]}
                                              rowHeight={20}
                                              rowData={rowData}
                                              scrollDelay={0}
@@ -118,9 +106,9 @@ describe.only("ExpandableScroller", function () {
         expect(app).toExist();
     });
 
-    it.only('should rowCount 20 scrollTo 20 expanded 11,20', function () {
+    it('should rowCount 20 scrollTo 20 expanded 11,20', function () {
         const app = into(<ExpandableScroller expandedHeight={100}
-                                             expanded={[11,20]}
+                                             expanded={[11, 20]}
                                              rowHeight={20}
                                              rowData={rowData}
                                              scrollDelay={0}

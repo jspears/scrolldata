@@ -3,8 +3,10 @@ import { render } from 'react-dom';
 import Scroller from './ScrollerExample';
 import Expandable from './ExpandableExample';
 import Slideout from './SlideoutExample';
+import Table from './TableExample';
 import 'subschema-css-bootstrap/lib/style.css';
 import example from './exampleDataset.json';
+
 example.forEach(function (v, i) {
     //see if data lines up.
     v.requestId = `${i}-${v.requestId}`;
@@ -13,7 +15,8 @@ example.forEach(function (v, i) {
 const Routes = {
     Scroller,
     Expandable,
-    Slideout
+    Slideout,
+    Table
 };
 
 class App extends PureComponent {
@@ -42,7 +45,8 @@ class App extends PureComponent {
             <p>This is a little example to show how it would work&nbsp;
                 <a href='#Scroller'>Scroller</a>
                 | <a href='#Expandable'>Expandable</a> |
-                <a href='#Slideout'>Slideout</a>
+                <a href='#Slideout'>Slideout</a> |
+                <a href='#Table'>Table</a>
             </p>
             <Example/>
         </div>

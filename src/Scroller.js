@@ -3,21 +3,20 @@ import { viewport, scroller, container, sizer } from './Scroller.stylm';
 import {
     any, number, func, string, oneOfType, array, object, oneOf,
 } from 'prop-types';
-import { findDOMNode } from 'react-dom';
-import { numOrFunc, result, indexOf, EMPTY_ARRAY } from './util';
+import { numberOrFunc, result, ignoreKeys, EMPTY_ARRAY, classes } from './util';
 
 const propTypes    = {
     //What to render item
     renderItem: func.isRequired,
     //Total number of rows
-    rowCount  : numOrFunc.isRequired,
+    rowCount  : numberOrFunc.isRequired,
     //Fetch row data
     rowData   : func.isRequired,
     //Fetch row height
-    rowHeight : numOrFunc.isRequired,
+    rowHeight : numberOrFunc.isRequired,
 
     //height of container
-    height: numOrFunc.isRequired,
+    height: numberOrFunc.isRequired,
 
     //style to be applied to root component
     style    : object,
@@ -25,11 +24,11 @@ const propTypes    = {
     className: string,
 
     //Where to initialize table at
-    scrollTo            : numOrFunc,
+    scrollTo            : numberOrFunc,
     //If defined when scrolling these blanks will be used
     renderBlank         : func,
     //Height of the blank
-    renderBlankRowHeight: numOrFunc,
+    renderBlankRowHeight: numberOrFunc,
     //hash is a way to trigger a change when the underlying
     //data has changed but none of the parameters we care about
     //change
@@ -37,14 +36,19 @@ const propTypes    = {
     //
     onScrollToChanged   : func,
     //Controls how much time to use when scrolling
-    scrollDelay         : numOrFunc,
+    scrollDelay         : numberOrFunc,
     //How many extra items to request before render for better scrolling
-    bufferSize          : numOrFunc,
+    bufferSize          : numberOrFunc,
     //When the event fires, returning false will cancel the scroll
     onScrollContainer   : func,
     //Choose between top and translate, chrome sticky has a bug with translate
     //but translate renders a little faster.  So... pick your poison
     viewPort            : oneOf(['top', 'translate']),
+    //styling classes
+    scrollerClassName   : string,
+    sizerClassName      : string,
+    viewportClassName   : string,
+    renderHeader        : func
 };
 const defaultProps = {
     scrollTo  : 0,
@@ -57,37 +61,21 @@ const defaultProps = {
         data    : EMPTY_ARRAY
     },
     viewPort  : 'top',
-    translateViewPort(top){
+    translateViewPort(top) {
         return {
             transform: `translate3d(0,${top}px,0)`
         }
     },
-    topViewPort(top){
+    topViewPort(top) {
         return {
             top
         }
     }
 };
 
-const ignoreKeys = [...Object.keys(propTypes), ...Object.keys(defaultProps)]
-    .reduce(function (ret, key) {
-        if (indexOf(ret, key) == -1) {
-            ret.push(key);
-        }
-        return ret;
-    }, []);
 
-const ignore = (obj) => {
-    if (!obj) {
-        return obj;
-    }
-    return Object.keys(obj).reduce(function (ret, key) {
-        if (indexOf(ignoreKeys, key) == -1) {
-            ret[key] = obj[key];
-        }
-        return ret;
-    }, {});
-};
+const ignore = ignoreKeys(propTypes, defaultProps);
+
 export default class Scroller extends PureComponent {
     static propTypes    = propTypes;
     static defaultProps = defaultProps;
@@ -182,6 +170,14 @@ export default class Scroller extends PureComponent {
     innerOffsetNode = (node) => this._innerOffsetNode = node;
 
     _fetchPage(rowIndex, rowCount) {
+        const page      = this.state.page;
+        const pageFirst = page.rowIndex;
+        const pageLast  = pageFirst + page.data.length;
+        if (rowIndex >= pageFirst && (rowIndex + rowCount) < pageLast) {
+            //already in buffer.
+            return;
+        }
+
         const bufferSize = result(this.props.bufferSize, rowIndex, rowCount);
 
         let newRowIndex = bufferSize === 0 ? rowIndex : Math.max(
@@ -341,23 +337,25 @@ export default class Scroller extends PureComponent {
 
 
     render() {
-        const { props: { height, width, className }, state: { totalHeight, offsetHeight = 0 } } = this;
+        const { props: { height, width, children, renderHeader, className, scrollerClassName, viewportClassName, sizerClassName }, state: { totalHeight, offsetHeight = 0 } } = this;
 
         const viewPortStyle = this.props[`${this.props.viewPort}ViewPort`](
             offsetHeight);
-        return (<div className={`${container} ${className}`}
-                     style={{ ...this.props.style, height, width }}>
-
-            <div className={scroller || ''} onScroll={this.handleScroll}
-                 ref={this.innerOffsetNode}
-                 style={{ height, width, maxWidth: width }}>
-                <div className={sizer}
+        return (<div className={classes(container, className)}
+                     style={{ ...this.props.style }}>
+            {children}
+            <div className={classes(scroller, scrollerClassName)}
+                 style={{ height, width }}
+                 onScroll={this.handleScroll}
+                 ref={this.innerOffsetNode}>
+                <div className={classes(sizer, sizerClassName)}
                      style={{
                          height: totalHeight,
                          right : 0
                      }}>
                 </div>
-                <div className={viewport || ''} style={viewPortStyle}>
+                <div className={classes(viewport, viewportClassName)}
+                     style={viewPortStyle}>
                     {this.renderItems()}
                 </div>
             </div>

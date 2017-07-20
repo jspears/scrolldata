@@ -1,0 +1,30 @@
+//.bh-icons really needs a :before but this fixes it for this case.
+.icon:before
+    content '↓'
+    font-family 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif
+    display inline-block
+    will-change transform, opacity
+    transition transform .3s ease, opacity .2s ease
+    transform rotate(0)
+    opacity .01
+    height 16px
+    width 16px
+
+//just a marker
+.ASC:before
+    @extend .icon:before
+    transform rotate(0)
+
+.DESC:before
+    @extend .icon:before
+    transform rotate(180deg)
+    opacity .99
+
+:hover > .ASC:before, :hover > .DESC:before, :hover > .icon:before
+    opacity .50
+
+.col-unsorted:hover .icon:before,
+.col-unsorted:hover ~ .col-sorted .icon:before,
+.col-sorted ~ .col-unsorted:hover ~ .col-unsorted:hover .icon:before
+    opacity .50
+

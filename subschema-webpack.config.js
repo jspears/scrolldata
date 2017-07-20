@@ -12,11 +12,7 @@ module.exports = function(options, webpack){
                     sourceMap     : true,
                     modules       : true,
                     camelCase     : true,
-                    localIdentName: '[name]__[local]',
-                    alias         : {
-                        './fonts': project(
-                            'node_modules/bh-ui-styles/fonts')
-                    }
+                    localIdentName: '[name]__[local]'
                 }
             }, {
                 loader : 'stylus-loader',
@@ -26,8 +22,6 @@ module.exports = function(options, webpack){
                     preferPathResolver: 'webpack',
                     souceMap          : true,
                     paths             : [
-                        project('node_modules/bh-ui-styles/stylus'),
-                        project('node_modules/bh-ui-styles'),
                         project('node_modules')
                     ],
                     compress          : false,

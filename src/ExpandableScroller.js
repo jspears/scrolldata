@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { oneOfType, func, bool, node, arrayOf, number } from 'prop-types';
 import Scroller from './Scroller';
 import {
-    EMPTY_ARRAY, toggle, numOrFunc, copyWithout, result, stop, indexOf
+    EMPTY_ARRAY, toggle, numberOrFunc, copyWithout, result, stop, indexOf
 } from './util';
 
 export const expanded = oneOfType([arrayOf(number), func]);
@@ -48,7 +48,7 @@ export default class ExpandableScroller extends PureComponent {
         // RowIndexes.
         expanded,
         //How tall to make expanded item.  A function will receive the rowIndex
-        expandedHeight: numOrFunc.isRequired,
+        expandedHeight: numberOrFunc.isRequired,
     };
     static defaultProps = {
         ...Scroller.defaultProps,

@@ -1,0 +1,62 @@
+.cell-headers
+    display flex
+    margin-bottom 15px
+    flex-direction row
+    width 100%
+
+.cell-header
+    min-height 20px
+    display flex
+    justify-content center
+    align-items center
+    color #9e9e9e
+    font-weight 500
+    cursor pointer
+    border 1px solid rebeccapurple
+
+.status
+    padding 0
+
+
+.row
+    display flex
+    position relative
+    border-top 1px solid rgba(0, 0, 0, 0.12)
+    width 100%
+
+.container
+    box-sizing border-box
+    *
+        box-sizing border-box
+
+.cell
+    display inline-flex
+    align-self stretch
+    justify-content center
+    align-content center
+    text-overflow fade clip
+    border 1px solid green
+
+.blank
+    @extend .cell
+    > div
+        background #f6f7f8
+        background linear-gradient(to right, #eeeeee 8%, #f6f7f8 18%, #eeeeee 33%)
+        height 1rem
+        margin 10px
+        width 100%
+        align-self: center;
+
+.scroll-rows
+    overflow-y: visible;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+.scroll-list
+    position: relative;
+    overflow: auto;
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.2), 0 1px 5px 0 rgba(0,0,0,0.12);
+    float: left;
+    background: #fff;
+    width: 100%

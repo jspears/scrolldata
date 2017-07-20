@@ -1,0 +1,80 @@
+
+.container
+    display flex
+    width 100%
+    box-sizing border-box
+
+.handle-base
+    cursor col-resize
+    display inline-block
+    position absolute
+    width 5px
+    right 0
+    top 50%
+    height 80%
+    z-index 5
+    transform translateY(-50%)
+    border 0
+    border-radius 1px
+
+.cell-headers
+    position relative
+    display flex
+    padding 0px 30px 0px 0px
+    margin-bottom 15px
+
+    i
+        font-size 1.6rem
+
+.cell-header-base
+    box-sizing border-box
+    min-height 20px
+    display flex
+    padding 15px 5px 10px 5px
+    align-items center
+    font-weight 500
+    cursor pointer
+    position relative
+    border 1px solid rebeccapurple
+
+.cell-column-border-right-base
+    border-right 1px solid;
+
+.cell-column-border-left-base
+    border-left 1px solid
+
+.cell-column-border-right-pad
+    padding-right 10px
+
+.cell-column-border-left-pad
+    padding-left 10px
+
+.cell-action-spacer
+    min-width 200px
+    max-width 200px
+
+.row-checkbox
+    min-width 40px
+    font-size 2rem
+    justify-content center
+
+    i
+        font-size 2rem
+
+:hover > .handle
+    opacity .99
+
+.handle:active::before {
+    content: ' ';
+    position: absolute;
+    height: 100000px;
+    display: inline-block;
+    border-right: 1px solid blue;
+    width: 1px;
+    left: 1px;
+    top: 20px;
+}
+
+.row-status
+    padding 0 5px 0 0
+

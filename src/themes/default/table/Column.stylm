@@ -1,0 +1,23 @@
+@import '../../../table/Column.styl'
+@import '../palette.styl'
+
+
+.handle
+    @extend .handle-base
+    background-color $md-grey-500
+    opacity .01
+    transition opacity .3s ease
+    will-change opacity
+
+
+.cell-header
+    @extend .cell-header-base
+    color $md-grey-500
+
+.cell-column-border-right
+    @extend .cell-column-border-right-base
+    border-color $dividerColor
+
+.cell-column-border-left
+    @extend .cell-column-border-left-base
+    border-color $dividerColor
