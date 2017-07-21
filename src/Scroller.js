@@ -48,7 +48,8 @@ const propTypes    = {
     scrollerClassName   : string,
     sizerClassName      : string,
     viewportClassName   : string,
-    renderHeader        : func
+    renderHeader        : func,
+    cacheAge            : number
 };
 const defaultProps = {
     scrollTo  : 0,
@@ -102,7 +103,9 @@ export default class Scroller extends PureComponent {
                   rowCount, scrollTo, renderItem,
                   renderBlank, rowData, rowHeight,
                   height,
-                  hash
+                  hash,
+                  cacheAge,
+                  page
               } = this.props;
         if (!(rowCount === props.rowCount &&
               renderBlank === props.renderBlank &&
@@ -111,9 +114,12 @@ export default class Scroller extends PureComponent {
               rowData === props.rowData &&
               renderItem === props.renderItem &&
               hash === props.hash &&
-              scrollTo === props.scrollTo
-
+              scrollTo === props.scrollTo &&
+              cacheAge === props.cacheAge
             )) {
+            //direct manip so that state will be updated later... plenty of
+            //chance for a setState to happen
+            this.state.page = page;
             this.scrollTo(props.scrollTo, props);
         }
     }

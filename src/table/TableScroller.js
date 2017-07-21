@@ -78,12 +78,15 @@ export default class TableScroller extends PureComponent {
                 state.selectedHash = Date.now();
             }
         }
+        this.setState(state);
     }
 
 
-    handleSort = (sortColumn, sortDirection) => {
-        if (fire(this.props.onSort, sortColumn, sortDirection)) {
-            this.setState({ sortColumn, sortDirection });
+    handleSort = (sortIndex, sortDirection) => {
+        sortDirection = sortDirection === 'ASC' ? 'DESC' : 'ASC';
+        if (fire(this.props.onSort, this.state.columns[sortIndex],
+                sortDirection)) {
+            this.setState({ sortIndex, sortDirection, hash: Date.now() });
         }
     };
 
@@ -263,6 +266,11 @@ export default class TableScroller extends PureComponent {
         return 'INDETERMINATE';
     }
 
+    rowData = (rowIndex, count) => result(this.props.rowData, rowIndex, count, {
+        sortColumn   : this.state.columns[this.state.sortIndex],
+        sortDirection: this.state.sortDirection
+    });
+
     render() {
         const UseScroller = this.props.expandedHeight != null
             ? ExpandableScroller
@@ -289,6 +297,15 @@ export default class TableScroller extends PureComponent {
                     state    : this.selectState()
                 }
             }
+            if (col.sortable !== false) {
+                col = {
+                    ...col,
+                    sortable     : true,
+                    sortDirection: (this.state.sortIndex === i
+                        ? this.props.sortDirection : null)
+                }
+            }
+
             rowWidth += col.width;
 
             cols[c++] = <Column {...col}
@@ -306,6 +323,7 @@ export default class TableScroller extends PureComponent {
                          height={this.props.height}
                          className={tc('scrollRows')}
                          scrollerClassName={tc('scrollList')}
+                         rowData={this.rowData}
                          renderItem={this.renderItem}
                          renderBlank={this.renderBlank}>
                 <div key='header-container'

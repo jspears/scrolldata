@@ -4,7 +4,7 @@ import {
 } from 'prop-types';
 
 import {
-    result, clamp, stop, execLoop as removeListener, listen, classes
+    result, clamp, stop, execLoop as removeListener, listen, classes, fire
 } from '../util';
 
 import { theme, themeClass } from '../themes'
@@ -160,6 +160,11 @@ export default class Column extends PureComponent {
             type);
     };
 
+    handleSort = (e) => {
+        fire(this.props.onSort, this.props.columnIndex,
+            this.props.sortDirection)
+    };
+
     render() {
         const {
                   props: {
@@ -171,13 +176,13 @@ export default class Column extends PureComponent {
                       onDrageEnd,
                       onSort,
                       onColumnConfigChange,
+                      sortDirection,
                       handle,
                       parent,
                       label,
                       resizable,
                       sortable,
                       hidden,
-                      sorted,
                       width,
                       minWidth,
                       maxWidth,
@@ -197,7 +202,8 @@ export default class Column extends PureComponent {
         return (
             <div ref={this.refColumn}
                  {...props}
-                 className={classes(tc('cellHeader'),className)}
+                 className={classes(tc('cellHeader'), className)}
+                 onClick={sortable && this.handleSort}
                  style={{
                      ...style,
                      minWidth: this.state.width,
@@ -209,7 +215,7 @@ export default class Column extends PureComponent {
                     columnKey={columnKey}
                     columnIndex={columnIndex}
                     sortDirection={this.props.sortDirection}
-                    onSort={onSort}/>}
+                />}
                 {resizable !== false && <span key={`drag-handle-${columnKey}`}
                                               className={tc('handle',
                                                   sortableClass)}
