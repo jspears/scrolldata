@@ -13,6 +13,7 @@ import { theme, themeClass } from '../themes'
 import IndeterminateCheckbox from './IndeterminateCheckbox';
 import Cell from './Cell';
 import Row from './Row';
+import Blank from './Blank';
 
 export const tablePropTypes = {
     rowClassName    : string,
@@ -53,6 +54,7 @@ export default class TableScroller extends PureComponent {
         renderCell      : Cell,
         headerRender    : ColumnDefault,
         renderSelectable: Selectable,
+        renderBlankCell : Blank,
         selectState     : 'INDETERMINATE',
         selected        : []
     };
@@ -162,29 +164,18 @@ export default class TableScroller extends PureComponent {
     };
 
 
-    renderBlankCell({ width, height, className }) {
-        return (<div style={{ minWidth: width, maxWidth: width, height }}
-                     className={className}>
-            <div/>
-        </div>);
-    }
-
     renderBlanks() {
-        const ret            = [];
-        const { columns }    = this.state;
-        const blankClassName = tc('blank');
-
+        const ret         = [];
+        const { columns } = this.state;
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
-            const { columnKey, width = 100, selectable, height, hidden, renderBlank = this.renderBlankCell } = columns[i];
+            const { columnKey, width = 100, selectable, height, hidden, renderBlank = this.props.renderBlankCell } = columns[i];
             if (hidden) {
                 continue;
             }
-
             const Blank = renderBlank;
             ret[c++]    = <Blank key={`cell-blank-${c}`}
-                                 width={selectable ? 20 : width}
-                                 height={height}
-                                 className={blankClassName}/>
+                                 width={selectable ? 30 : width}
+                                 height={height}/>
         }
 
 
@@ -210,7 +201,7 @@ export default class TableScroller extends PureComponent {
             if (config.selectable) {
                 config = {
                     ...config,
-                    width     : 20,
+                    width     : 30,
                     renderCell: this.props.renderSelectable,
                     data      : rowIndex,
                     onSelect  : this.handleRowSelection,
@@ -251,7 +242,7 @@ export default class TableScroller extends PureComponent {
         if (this._blanks) {
             return this._blanks
         }
-        return (this._blanks = <div className={tc('row')}
+        return (this._blanks = <div className={tc('blank-row')}
                                     style={{ height: row.rowHeight }}>
             {this.renderBlanks(row)}
         </div>);
@@ -301,7 +292,7 @@ export default class TableScroller extends PureComponent {
             if (col.selectable === true) {
                 col = {
                     ...col,
-                    width    : 20,
+                    width    : 30,
                     sortable : false,
                     resizable: false,
                     label    : this.props.renderSelectable,

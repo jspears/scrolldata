@@ -10,3 +10,6 @@
     min-height 50px
 
 
+.expandable
+    border-bottom 1px solid rgba(0, 0, 0, 0.12)
+    min-height 50px

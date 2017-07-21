@@ -160,10 +160,11 @@ export default class Column extends PureComponent {
             type);
     };
 
-    handleSort = stop((e) => {
-        fire(this.props.onSort, this.props.columnIndex,
-            this.props.sortDirection)
-    });
+    handleSort = stop(() => fire(this.props.onSort, this.props.columnIndex,
+        this.props.sortDirection));
+
+    //prevent propagation so that columns don't sort on resize.
+    cancelClick = stop();
 
     render() {
         const {
@@ -217,6 +218,7 @@ export default class Column extends PureComponent {
                 {resizable !== false && <span key={`drag-handle-${columnKey}`}
                                               className={tc('handle',
                                                   sortableClass)}
+                                              onClick={this.cancelClick}
                                               onMouseDown={this.handleMouseDown}
                                               {...handle}/>}
             </div>
