@@ -1,8 +1,15 @@
 import { oneOfType, number, func } from 'prop-types';
+import { Component } from 'react';
 
-export const result       = (val, ...args) => typeof val === 'function' ? val(
-    ...args)
-    : val;
+export const result = (val, ...args) => {
+    if (val && val.prototype instanceof Component) {
+        return val;
+    }
+    return typeof val === 'function' ? val(
+        ...args)
+        : val;
+};
+
 export const numberOrFunc = oneOfType([number, func]);
 export const EMPTY_ARRAY  = Object.freeze([]);
 export const indexOf      = Function.call.bind(Array.prototype.indexOf);
@@ -65,3 +72,23 @@ export const ignoreKeys = (...args) => {
     };
 }
 export const toString   = (val) => val == null ? '' : String(val);
+
+
+export const hashCode          = (val) => {
+    let hash = 0;
+    if (val.length == 0) {
+        return hash;
+    }
+    for (let i = 0, l = val.length; i < l; i++) {
+        const char = this.charCodeAt(i);
+        hash       = ((hash << 5) - hash) + char;
+        hash       = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+}
+/**
+ * If the function exists call it if it returns false return false,
+ * otherwise return true
+ */
+
+export const fire = (fn, ...args) => fn ? fn(...args) !== false : true;

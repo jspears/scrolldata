@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function toString(val) {
     if (typeof val === 'function') {
@@ -6,13 +7,14 @@ function toString(val) {
     }
     return String(val);
 }
+
 const Checkbox = ({ label, checked, value, name, ...rest }) => {
     return (<div className="checkbox">
         <label>
             <input type="checkbox" checked={checked} {...rest}/>{label}
         </label>
     </div>);
-}
+};
 
 export default ({ label, type = 'range', min = 0, value, name, ...rest }) => {
     if (type == 'checkbox') {
@@ -42,3 +44,34 @@ export default ({ label, type = 'range', min = 0, value, name, ...rest }) => {
         </div>
     </div>)
 };
+
+export class Slider extends React.Component {
+    static propTypes = {
+        min    : PropTypes.number,
+        max    : PropTypes.number,
+        path   : PropTypes.string,
+        htmlFor: PropTypes.string,
+
+    };
+
+    render() {
+        return <div className='input-group'>
+            <div className="input-group-addon">
+                <input
+                    className='addon'
+                    value={this.props.value}
+                    onChange={this.props.onChange}
+                />
+            </div>
+            <span className={`form-input-range`}>
+               <input type='range'
+                      className='form-control'
+                      id={this.props.htmlFor}
+                      min={this.props.min}
+                      max={this.props.max}
+                      value={this.props.value}
+                      onChange={this.props.onChange}/>
+        </span>
+        </div>
+    }
+}

@@ -4,33 +4,26 @@ import {
 } from 'prop-types';
 
 import {
-    result, clamp, stop, execLoop as removeListener, listen, ignoreKeys
+    result, clamp, stop, execLoop as removeListener, listen, classes
 } from '../util';
 
-import { theme, themeClass as tc } from '../themes'
+import { theme, themeClass } from '../themes'
 import SortIndicator from './SortIndicator';
 
-const drag                   = (columnKey, data, type) => {
+const drag              = (columnKey, data, type) => {
 
 };
-const stringOrFunc           = oneOfType([string, func]);
-const numberOrFunc           = oneOfType([number, func]);
-const sortDirection          = oneOf(['ASC', 'DESC']);
-const filter                 = oneOfType([string, shape({
+const stringOrFunc      = oneOfType([string, func]);
+const stringFuncOrFalse = oneOfType([string, func, oneOf([false])]);
+const numberOrFunc      = oneOfType([number, func]);
+const sortDirection     = oneOf(['ASC', 'DESC']);
+const filter            = oneOfType([string, shape({
     columnKey  : string,
     columnIndex: number,
     sorted     : string,
     filter     : string,
 })]);
-const ignore                 = ignoreKeys(
-    ["height", "containerThemeClassName", "handleThemeClassName",
-        "cellHeadersThemeClassName", "cellHeaderThemeClassName",
-        "cellColumnBorderRightThemeClassName", "cellColumnBorderLeftThemeClassName",
-        "cellColumnBorderRightPadThemeClassName",
-        "cellColumnBorderLeftPadThemeClassName",
-        "cellActionSpacerThemeClassName",
-        "rowCheckboxThemeClassName",
-        "rowStatusThemeClassName"]);
+
 export const columnPropTypes = {
     editable            : bool,
     reorderable         : bool,
@@ -41,7 +34,7 @@ export const columnPropTypes = {
     sorted              : bool,
     columnKey           : string,
     columnIndex         : number,
-    label               : stringOrFunc,
+    label               : stringFuncOrFalse,
     formatter           : stringOrFunc,
     headerRender        : func,
     width               : numberOrFunc,
@@ -55,7 +48,7 @@ export const columnPropTypes = {
 
 };
 
-class Column extends PureComponent {
+export default class Column extends PureComponent {
 
     static propTypes = columnPropTypes;
 
@@ -133,16 +126,16 @@ class Column extends PureComponent {
         this.listeners();
     });
 
-    handleDrag(columnKey, value) {
-        if (this.props.onDrag(columnKey, value) !== false) {
+    handleDrag(columnIndex, value) {
+        if (this.props.onDrag(columnIndex, value) !== false) {
             this.setState(value);
         }
     };
 
 
-    handleDragEnd(columnKey, value) {
-        if (this.props.onDragEnd(columnKey, value) !== false) {
-            this.props.onColumnConfigChange(columnKey, value);
+    handleDragEnd(columnIndex, value) {
+        if (this.props.onDragEnd(columnIndex, value) !== false) {
+            this.props.onColumnConfigChange(columnIndex, value);
         }
     };
 
@@ -151,7 +144,7 @@ class Column extends PureComponent {
                   startWidth,
                   startX,
                   props: {
-                      columnKey
+                      columnIndex,
                   },
                   state: {
                       minWidth,
@@ -159,7 +152,7 @@ class Column extends PureComponent {
                   }
               } = this;
 
-        handler.call(this, columnKey,
+        handler.call(this, columnIndex,
             {
                 width: clamp((startWidth - startX) + clientX, minWidth,
                     maxWidth)
@@ -172,6 +165,7 @@ class Column extends PureComponent {
                   props: {
                       style = {},
                       columnKey,
+                      columnIndex,
                       className,
                       onDragStart,
                       onDrageEnd,
@@ -187,41 +181,42 @@ class Column extends PureComponent {
                       width,
                       minWidth,
                       maxWidth,
+                      height,
+                      selectable,
+                      state,
                       ...props
                   },
                   handleMouseDown,
-                  state
               } = this;
 
-        let content = [result(label, this.props)];
         let sortableClass;
         if (sortable !== false) {
-            content.push(<SortIndicator key={`sort-indicator-${columnKey}`}
-                                        columnKey={columnKey}
-                                        sortDirection={this.props.sortDirection}
-                                        onSort={onSort}/>);
             sortableClass = 'sortable'
         }
-        if (resizable !== false) {
-            content.push(<span key={`drag-handle-${columnKey}`}
-                               className={tc(this.props, 'handle',
-                                   sortableClass)}
-                               onMouseDown={this.handleMouseDown}
-                               {...handle}/>);
 
-        }
         return (
             <div ref={this.refColumn}
-                 {...ignore(props)}
-                 className={tc(this.props, 'cellHeader')}
-                 data-column-key={columnKey}
+                 {...props}
+                 className={classes(tc('cellHeader'),className)}
                  style={{
                      ...style,
-                     minWidth: state.width,
-                     maxWidth: state.width
-                 }}>{content}</div>
+                     minWidth: this.state.width,
+                     maxWidth: this.state.width
+                 }}>
+                {label !== false && result(label || columnKey, this.props)}
+                {sortable !== false && <SortIndicator
+                    key={`sort-indicator-${columnKey}`}
+                    columnKey={columnKey}
+                    columnIndex={columnIndex}
+                    sortDirection={this.props.sortDirection}
+                    onSort={onSort}/>}
+                {resizable !== false && <span key={`drag-handle-${columnKey}`}
+                                              className={tc('handle',
+                                                  sortableClass)}
+                                              onMouseDown={this.handleMouseDown}
+                                              {...handle}/>}
+            </div>
         );
     }
 }
-
-export default theme(Column);
+const tc = themeClass(Column);

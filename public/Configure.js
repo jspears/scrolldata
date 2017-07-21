@@ -26,7 +26,7 @@ export default class Configure extends React.PureComponent {
     render() {
         const { children, data: { length }, ...props } = this.props;
 
-        return <form className='inline-form'>
+        return <form className='inline-form configure'>
             <Slider name='scrollTo' label='Scroll To' value={props}
                     max={length}
                     onChange={this.handleNumChange}/>

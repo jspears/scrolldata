@@ -1,50 +1,9 @@
 import React, { Component, PureComponent } from 'react';
 import TableScroller from '../src/table/TableScroller';
 import style from './App.stylm';
-import Configure from './Configure';
 import example from './exampleDataset.json';
-
-const Render = ({
-                    rowIndex, rowHeight,
-                    onMenuItemClick,
-                    data: {
-                        requestId,
-                        contentPartnerId,
-                        fulfillmentPartner,
-                        movieId
-                    }
-                }) => (<div className={style.row} style={{ height: rowHeight }}>
-    <div className={`${style.cell} ${style.index}`}>{rowIndex}</div>
-    <div className={style.cell}>{requestId}</div>
-    <div className={style.cell}>{contentPartnerId}</div>
-    <div className={style.cell}>{fulfillmentPartner}</div>
-    <div className={style.cell}>{movieId}</div>
-    <div className={style.hoverMenu}>
-        <i className='glyphicon glyphicon-asterisk'
-           data-row-index={rowIndex}
-           data-action='asterisk' onClick={onMenuItemClick}/>
-        <i className='glyphicon glyphicon-facetime-video'
-           data-row-index={rowIndex}
-           data-action='video' onClick={onMenuItemClick}/>
-        <i className='glyphicon glyphicon-cloud-download'
-           data-row-index={rowIndex}
-           data-action='download' onClick={onMenuItemClick}/>
-        <i className='glyphicon glyphicon-option-vertical'
-           data-row-index={rowIndex}
-           data-action='menu' onClick={onMenuItemClick}>
-        </i>
-        <div className="dropdown">
-            <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li role="separator" className="divider"></li>
-                <li><a href="#">Separated link</a></li>
-            </ul>
-        </div>
-    </div>
-</div>);
-
+import PropTypes from 'react';
+import Configure from './Configure';
 
 const Blank = ({ rowHeight }) => (
     <div className={style.row} style={{ height: rowHeight }}>
@@ -65,7 +24,73 @@ export default class ScrollerExample extends Component {
         width     : 900,
         fakeFetch : 0,
         bufferSize: 0,
-        rowCount  : example.length
+        rowCount  : example.length,
+        columns   : [
+            {
+                "columnKey" : "requestId",
+                "selectable": true,
+            },
+
+            {
+                "columnKey": "requestId",
+                "width"    : 200
+            }, {
+                "columnKey": "packageId", "width": 200
+            }, {
+                "columnKey": "contentPartnerId",
+                "width"    : 200
+            }, {
+                "columnKey": "contentPartner",
+                "width"    : 200
+            }, {
+                "columnKey": "fulfillmentPartnerId",
+                "width"    : 200
+            }, { "columnKey": "fulfillmentPartner", "width": 200 }, {
+                "columnKey": "movieId",
+                "width"    : 200
+            }, { "columnKey": "movieType", "width": 200 }, {
+                "columnKey": "movieTitle",
+                "width"    : 200
+            }, { "columnKey": "releaseYear", "width": 200 }, {
+                "columnKey": "showName",
+                "width"    : 200
+            }, { "columnKey": "seasonName", "width": 200 }, {
+                "columnKey": "episodeName",
+                "width"    : 200
+            }, { "columnKey": "original", "width": 200 }, {
+                "columnKey": "originalLanguage",
+                "width"    : 200
+            }, { "columnKey": "countries", "width": 200 }, {
+                "columnKey": "deliveredOn",
+                "width"    : 200
+            }, { "columnKey": "lastUpdated", "width": 200 }, {
+                "columnKey": "priority",
+                "width"    : 200
+            }, { "columnKey": "requestType", "width": 200 }, {
+                "columnKey": "requestStatus",
+                "width"    : 200
+            }, { "columnKey": "sourceType", "width": 200 }, {
+                "columnKey": "materialStatus",
+                "width"    : 200
+            }, { "columnKey": "sourceLanguage", "width": 200 }, {
+                "columnKey": "packageTags",
+                "width"    : 200
+            }, { "columnKey": "billing", "width": 200 }, {
+                "columnKey": "deliveryScope",
+                "width"    : 200
+            }, { "columnKey": "avs", "width": 200 }, {
+                "columnKey": "contractId",
+                "width"    : 200
+            }, { "columnKey": "windowStartDate", "width": 200 }, {
+                "columnKey": "transferId",
+                "width"    : 200
+            }, { "columnKey": "qcStatus", "width": 200 }, {
+                "columnKey": "qcDueDate",
+                "width"    : 200
+            }, { "columnKey": "bucketData", "width": 200 }, {
+                "columnKey": "issues",
+                "width"    : 200
+            }]
     };
 
     handleState = (state) => this.setState(state);
@@ -88,10 +113,10 @@ export default class ScrollerExample extends Component {
                        data={example} {...this.state}/>
             <h3>Virtualized Table</h3>
             <TableScroller className={style.container}
-                      rowData={this.rowData}
-                      onScrollToChanged={this.handleScrollTo}
-                      onMenuItemClick={this.handleMenuClick}
-                      {...props}/>
+                           rowData={this.rowData}
+                           onScrollToChanged={this.handleScrollTo}
+                           onMenuItemClick={this.handleMenuClick}
+                           {...props}/>
 
         </div>
     }

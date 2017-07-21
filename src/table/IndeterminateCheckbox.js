@@ -1,56 +1,53 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { theme } from '../themes';
-import { classes } from '../util';
-
+import { themeClass } from '../themes';
 /**
  * This is an indeterminate checkbox.  It allows for the third Boolean, null;
  *
  */
-export class IndeterminateCheckbox extends PureComponent {
+
+export default class IndeterminateCheckbox extends PureComponent {
     static propTypes = {
         state: PropTypes.oneOf(
-            ['checked', 'indeterminate', 'unchecked', true, false, null]),
+            ['checked', 'INDETERMINATE', 'ALL', 'NONE', 'unchecked', true, false, null]),
         data : PropTypes.any
     };
 
-    static defaultProps = {
-        checkedClass      : 'bh-check_box',
-        uncheckedClass    : 'bh-check_box_outline_blank',
-        indeterminateClass: 'bh-indeterminate_check_box',
-        iconClass         : 'bhicons'
-    };
 
     handleClick = (e) => {
-        this.props.onSelect(this.props.data || this.props.state, false, e);
+        this.props.onSelect(
+            this.props.data == null ? this.props.state : this.props.data,
+            false, e);
     };
+
 
     render() {
         {
-            let className = this.props.uncheckedClass;
-            switch (this.props.state) {
-                case true:
-                case  'checked':
-                    className = classes(this.props.checkedThemeClassName,
-                        this.props.checkedClass);
+            let state;
+            switch (String(this.props.state).toLowerCase()) {
+                case 'true':
+                case 'checked':
+                case 'all':
+                    state = 'checked';
                     break;
-                case false:
+                case 'false':
+                case 'none':
                 case 'unchecked':
-                    className = classes(this.props.uncheckedThemeClassName,
-                        this.props.uncheckedClass);
+                    state = 'unchecked';
                     break;
-                case null:
+                case 'null':
+                case 'undefined':
                 case 'indeterminate':
-                    className = classes(this.props.indeterminateThemeClassName,
-                        this.props.indeterminateClass);
+                    state = 'indeterminate';
                     break;
+
             }
+
             return <i onClick={this.handleClick}
-                      className={classes(this.props.iconThemeClassName,
-                          this.props.iconClass, className)}
+                      data-data={this.props.data}
+                      className={tc('icon', state, this.props.className)}
             />
         }
     }
 }
-
-export default theme(IndeterminateCheckbox);
+const tc = themeClass(IndeterminateCheckbox);

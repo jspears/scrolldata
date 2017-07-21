@@ -29,7 +29,7 @@ describe('Table', function () {
                 background: (rowIndex % 2 ? 'red' : 'green')
             }}/>
     };
-    it.only('should render a table', function () {
+    it('should render a table', function () {
 
         into(<div style={{ height: 600, width: 600 }}><TableScroller
             height={500}

@@ -1,10 +1,12 @@
 import React from 'react';
-import { theme, themeClass as tc } from '../themes';
+import { theme, themeClass } from '../themes';
 
 
-export const SortIndicator = (props) => (
+const SortIndicator = (props) => (
     <i aria-label={`Sort ${props.sortDirection || 'ASC'}`}
-       className={tc(props, 'icon', props.sortDirection)}/>);
+       className={tc('icon', props.sortDirection)}/>);
 
 
-export default theme(SortIndicator);
+const tc = themeClass(SortIndicator);
+
+export default SortIndicator;

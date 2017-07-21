@@ -30,5 +30,8 @@ module.exports = function(options, webpack){
                 },
             }]
     });
+    if (options.useHot){
+        webpack.plugins.unshift(new options.webpack.NamedModulesPlugin())
+    }
     return webpack;
 }

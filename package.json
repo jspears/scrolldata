@@ -13,7 +13,6 @@
   "devDependencies": {
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "subschema": "^2.2.9",
     "subschema-dev-support": "^2.2.9"
   },
   "peerDependencies": {

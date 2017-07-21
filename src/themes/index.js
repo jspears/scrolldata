@@ -1,38 +1,9 @@
 import defaultTheme from './default';
 
-let useTheme = defaultTheme;
-
-const themeMap      = new Map();
-const POSTFIX_CLASS = 'ClassName';
-const POSTFIX       = 'ThemeClassName';
+let themes = [defaultTheme];
 
 export default function (diffTheme) {
-    if (diffTheme !== useTheme) {
-        useTheme = diffTheme;
-        //If the theme changes, change the default props.
-        for (const [Clazz, current] of themeMap) {
-            if (current !== diffTheme) {
-                theme(Clazz);
-            }
-        }
-    }
-    return useTheme;
-}
-
-export const theme = (Clazz) => {
-
-    const current = useTheme[Clazz.displayName];
-    if (!current) {
-        return Clazz;
-    }
-    Object.keys(current).reduce(function (ret, key) {
-        ret[`${key}ThemeClassName`] = current[key];
-        return ret;
-    }, Clazz.defaultProps || (Clazz.defaultProps = {}));
-
-    themeMap.set(Clazz, useTheme);
-
-    return Clazz
+    themes.unshift(diffTheme);
 }
 
 /**
@@ -44,18 +15,17 @@ export const theme = (Clazz) => {
  * @returns {string}
  */
 
-export const themeClass = (props, ...names) => {
-    const ret = [];
+export const themeClass = ({ displayName }) => (...names) => {
+    const ret         = [];
+    const themeLength = themes.length;
     for (let i = 0, r = 0, l = names.length; i < l; i++) {
-        const name      = names[i];
-        const themeName = `${name}${POSTFIX}`;
-        const className = `${name}${POSTFIX_CLASS}`;
-        if (props[themeName]) {
-            ret[r++] = props[themeName];
-        }
-        if (props[className]) {
-            ret[r++] = props[className];
+        for (let t = 0; t < themeLength; t++) {
+            const current = themes[t][displayName];
+            const name    = names[i];
+            if (current && current[name]) {
+                ret[r++] = current[name];
+            }
         }
     }
     return ret.join(' ');
-}
+};
