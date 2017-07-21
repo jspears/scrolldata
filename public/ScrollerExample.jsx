@@ -1,27 +1,41 @@
 import React, { Component, PureComponent } from 'react';
 import Scroller from '../src/Scroller';
-import style from './App.stylm';
 import Configure from './Configure';
 import example from './exampleDataset.json';
+import tc from './tc';
 
-const Render = ({ rowIndex, rowHeight, data: { requestId, contentPartnerId, fulfillmentPartner, movieId }, }) => {
-
-    return <div className={style.row} style={{ height: rowHeight }}>
-        <div className={`${style.cell} ${style.index}`}>{rowIndex}</div>
-        <div className={style.cell}>{requestId}</div>
-        <div className={style.cell}>{contentPartnerId}</div>
-        <div className={style.cell}>{fulfillmentPartner}</div>
-        <div className={style.cell}>{movieId}</div>
+const Render = ({
+                    rowIndex, rowHeight,
+                    data: {
+                        requestId,
+                        contentPartnerId,
+                        fulfillmentPartner,
+                        movieId
+                    },
+                }) => {
+    const cellClassName = tc('cell');
+    return <div className={tc('row')} style={{ height: rowHeight }}>
+        <div className={tc('cell', 'index')}>{rowIndex}</div>
+        <div className={cellClassName}>{requestId}</div>
+        <div className={cellClassName}>{contentPartnerId}</div>
+        <div className={cellClassName}>{fulfillmentPartner}</div>
+        <div className={cellClassName}>{movieId}</div>
     </div>
 };
 
-const Blank = ({ rowHeight }) => {
-    return <div className={style.row} style={{ height: rowHeight }}>
-        <div className={`${style.blank} ${style.index}`}>&nbsp;</div>
-        <div className={style.blank}>&nbsp;</div>
-        <div className={style.blank}>&nbsp;</div>
-        <div className={style.blank}>&nbsp;</div>
-        <div className={style.blank}>&nbsp;</div>
+const Blank = ({
+                   rowHeight,
+
+               }) => {
+    const rowClassName        = tc('row'),
+          blankClassName      = tc('blank'),
+          blankIndexClassName = tc('blank', 'index');
+    return <div className={rowClassName} style={{ height: rowHeight }}>
+        <div className={blankIndexClassName}>&nbsp;</div>
+        <div className={blankClassName}>&nbsp;</div>
+        <div className={blankClassName}>&nbsp;</div>
+        <div className={blankClassName}>&nbsp;</div>
+        <div className={blankClassName}>&nbsp;</div>
     </div>
 };
 
@@ -46,7 +60,7 @@ export default class ScrollerExample extends Component {
         this.setState({ scrollTo })
     };
 
-    rowData       = (offset, count) => {
+    rowData = (offset, count) => {
         return example.slice(offset, offset + count);
     };
 
@@ -57,7 +71,7 @@ export default class ScrollerExample extends Component {
             <Configure onSetState={this.handleState}
                        data={example} {...this.state}/>
             <h3>Virtualized Scroller</h3>
-            <Scroller className={style.container} renderItem={Render}
+            <Scroller className={tc('container')} renderItem={Render}
                       renderBlank={Blank}
                       rowData={this.rowData}
                       onScrollToChanged={this.handleScrollTo}

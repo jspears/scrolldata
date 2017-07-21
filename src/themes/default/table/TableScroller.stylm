@@ -6,17 +6,3 @@
 .cell
     padding 0 5px
     min-height 50px
-.row
-    border-top 1px solid rgba(0,0,0,0.12)
-
-    i
-        min-height 50px
-
-.row-expanded .row
-    border-bottom 1px solid rgba(0,0,0,0.12)
-    min-height 50px
-
-
-.expandable-row
-    @extends .row
-    cursor pointer

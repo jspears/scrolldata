@@ -4,7 +4,6 @@ import Scroller from './ScrollerExample';
 import Expandable from './ExpandableExample';
 import Slideout from './SlideoutExample';
 import Table from './TableExample';
-import 'subschema-css-bootstrap/lib/style.css';
 import example from './exampleDataset.json';
 import App from './App';
 

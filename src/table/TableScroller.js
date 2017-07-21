@@ -11,6 +11,8 @@ import {
 import ColumnDefault from './Column';
 import { theme, themeClass } from '../themes'
 import IndeterminateCheckbox from './IndeterminateCheckbox';
+import Cell from './Cell';
+import Row from './Row';
 
 export const tablePropTypes = {
     rowClassName    : string,
@@ -28,6 +30,15 @@ export const tablePropTypes = {
 
 const ignore = ignoreKeys(tablePropTypes);
 
+
+const Selectable       = ({ rowIndex, width, state, data, onSelect, className }) => {
+    return <IndeterminateCheckbox rowIndex={rowIndex} state={state}
+                                  data={data}
+                                  onSelect={onSelect}/>
+
+};
+Selectable.displayName = 'Selectable';
+
 export default class TableScroller extends PureComponent {
 
     static propTypes = {
@@ -37,33 +48,13 @@ export default class TableScroller extends PureComponent {
     };
 
     static defaultProps = {
-        columns     : [],
-        rowRender(row) {
-            const { children, className, data, rowHeight, onToggle, isExpanded, expandedContent } = row;
-
-            if (isExpanded) {
-                return <div style={{ height: rowHeight }}
-                            className={tc('row-expanded')}>
-                    <div className={className}
-                         onClick={onToggle}>{children}</div>
-                    <div className={tc('row-expanded-content')}>{result(
-                        expandedContent, row)}</div>
-                </div>
-            }
-
-            return <div style={{ height: rowHeight, }}
-                        className={className}
-                        onClick={onToggle}>{children}</div>;
-        },
-        headerRender: ColumnDefault,
-        renderSelectable({ rowIndex, width, state, data, onSelect, className }) {
-            return <IndeterminateCheckbox rowIndex={rowIndex} state={state}
-                                          data={data}
-                                          onSelect={onSelect}/>
-
-        },
-        selectState : 'INDETERMINATE',
-        selected    : []
+        columns         : [],
+        rowRender       : Row,
+        renderCell      : Cell,
+        headerRender    : ColumnDefault,
+        renderSelectable: Selectable,
+        selectState     : 'INDETERMINATE',
+        selected        : []
     };
 
     state = {
@@ -170,12 +161,6 @@ export default class TableScroller extends PureComponent {
 
     };
 
-    renderCell({ width, height, formatter = toString, data, className = '' }) {
-        return <div style={{ minWidth: width, maxWidth: width, height }}
-                    className={className}>{formatter(
-            data)}</div>
-    }
-
 
     renderBlankCell({ width, height, className }) {
         return (<div style={{ minWidth: width, maxWidth: width, height }}
@@ -195,11 +180,11 @@ export default class TableScroller extends PureComponent {
                 continue;
             }
 
-            const Cell = renderBlank;
-            ret[c++]   = <Cell key={`cell-blank-${c}`}
-                               width={selectable ? 20 : width}
-                               height={height}
-                               className={blankClassName}/>
+            const Blank = renderBlank;
+            ret[c++]    = <Blank key={`cell-blank-${c}`}
+                                 width={selectable ? 20 : width}
+                                 height={height}
+                                 className={blankClassName}/>
         }
 
 
@@ -233,32 +218,32 @@ export default class TableScroller extends PureComponent {
                 }
 
             }
-            const Cell = config.renderCell || this.renderCell;
-            cells[c++] = <Cell {...config}
-                               key={`cell-${c}`}
-                               columnKey={columnKey}
+            const RenderCell = config.renderCell || this.props.renderCell;
+            cells[c++]       = <RenderCell {...config}
+                                           key={`cell-${c}`}
+                                           columnKey={columnKey}
 
-                               rowIndex={rowIndex}
-                               colIndex={i}
-                               height={height}
-                               className={cellClassName}
-                               data={cellData}/>
+                                           rowIndex={rowIndex}
+                                           colIndex={i}
+                                           height={height}
+                                           className={cellClassName}
+                                           data={cellData}/>
         }
 
-        const Row = this.props.rowRender;
-        const cfg = {};
+        const RowRender = this.props.rowRender;
+        const cfg       = {};
         if (this.state.isContainerExpandable) {
             cfg.isExpanded      = row.isExpanded;
             cfg.expandedContent = this.props.expandedContent;
             cfg.onToggle        = row.onToggle;
-            cfg.className       = tc('expandable-row');
+            cfg.className       = 'expandable';
         } else {
-            cfg.className = tc('row');
+            cfg.className = 'row';
         }
-        return <Row  {...cfg}
-                     data={row.data}
-                     rowHeight={row.rowHeight}
-                     rowIndex={row.rowIndex}>{cells}</Row>
+        return <RowRender  {...cfg}
+                           data={row.data}
+                           rowHeight={row.rowHeight}
+                           rowIndex={row.rowIndex}>{cells}</RowRender>
 
     };
 

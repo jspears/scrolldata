@@ -2,9 +2,7 @@ import React, { Component, PureComponent } from 'react';
 import Scroller from '../src/Scroller';
 import Configure from './Configure';
 import example from './exampleDataset.json';
-import { themeClass } from '../src/themes/index'
-
-const tc = themeClass({ displayName: 'App' });
+import tc from './tc';
 
 const Render = ({
                     rowIndex, rowHeight,
@@ -94,7 +92,9 @@ export default class ScrollerExample extends Component {
 
     render() {
         //don't pass in fakeFetch
-        const { fakeFetch, scrollerClassName = tc('container'), ...props } = this.state;
+        const {
+                  fakeFetch, scrollerClassName = tc('container'), ...props
+              } = this.state;
         return <div>
             <Configure onSetState={this.handleState}
                        data={example} {...this.state}/>

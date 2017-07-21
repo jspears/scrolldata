@@ -1,38 +1,52 @@
 import React, { Component, PureComponent } from 'react';
 import Expandable from '../src/ExpandableScroller';
-import style from './App.stylm';
 import Slider from './Slider';
 import example from './exampleDataset.json';
 import Configure, { numberChange } from './Configure';
+import tc from './tc';
 
-const Render = ({ rowIndex, isExpanded, onToggle, rowHeight, data: { requestId, contentPartnerId, fulfillmentPartner, movieId }, }) => {
+const Render = ({
+                    rowIndex, isExpanded, onToggle, rowHeight,
+                    expandableRowClassName = tc('expandable-row'),
+                    expandableContainerClassName = tc('expandable-container'),
+                    expandedContentClassName = tc('expanded-content'),
+                    cellClassName = tc('cell'),
+                    cellIndexClassName = tc('cell', 'index'),
+                    data: { requestId, contentPartnerId, fulfillmentPartner, movieId },
+                }) => {
 
     return <div style={{ height: rowHeight }}
 
-                className={style.expandableContainer}>
-        <div key={`expandable-row-${rowIndex}`} className={style.expandableRow}
+                className={expandableContainerClassName}>
+        <div key={`expandable-row-${rowIndex}`}
+             className={expandableRowClassName}
              onClick={onToggle}>
-            <div className={`${style.cell} ${style.index}`}>{rowIndex}</div>
-            <div className={style.cell}>{requestId}</div>
-            <div className={style.cell}>{contentPartnerId}</div>
-            <div className={style.cell}>{fulfillmentPartner}</div>
-            <div className={style.cell}>{movieId}</div>
+            <div className={cellIndexClassName}>{rowIndex}</div>
+            <div className={cellClassName}>{requestId}</div>
+            <div className={cellClassName}>{contentPartnerId}</div>
+            <div className={cellClassName}>{fulfillmentPartner}</div>
+            <div className={cellClassName}>{movieId}</div>
         </div>
         {isExpanded && <div key='expanded-content'
-                            className={style.expandedContent}>
-            <span style={style.centerable}>This is expanded
+                            className={expandedContentClassName}>
+            <span className={tc('centerable')}>This is expanded
                 content</span>
         </div>}
     </div>
 };
 
-const Blank = ({ rowHeight }) => {
-    return <div className={style.row} style={{ height: rowHeight }}>
-        <div className={`${style.blank} ${style.index}`}>&nbsp;</div>
-        <div className={style.blank}>&nbsp;</div>
-        <div className={style.blank}>&nbsp;</div>
-        <div className={style.blank}>&nbsp;</div>
-        <div className={style.blank}>&nbsp;</div>
+const Blank = ({
+                   rowHeight,
+                   rowClassName = tc('row'),
+                   blankClassName = tc('blank'),
+                   blankIndexClassName = tc('blank', 'index')
+               }) => {
+    return <div className={rowClassName} style={{ height: rowHeight }}>
+        <div className={blankIndexClassName}>&nbsp;</div>
+        <div className={blankClassName}>&nbsp;</div>
+        <div className={blankClassName}>&nbsp;</div>
+        <div className={blankClassName}>&nbsp;</div>
+        <div className={blankClassName}>&nbsp;</div>
     </div>
 };
 
@@ -108,7 +122,7 @@ export default class TogglerExample extends Component {
             <div>
                 <div className="btn-group">{this.renderExpandedNumber()}</div>
             </div>
-            <Expandable className={style.container} renderItem={Render}
+            <Expandable className={tc('container')} renderItem={Render}
                         renderBlank={Blank}
                         rowData={this.rowData}
                         onExpandToggle={this.handleToggle}

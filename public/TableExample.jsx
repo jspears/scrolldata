@@ -1,9 +1,9 @@
 import React, { Component, PureComponent } from 'react';
 import TableScroller from '../src/table/TableScroller';
-import style from './App.stylm';
 import example from './exampleDataset.json';
 import Configure, { numberChange } from './Configure';
 import Slider from './Slider'
+import tc from './tc';
 
 function between(min, max) {
     min = Math.ceil(min);
@@ -12,8 +12,8 @@ function between(min, max) {
 }
 
 const expandedContent = () => (<div key='expanded-content'
-                                    className={style.expandedContent}>
-    <span style={style.centerable}>This is expanded content</span>
+                                    className={tc('expanded-content')}>
+    <span className={tc('centerable')}>This is expanded content</span>
 </div>);
 
 example.forEach((v, i) => (v.packageId = 127001 + between(0,
@@ -211,7 +211,7 @@ export default class TableExample extends Component {
             <div>
                 <div className="btn-group">{this.renderExpandedNumber()}</div>
             </div>
-            <TableScroller className={style.container}
+            <TableScroller className={tc('container')}
                            rowData={this.rowData}
                            onScrollToChanged={this.handleScrollTo}
                            onMenuItemClick={this.handleMenuClick}
