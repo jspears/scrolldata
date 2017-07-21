@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { themeClass } from '../themes';
+import { stop } from '../util';
+
 /**
  * This is an indeterminate checkbox.  It allows for the third Boolean, null;
  *
@@ -14,11 +16,11 @@ export default class IndeterminateCheckbox extends PureComponent {
     };
 
 
-    handleClick = (e) => {
+    handleClick = stop(() => {
         this.props.onSelect(
             this.props.data == null ? this.props.state : this.props.data,
-            false, e);
-    };
+            false);
+    });
 
 
     render() {

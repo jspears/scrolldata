@@ -160,10 +160,10 @@ export default class Column extends PureComponent {
             type);
     };
 
-    handleSort = (e) => {
+    handleSort = stop((e) => {
         fire(this.props.onSort, this.props.columnIndex,
             this.props.sortDirection)
-    };
+    });
 
     render() {
         const {
@@ -202,7 +202,7 @@ export default class Column extends PureComponent {
         return (
             <div ref={this.refColumn}
                  {...props}
-                 className={classes(tc('cellHeader'), className)}
+                 className={classes(tc('cell-header'), className)}
                  onClick={sortable && this.handleSort}
                  style={{
                      ...style,

@@ -31,18 +31,29 @@ const ignore = ignoreKeys(tablePropTypes);
 export default class TableScroller extends PureComponent {
 
     static propTypes = {
-        ...ExpandableScroller.propTypes,
         ...tablePropTypes,
         expandedHeight: numberOrFunc,
         renderItem    : func,
     };
 
     static defaultProps = {
-        ...ExpandableScroller.defaultProps,
         columns     : [],
-        rowRender({ children, className, rowHeight, }) {
+        rowRender(row) {
+            const { children, className, data, rowHeight, onToggle, isExpanded, expandedContent } = row;
+
+            if (isExpanded) {
+                return <div style={{ height: rowHeight }}
+                            className={tc('row-expanded')}>
+                    <div className={className}
+                         onClick={onToggle}>{children}</div>
+                    <div className={tc('row-expanded-content')}>{result(
+                        expandedContent, row)}</div>
+                </div>
+            }
+
             return <div style={{ height: rowHeight, }}
-                        className={className}>{children}</div>
+                        className={className}
+                        onClick={onToggle}>{children}</div>;
         },
         headerRender: ColumnDefault,
         renderSelectable({ rowIndex, width, state, data, onSelect, className }) {
@@ -56,14 +67,15 @@ export default class TableScroller extends PureComponent {
     };
 
     state = {
-        columns    : this.props.columns,
-        columnsHash: Date.now(),
-        selected   : this.props.selected,
-        selectState: this.props.selectState
+        columns              : this.props.columns,
+        columnsHash          : Date.now(),
+        selected             : this.props.selected,
+        selectState          : this.props.selectState,
+        isContainerExpandable: this.props.expandedContent != null,
     };
 
 
-    componentWillReceiveProps({ columns, selected }) {
+    componentWillReceiveProps({ columns, selected, expandedContent }) {
         const state = {};
         if (this.props.columns !== columns) {
             state.columns = columns;
@@ -77,6 +89,9 @@ export default class TableScroller extends PureComponent {
             if (this.state.selected !== selected) {
                 state.selectedHash = Date.now();
             }
+        }
+        if (this.props.expandedContent != expandedContent) {
+            state.isContainerExpandable = expandedContent != null;
         }
         this.setState(state);
     }
@@ -231,10 +246,19 @@ export default class TableScroller extends PureComponent {
         }
 
         const Row = this.props.rowRender;
-        return <Row className={tc('row')}
-                    data={row.data}
-                    rowHeight={row.rowHeight}
-                    rowIndex={row.rowIndex}>{cells}</Row>
+        const cfg = {};
+        if (this.state.isContainerExpandable) {
+            cfg.isExpanded      = row.isExpanded;
+            cfg.expandedContent = this.props.expandedContent;
+            cfg.onToggle        = row.onToggle;
+            cfg.className       = tc('expandable-row');
+        } else {
+            cfg.className = tc('row');
+        }
+        return <Row  {...cfg}
+                     data={row.data}
+                     rowHeight={row.rowHeight}
+                     rowIndex={row.rowIndex}>{cells}</Row>
 
     };
 
@@ -273,14 +297,17 @@ export default class TableScroller extends PureComponent {
     });
 
     render() {
-        const UseScroller = this.props.expandedHeight != null
+        const {
+                  columns,
+                  isContainerExpandable
+              }           = this.state;
+        const UseScroller = isContainerExpandable
             ? ExpandableScroller
             : Scroller;
 
-        const Column      = this.props.headerRender;
-        const cols        = [];
-        const { columns } = this.state;
-        let rowWidth      = 0;
+        const Column = this.props.headerRender;
+        const cols   = [];
+        let rowWidth = 0;
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
             let col = columns[i];
             if (col.hidden === true) {
@@ -293,7 +320,7 @@ export default class TableScroller extends PureComponent {
                     sortable : false,
                     resizable: false,
                     label    : this.props.renderSelectable,
-                    className: tc('cellHeaderSelect'),
+                    className: tc('cell-header-select'),
                     onSelect : this.handleIndeterminateSelection,
                     state    : this.selectState()
                 }
@@ -322,13 +349,13 @@ export default class TableScroller extends PureComponent {
                          {...ignore(this.props)}
                          width={rowWidth}
                          height={this.props.height}
-                         className={tc('scrollRows')}
-                         scrollerClassName={tc('scrollList')}
+                         className={tc('scroll-rows')}
+                         scrollerClassName={tc('scroll-list')}
                          rowData={this.rowData}
                          renderItem={this.renderItem}
                          renderBlank={this.renderBlank}>
                 <div key='header-container'
-                     className={tc('cellHeaders')}>
+                     className={tc('cell-headers')}>
                     {cols}
                 </div>
             </UseScroller>

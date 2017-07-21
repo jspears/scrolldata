@@ -2,9 +2,23 @@ import React, { Component, PureComponent } from 'react';
 import TableScroller from '../src/table/TableScroller';
 import style from './App.stylm';
 import example from './exampleDataset.json';
-import Configure from './Configure';
+import Configure, { numberChange } from './Configure';
 import Slider from './Slider'
-example.forEach((v,i)=>(v.packageId = 127001 + i));
+
+function between(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+const expandedContent = () => (<div key='expanded-content'
+                                    className={style.expandedContent}>
+    <span style={style.centerable}>This is expanded content</span>
+</div>);
+
+example.forEach((v, i) => (v.packageId = 127001 + between(0,
+    example.length)));
+
 const columns = [
     {
         "columnKey" : "requestId",
@@ -102,15 +116,18 @@ const makeCompare = (key) => {
 export default class TableExample extends Component {
 
     state = {
-        scrollTo   : 0,
-        rowHeight  : 50,
-        height     : 600,
-        width      : 900,
-        fakeFetch  : 0,
-        bufferSize : 0,
-        rowCount   : example.length,
-        columns,
-        columnCount: columns.length / 2
+        scrollTo      : 0,
+        rowHeight     : 50,
+        height        : 600,
+        width         : 900,
+        fakeFetch     : 0,
+        bufferSize    : 0,
+        rowCount      : example.length,
+        columns       : columns.slice(0, 7),
+        expanded      : [],
+        expandedContent,
+        expandedHeight: 300,
+        columnCount   : 7
     };
 
     handleState = (state) => this.setState(state);
@@ -152,6 +169,29 @@ export default class TableExample extends Component {
         this.setState({ cacheAge: Date.now(), sortColumn, sortDirection });
     };
 
+    renderExpandedNumberNum(rowIndex, idx) {
+        return <btn className="btn btn-default" role="group"
+                    key={`expanded-row-${rowIndex}`}
+                    onClick={this.handleScrollToClick}
+                    data-row-index={rowIndex}>{rowIndex}</btn>
+    };
+
+    renderExpandedNumber() {
+        return this.state.expanded.length
+            ? this.state.expanded.map(this.renderExpandedNumberNum
+                , this) : <button className='btn btn-disabled'>
+                   None Selected</button>
+
+    }
+
+    handleScrollToClick = ({ target: { dataset: { rowIndex } } }) => {
+        this.handleScrollTo(parseInt(rowIndex, 10));
+    };
+    handleToggle        = (expanded) => {
+        this.setState({ expanded });
+    };
+    handleNumChange     = numberChange(state => this.setState(state));
+
     render() {
         //don't pass in fakeFetch
         const { fakeFetch, columnCount, sortColumn, sortDirection, ...props } = this.state;
@@ -162,13 +202,21 @@ export default class TableExample extends Component {
                         value={this.state}
                         max={columns.length}
                         onChange={this.handleColumnCount}/>
+                <Slider name='expandedHeight' label='Expanded Row Height'
+                        value={this.state}
+                        max={600}
+                        onChange={this.handleNumChange}/>
             </Configure>
             <h3>Virtualized Table</h3>
+            <div>
+                <div className="btn-group">{this.renderExpandedNumber()}</div>
+            </div>
             <TableScroller className={style.container}
                            rowData={this.rowData}
                            onScrollToChanged={this.handleScrollTo}
                            onMenuItemClick={this.handleMenuClick}
                            onSort={this.handleSort}
+                           onExpandToggle={this.handleToggle}
                            {...props}/>
 
         </div>

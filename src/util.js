@@ -1,4 +1,4 @@
-import { oneOfType, number, func } from 'prop-types';
+import { oneOfType, number, func, string } from 'prop-types';
 import { Component } from 'react';
 
 export const result = (val, ...args) => {
@@ -10,6 +10,7 @@ export const result = (val, ...args) => {
         : val;
 };
 
+export const stringOrFunc = oneOfType([string, func]);
 export const numberOrFunc = oneOfType([number, func]);
 export const EMPTY_ARRAY  = Object.freeze([]);
 export const indexOf      = Function.call.bind(Array.prototype.indexOf);
@@ -74,7 +75,7 @@ export const ignoreKeys = (...args) => {
 export const toString   = (val) => val == null ? '' : String(val);
 
 
-export const hashCode          = (val) => {
+export const hashCode = (val) => {
     let hash = 0;
     if (val.length == 0) {
         return hash;
@@ -86,9 +87,7 @@ export const hashCode          = (val) => {
     }
     return hash;
 }
-/**
- * If the function exists call it if it returns false return false,
- * otherwise return true
- */
 
-export const fire = (fn, ...args) => fn ? fn(...args) !== false : true;
+export const fire     = (fn, ...args) => (fn ? fn(...args) !== false
+    : true);
+

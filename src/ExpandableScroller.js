@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import { oneOfType, func, bool, node, arrayOf, number } from 'prop-types';
 import Scroller from './Scroller';
 import {
-    EMPTY_ARRAY, toggle, numberOrFunc, copyWithout, result, stop, indexOf
+    EMPTY_ARRAY, toggle, numberOrFunc, result, fire, indexOf,
+    stringOrFunc
 } from './util';
 
 export const expanded = oneOfType([arrayOf(number), func]);
@@ -18,21 +19,20 @@ export class ToggleItem extends PureComponent {
         onToggle  : func.isRequired,
         rowIndex  : number,
         render    : func.isRequired,
-        isExpanded: func
+        isExpanded: func,
     };
 
-    // handleToggle = stop(() => this.props.onToggle(this.props.rowIndex));
     handleToggle = () => {
         this.props.onToggle(this.props.rowIndex)
     };
 
     render() {
-        const { render, isExpanded, rowIndex, ...props } = this.props;
-        const Item                                       = render;
+        const { render, isExpanded, ...props }
+                   = this.props;
+        const Item = render;
         return <Item {...props}
-                     isExpanded={isExpanded(rowIndex)}
+                     isExpanded={isExpanded(props.rowIndex)}
                      onToggle={this.handleToggle}
-                     rowIndex={rowIndex}
         />
     }
 }
@@ -58,7 +58,11 @@ export default class ExpandableScroller extends PureComponent {
 
     render() {
         const { expanded, onExpandToggle, renderItem, hash, expandedHeight, renderBlank, rowHeight, ...props } = this.props;
-        const newHash = `${hash}-${this.state.expanded.join(' ')}-${typeof this.props.expandedHeight === 'number'? this.props.expandedHeight :''} ${typeof this.props.rowHeight === 'number'? this.props.rowHeight :''}`;
+        const newHash                                                                                          = `${hash}-${this.state.expanded.join(
+            ' ')}-${typeof this.props.expandedHeight === 'number'
+            ? this.props.expandedHeight : ''} ${typeof this.props.rowHeight
+                                                === 'number'
+            ? this.props.rowHeight : ''}`;
         return <Scroller {...props}
                          hash={newHash}
                          rowHeight={this.rowHeight}
@@ -112,9 +116,7 @@ export default class ExpandableScroller extends PureComponent {
 
     handleToggleExpand = (rowIndex) => {
         const expanded = toggle(this.state.expanded, rowIndex);
-        if (this.props.onExpandToggle ? this.props.onExpandToggle(expanded,
-                                          rowIndex)
-                                        !== false : true) {
+        if (fire(this.props.onExpandToggle, expanded, rowIndex)) {
             this.setState({ expanded });
         }
     };
