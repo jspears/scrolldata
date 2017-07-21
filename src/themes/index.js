@@ -30,6 +30,7 @@ export default function (diffTheme) {
  */
 
 export const themeClass = ({ displayName }) => (...names) => {
+    names             = names.filter(Boolean);
     const ret         = [];
     const themeLength = themes.length;
     const cacheKey    = names.join(`${displayName}/`);

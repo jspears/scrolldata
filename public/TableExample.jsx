@@ -4,7 +4,7 @@ import example from './exampleDataset.json';
 import Configure, { numberChange } from './Configure';
 import Slider from './Slider'
 import tc from './tc';
-
+import {makeCompare} from '../src/util'
 function between(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -87,31 +87,6 @@ const columns = [
     }];
 
 
-const makeCompare = (key) => {
-    return (a, b) => {
-        if (a === b || !(b || a )) {
-            return 0;
-        }
-        if (!b) {
-            return 1;
-        }
-        if (!a) {
-            return -1;
-        }
-        a = a[key];
-        b = b[key];
-        if (a === b || !(a || b)) {
-            return 0;
-        }
-        if (!b) {
-            return 1;
-        }
-        if (!a) {
-            return -1;
-        }
-        return a > b ? 1 : -1;
-    }
-};
 
 export default class TableExample extends Component {
 

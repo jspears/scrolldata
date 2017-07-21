@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { toString } from '../util';
+import { themeClass } from '../themes/index'
 
-const Cell       = ({ width, height, formatter = toString, data, className = '' }) =>
-    (<div style={{ minWidth: width, maxWidth: width, height }}
-          className={className}>{formatter(data)}</div>);
-Cell.displayName = 'Cell';
+class Cell extends PureComponent {
+    render() {
+        const {
+                  width, height,
+                  formatter = toString, data, className = ''
+              } = this.props;
+        return (<div style={{ minWidth: width, maxWidth: width, height }}
+                     className={tc(className)}>{formatter(data)}</div>);
+    }
+}
+
+const tc = themeClass(Cell);
+
 export default Cell;
 

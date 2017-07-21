@@ -88,6 +88,31 @@ export const hashCode = (val) => {
     return hash;
 }
 
-export const fire     = (fn, ...args) => (fn ? fn(...args) !== false
+export const fire = (fn, ...args) => (fn ? fn(...args) !== false
     : true);
 
+export const makeCompare = (key) => {
+    return (a, b) => {
+        if (a === b || !(b || a )) {
+            return 0;
+        }
+        if (!b) {
+            return 1;
+        }
+        if (!a) {
+            return -1;
+        }
+        a = a[key];
+        b = b[key];
+        if (a === b || !(a || b)) {
+            return 0;
+        }
+        if (!b) {
+            return 1;
+        }
+        if (!a) {
+            return -1;
+        }
+        return a > b ? 1 : -1;
+    }
+};

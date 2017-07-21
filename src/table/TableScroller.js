@@ -200,7 +200,7 @@ export default class TableScroller extends PureComponent {
               }             = row;
         const cells         = [];
         const { columns }   = this.state;
-        const cellClassName = tc('cell');
+        const cellClassName = 'cell';
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
             let { columnKey, renderCell, ...config } = columns[i];
             if (config.hidden) {
