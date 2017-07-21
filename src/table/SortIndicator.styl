@@ -7,24 +7,27 @@
     transition transform .3s ease, opacity .2s ease
     transform rotate(0)
     opacity .01
-    height 16px
-    width 16px
+    padding 5px
 
 //just a marker
 .ASC:before
     @extend .icon:before
     transform rotate(0)
+    opacity .99
 
 .DESC:before
     @extend .icon:before
     transform rotate(180deg)
     opacity .99
 
-:hover > .ASC:before, :hover > .DESC:before, :hover > .icon:before
-    opacity .50
+:hover > .icon
+    opacity .5
 
-.col-unsorted:hover .icon:before,
-.col-unsorted:hover ~ .col-sorted .icon:before,
-.col-sorted ~ .col-unsorted:hover ~ .col-unsorted:hover .icon:before
+:active > .ASC:before
     opacity .50
+    transform rotate(180deg)
+
+:active > .DESC:before
+    opacity .50
+    transform rotate(0)
 

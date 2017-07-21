@@ -212,9 +212,7 @@ export default class Column extends PureComponent {
                 {label !== false && result(label || columnKey, this.props)}
                 {sortable !== false && <SortIndicator
                     key={`sort-indicator-${columnKey}`}
-                    columnKey={columnKey}
-                    columnIndex={columnIndex}
-                    sortDirection={this.props.sortDirection}
+                    sortDirection={sortDirection}
                 />}
                 {resizable !== false && <span key={`drag-handle-${columnKey}`}
                                               className={tc('handle',

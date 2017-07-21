@@ -82,8 +82,9 @@ export default class TableScroller extends PureComponent {
     }
 
 
-    handleSort = (sortIndex, sortDirection) => {
-        sortDirection = sortDirection === 'ASC' ? 'DESC' : 'ASC';
+    handleSort = (sortIndex) => {
+        const sortDirection = this.state.sortDirection === 'ASC' ? 'DESC'
+            : 'ASC';
         if (fire(this.props.onSort, this.state.columns[sortIndex],
                 sortDirection)) {
             this.setState({ sortIndex, sortDirection, hash: Date.now() });
@@ -302,7 +303,7 @@ export default class TableScroller extends PureComponent {
                     ...col,
                     sortable     : true,
                     sortDirection: (this.state.sortIndex === i
-                        ? this.props.sortDirection : null)
+                        ? this.state.sortDirection : null)
                 }
             }
 

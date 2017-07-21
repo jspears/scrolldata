@@ -4,7 +4,7 @@ import style from './App.stylm';
 import example from './exampleDataset.json';
 import Configure from './Configure';
 import Slider from './Slider'
-
+example.forEach((v,i)=>(v.packageId = 127001 + i));
 const columns = [
     {
         "columnKey" : "requestId",
