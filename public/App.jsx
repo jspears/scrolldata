@@ -3,7 +3,12 @@ import Scroller from './ScrollerExample';
 import Expandable from './ExpandableExample';
 import Slideout from './SlideoutExample';
 import Table from './TableExample';
+import theme from '../src/themes/index';
+import AppStyle from './App.stylm';
+
 import 'subschema-css-bootstrap/lib/style.css';
+
+theme({App:AppStyle});
 
 const Routes = {
     Scroller,
