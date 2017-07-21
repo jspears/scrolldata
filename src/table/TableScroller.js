@@ -1,15 +1,16 @@
 import React, { PureComponent } from 'react';
-import Scroller from '../Scroller';
-import ExpandableScroller from '../ExpandableScroller';
 import {
     arrayOf, string, oneOf, any, func, shape, object,
 } from 'prop-types';
-import { columnPropTypes } from './Column';
+
 import {
     classes, result, numberOrFunc, ignoreKeys, toString, toggle, fire
 } from '../util';
-import ColumnDefault from './Column';
-import { theme, themeClass } from '../themes'
+import { themeClass } from '../themes'
+
+import Scroller from '../Scroller';
+import ExpandableScroller from '../ExpandableScroller';
+import ColumnDefault, { columnPropTypes } from './Column';
 import IndeterminateCheckbox from './IndeterminateCheckbox';
 import Cell from './Cell';
 import Row from './Row';
