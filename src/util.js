@@ -1,4 +1,4 @@
-import { oneOfType, number, func, string } from 'prop-types';
+import { oneOfType, number, func, string, checkPropTypes } from 'prop-types';
 import { Component } from 'react';
 
 export const result = (val, ...args) => {
@@ -50,8 +50,14 @@ export const execLoop = (c) => typeof c === 'function' && c();
 
 export const classes = (...args) => args.filter(Boolean).join(' ');
 
-export const ignoreKeys = (...args) => {
+export const ignoreKeys                  = (...args) => {
     const ignoreKeys = args.reduce(function (ret, arg) {
+        if (typeof arg === 'string') {
+            if (ret.indexOf(arg) === -1) {
+                ret.push(arg);
+            }
+            return ret;
+        }
         (Array.isArray(arg) ? arg : Object.keys(arg)).forEach(function (key) {
             if (indexOf(ret, key) === -1) {
                 ret.push(key);
@@ -71,8 +77,43 @@ export const ignoreKeys = (...args) => {
             return ret;
         }, {});
     };
-}
-export const toString   = (val) => val == null ? '' : String(val);
+};
+export const createShouldComponentUpdate = (...args) => {
+    const propKeys = args.reduce(function (ret, arg) {
+        if (typeof arg === 'string') {
+            if (ret.indexOf(arg) === -1) {
+                ret.push(arg);
+            }
+            return ret;
+        }
+
+        (Array.isArray(arg) ? arg : Object.keys(arg)).forEach(function (key) {
+            if (indexOf(ret, key) === -1) {
+                ret.push(key);
+            }
+        });
+        return ret;
+    }, []);
+    const length   = propKeys.length;
+    return function (newProps, newState) {
+        for (let i = 0; i < length; i++) {
+            const key = propKeys[i];
+            if (this.props[key] !== newProps[key]) {
+                return true;
+            }
+        }
+        const stateKeys = Object.keys(newState);
+        for (let i = 0, l = stateKeys.length; i < l; i++) {
+            const key = stateKeys[i];
+            if (this.state[key] !== newState[key]) {
+                return true;
+            }
+        }
+        return true;
+    };
+};
+
+export const toString = (val) => val == null ? '' : String(val);
 
 
 export const hashCode = (val) => {
@@ -115,4 +156,44 @@ export const makeCompare = (key) => {
         }
         return a > b ? 1 : -1;
     }
+};
+
+export const orProp = (current, rest) => {
+    function checkType(isRequired, props, propName, componentName,
+                       location) {
+        componentName = componentName || ANONYMOUS;
+        if (props[propName] == null) {
+            let multi = 0;
+            for (let i = 0, l = rest.length; i < l; i++) {
+                if (props[rest[i]]) {
+                    multi++;
+                }
+            }
+
+            if (multi > 1 || isRequired && multi == 0) {
+                return new Error(
+                    `Required either "${propName}" or one of "${rest.join(
+                        ',')}" where not specified in ${componentName}`);
+            }
+        } else {
+
+            for (let i = 0, l = rest.length; i < l; i++) {
+                if (props[props[rest[i]]]) {
+                    return new Error(
+                        `Either ${propName} or only one of ${rest.join(
+                            ',')} not both. in ${componentName}`)
+                }
+            }
+
+            return checkPropTypes({ [propName]: current }, props, propName,
+                componentName, location);
+        }
+    }
+
+
+    const chainedCheckType      = checkType.bind(null, false);
+    chainedCheckType.isRequired = checkType.bind(null, true);
+
+    return chainedCheckType;
+
 };

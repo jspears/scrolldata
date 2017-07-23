@@ -13,18 +13,10 @@ export default class Configure extends React.PureComponent {
 
     handleNumChange = numberChange(this.props.onSetState);
 
-    rowData = (rowIndex, count = 1) => {
-        console.log(`rowData`, rowIndex, count);
-        const { fakeFetch } = props;
-
-        const data = props.data.slice(rowIndex, rowIndex + count);
-        return wait(fakeFetch, data);
-
-    };
-
 
     render() {
-        const { children, data: { length }, ...props } = this.props;
+        const { children, maxData, ...props } = this.props;
+        const length                          = maxData;
 
         return <form className='inline-form configure'>
             <Slider name='scrollTo' label='Scroll To' value={props}
@@ -39,6 +31,12 @@ export default class Configure extends React.PureComponent {
                     onChange={this.handleNumChange}/>
             <Slider name='height' label='Height' value={props}
                     max={1600}
+                    onChange={this.handleNumChange}/>
+            <Slider name='rowsVisible'
+                    label='Rows Visible'
+                    value={props}
+                    step={1}
+                    max={100}
                     onChange={this.handleNumChange}/>
             <Slider name='width' label='Width' value={props}
                     max={1600}

@@ -3,7 +3,10 @@ import { viewport, scroller, container, sizer } from './Scroller.stylm';
 import {
     any, number, func, string, oneOfType, array, object, oneOf,
 } from 'prop-types';
-import { numberOrFunc, result, ignoreKeys, EMPTY_ARRAY, classes } from './util';
+import {
+    numberOrFunc, result, ignoreKeys, EMPTY_ARRAY, classes, orProp,
+    createShouldComponentUpdate
+} from './util';
 
 const propTypes    = {
     //What to render item
@@ -16,12 +19,13 @@ const propTypes    = {
     rowHeight : numberOrFunc.isRequired,
 
     //height of container
-    height: numberOrFunc.isRequired,
-
+    height     : numberOrFunc,
+    //either rowsVisible or height, not both
+    rowsVisible: orProp(numberOrFunc, ['height']).isRequired,
     //style to be applied to root component
-    style    : object,
+    style      : object,
     //className to be applied to root component
-    className: string,
+    className  : string,
 
     //Where to initialize table at
     scrollTo            : numberOrFunc,
@@ -88,40 +92,29 @@ export default class Scroller extends PureComponent {
         rowOffset   : 0,
         offsetHeight: 0,
         totalHeight : 0,
-        scrollTo    : this.props.scrollTo
+        scrollTo    : this.props.scrollTo,
+        height      : this.props.height
     };
 
     offsetTop = 0;
 
+    constructor(...rest) {
+        super(...rest);
+
+        const { propTypes, defaultProps } = this.constructor;
+        this.shouldComponentUpdate        =
+            createShouldComponentUpdate(propTypes, defaultProps);
+    }
 
     componentDidMount() {
         this.scrollTo(this.props.scrollTo, this.props);
     }
 
     componentWillReceiveProps(props) {
-        const {
-                  rowCount, scrollTo, renderItem,
-                  renderBlank, rowData, rowHeight,
-                  height,
-                  hash,
-                  cacheAge,
-                  page
-              } = this.props;
-        if (!(rowCount === props.rowCount &&
-              renderBlank === props.renderBlank &&
-              rowHeight === props.rowHeight &&
-              height === props.height &&
-              rowData === props.rowData &&
-              renderItem === props.renderItem &&
-              hash === props.hash &&
-              scrollTo === props.scrollTo &&
-              cacheAge === props.cacheAge
-            )) {
-            //direct manip so that state will be updated later... plenty of
-            //chance for a setState to happen
-            this.state.page = page;
-            this.scrollTo(props.scrollTo, props);
-        }
+        //direct manip so that state will be updated later... plenty of
+        //chance for a setState to happen
+        this.state.page = props.page;
+        this.scrollTo(props.scrollTo, props);
     }
 
     scrollDelay(from, to) {
@@ -208,28 +201,31 @@ export default class Scroller extends PureComponent {
     };
 
 
-    calculate({ rowHeight, rowCount, height, }, _scrollTop,
+    calculate({ rowHeight, rowCount, height = 0, rowsVisible }, _scrollTop,
               isTracking) {
         const count        = result(rowCount);
         const offsetHeight = isTracking ? this.offsetTop : _scrollTop;
         const bottom       = offsetHeight + height;
 
-        let data          = this.state.data;
-        let totalHeight   = 0;
-        let rowOffset     = -1;
-        let outView       = false;
-        let viewRowCount  = 0;
-        let withinBottom  = false;
-        let withinTop     = false;
-        let hasDataChange = false;
+        let data             = this.state.data;
+        let totalHeight      = 0;
+        let rowOffset        = -1;
+        let outView          = false;
+        let viewRowCount     = 0;
+        let withinBottom     = false;
+        let withinTop        = false;
+        let hasDataChange    = false;
+        let rowsVisibleIndex = 0;
+        let visibleHeight    = height;
         for (let rowIndex = 0, r = 0; rowIndex < count; rowIndex++) {
             const rHeight = result(rowHeight, rowIndex);
 
             withinBottom = totalHeight < bottom;
             withinTop    = totalHeight >= offsetHeight;
-
-            if (withinTop && withinBottom) {
+            if (rowsVisible != null && withinTop && viewRowCount
+                                                    < rowsVisible) {
                 viewRowCount++;
+                visibleHeight += rHeight;
                 if (rowOffset === -1) {
                     rowOffset = rowIndex;
                 }
@@ -241,25 +237,51 @@ export default class Scroller extends PureComponent {
                                            || data[r + 2] !== rHeight)) {
                         hasDataChange = true;
                         //copy the data if its changed this could be better
-                        data          = data.splice(0, r)
+                        data          = data.slice(0, r)
                     }
                     data[r++] = rowIndex;
                     data[r++] = rHeight;
                 }
+                if (!(isTracking) && withinTop &&
+                    (viewRowCount > rowsVisible || rowIndex === count - 1 )
+                    && !outView) {
+                    outView = true;
+                    this._fetchPage(rowOffset, viewRowCount);
+                }
+            } else {
+                if (withinTop && withinBottom) {
+                    viewRowCount++;
+                    if (rowOffset === -1) {
+                        rowOffset = rowIndex;
+                    }
+                    if (rowIndex == count) {
+                        rowCount = rowIndex;
+                    }
+                    if (rowIndex <= count) {
+                        if (!hasDataChange && (data[r + 1] !== rowIndex
+                                               || data[r + 2] !== rHeight)) {
+                            hasDataChange = true;
+                            //copy the data if its changed this could be better
+                            data          = data.slice(0, r)
+                        }
+                        data[r++] = rowIndex;
+                        data[r++] = rHeight;
+                    }
+                }
+                if (!(isTracking) && withinTop &&
+                    (!withinBottom || rowIndex === count - 1 )
+                    && !outView) {
+                    outView = true;
+                    this._fetchPage(rowOffset, viewRowCount);
+                }
             }
-            if (!(isTracking) && withinTop &&
-                (!withinBottom || rowIndex === count - 1 )
-                && !outView) {
-                outView = true;
-                this._fetchPage(rowOffset, viewRowCount);
-            }
-
             totalHeight += rHeight;
         }
         if (!isTracking) {
             this.handleScrollToChange(rowOffset);
         }
         this.setState({
+            height: visibleHeight,
             data,
             rowOffset,
             totalHeight,
@@ -343,9 +365,17 @@ export default class Scroller extends PureComponent {
 
 
     render() {
-        const { props: { height, width, children, renderHeader, className, scrollerClassName, viewportClassName, sizerClassName }, state: { totalHeight, offsetHeight = 0 } } = this;
-
-        const viewPortStyle = this.props[`${this.props.viewPort}ViewPort`](
+        const {
+                  props   : {
+                      width,
+                      children,
+                      className,
+                      scrollerClassName,
+                      viewportClassName, sizerClassName,
+                      viewPort,
+                  }, state: { totalHeight, height, offsetHeight = 0 }
+              }             = this;
+        const viewPortStyle = this.props[`${viewPort}ViewPort`](
             offsetHeight);
         return (<div className={classes(container, className)}
                      style={{ ...this.props.style }}>

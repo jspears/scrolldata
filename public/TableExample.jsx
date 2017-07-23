@@ -4,7 +4,8 @@ import example from './exampleDataset.json';
 import Configure, { numberChange } from './Configure';
 import Slider from './Slider'
 import tc from './tc';
-import {makeCompare} from '../src/util'
+import { makeCompare } from '../src/util'
+
 function between(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -87,17 +88,9 @@ const columns = [
     }];
 
 
-
 export default class TableExample extends Component {
 
     state = {
-        scrollTo      : 0,
-        rowHeight     : 50,
-        height        : 600,
-        width         : 900,
-        fakeFetch     : 0,
-        bufferSize    : 0,
-        rowCount      : example.length,
         columns       : columns.slice(0, 7),
         expanded      : [],
         expandedContent,
@@ -106,10 +99,6 @@ export default class TableExample extends Component {
     };
 
     handleState = (state) => this.setState(state);
-
-    handleScrollTo = (scrollTo) => {
-        this.setState({ scrollTo })
-    };
 
     rowData         = (offset, count, { sortColumn, sortDirection } = {}) => {
         if (sortColumn && sortDirection) {
@@ -169,10 +158,14 @@ export default class TableExample extends Component {
 
     render() {
         //don't pass in fakeFetch
-        const { fakeFetch, columnCount, sortColumn, sortDirection, ...props } = this.state;
+        const { onSetState, height, fakeFetch, rowsVisible, ...props } = this.props;
+        if (rowsVisible) {
+            props.rowsVisible = rowsVisible;
+        } else {
+            props.height = height;
+        }
         return <div>
-            <Configure onSetState={this.handleState}
-                       data={example} {...this.state}>
+            <Configure  {...this.props}>
                 <Slider name='columnCount' label='Number of Columns'
                         value={this.state}
                         max={columns.length}
@@ -186,13 +179,14 @@ export default class TableExample extends Component {
             <div>
                 <div className="btn-group">{this.renderExpandedNumber()}</div>
             </div>
-            <TableScroller className={tc('container')}
+            <TableScroller {...props}
+                           className={tc('container')}
                            rowData={this.rowData}
-                           onScrollToChanged={this.handleScrollTo}
                            onMenuItemClick={this.handleMenuClick}
                            onSort={this.handleSort}
                            onExpandToggle={this.handleToggle}
-                           {...props}/>
+                           {...this.state}
+            />
 
         </div>
     }
