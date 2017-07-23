@@ -1,8 +1,9 @@
-const path        = require('path');
-const project     = path.resolve.bind(path, __dirname);
-const hyphenize   = v => v.replace(/([A-Z])/g, (g) => `-${g[0].toLowerCase()}`);
-const loaderUtils = require("loader-utils");
-module.exports    = function (options, webpack) {
+'use strict';
+const path      = require('path');
+const project   = path.resolve.bind(path, __dirname);
+const lc        = Function.call.bind(String.prototype.toLowerCase);
+const hyphenize = v => v.replace(/([A-Z])/g, (g) => `-${lc(g[0])}`);
+module.exports  = function (options, webpack) {
     webpack.module.rules.push({
         test: /\.stylm$/,
         use : [

@@ -19,7 +19,7 @@
     margin auto
     align-self stretch
     justify-content center
-    width 200px
+    min-width 200px
     text-overflow fade clip
 
 .index
@@ -91,12 +91,15 @@
 .hover-menu
     display flex
     flex-direction row
-    position sticky
+    position absolute
     background: #fff
     color rgb(33, 33, 33)
     right 0
+    transform-origin center right
     opacity .01
     align-items center
+    transition transform .1s linear
+    z-index 1
 
 .row:hover .hover-menu
     opacity .99
