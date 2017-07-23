@@ -4,7 +4,7 @@ import Expandable from './ExpandableExample';
 import Slideout from './SlideoutExample';
 import Table from './TableExample';
 import example from './exampleDataset.json';
-
+import { fake } from './helper'
 import 'subschema-css-bootstrap/lib/style.css';
 
 
@@ -14,8 +14,7 @@ const Routes = {
     Slideout,
     Table
 };
-const wait   = (timeout, value) => new Promise(
-    r => setTimeout(r, timeout * 1000, value));
+
 export default class App extends PureComponent {
 
     state = {
@@ -29,6 +28,7 @@ export default class App extends PureComponent {
         rowsVisible: 0,
         rowCount   : example.length,
         maxData    : example.length,
+        scrollDelay: 2
     };
 
     handleState = (state) => this.setState(state);
@@ -39,16 +39,9 @@ export default class App extends PureComponent {
     };
 
 
-    rowData = (rowIndex, count = 1) => {
-        console.log(`rowData`, rowIndex, count);
-        const { fakeFetch } = this.props;
-        const data          = example.slice(rowIndex, rowIndex + count);
-        if (fakeFetch > 1) {
-            return data;
-        }
-        return wait(fakeFetch, data);
+    rowData = (rowIndex, count = 1) => fake(this.state.fakeFetch,
+        example.slice(rowIndex, rowIndex + count));
 
-    };
 
     hashChange = () => {
         this.setState({ route: location.hash.replace(/^#/g, '') });

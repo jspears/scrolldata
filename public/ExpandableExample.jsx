@@ -1,8 +1,7 @@
-import React, { Component, PureComponent } from 'react';
+import React, { Component } from 'react';
 import Expandable from '../src/ExpandableScroller';
 import Slider from './Slider';
-import example from './exampleDataset.json';
-import Configure, { numberChange } from './Configure';
+import Configure from './Configure';
 import tc from './tc';
 
 const Render = ({
@@ -50,40 +49,16 @@ const Blank = ({
     </div>
 };
 
-const wait = (timeout, value) => new Promise(
-    r => setTimeout(r, timeout * 1000, value));
 
 export default class TogglerExample extends Component {
 
-    state = {
-        scrollTo      : 0,
-        rowHeight     : 50,
-        height        : 600,
-        width         : 900,
-        fakeFetch     : 0,
-        bufferSize    : 0,
-        rowCount      : example.length,
+    static defaultProps = {
         expandedHeight: 200,
         expanded      : []
     };
 
-    handleState = (state) => this.setState(state);
-
-    handleScrollTo = (scrollTo) => {
-        this.setState({ scrollTo })
-    };
-
-    rowData = (rowIndex, count = 1) => {
-        console.log(`rowData`, rowIndex, count);
-        const { fakeFetch } = this.state;
-
-        const data = example.slice(rowIndex, rowIndex + count);
-        return wait(fakeFetch, data);
-
-    };
-
     handleToggle = (expanded) => {
-        this.setState({ expanded });
+        this.props.onSetState({ expanded });
     };
 
     renderExpandedNumberNum(rowIndex, idx) {
@@ -94,29 +69,30 @@ export default class TogglerExample extends Component {
     };
 
     renderExpandedNumber() {
-        return this.state.expanded.length
-            ? this.state.expanded.map(this.renderExpandedNumberNum
+        return this.props.expanded.length
+            ? this.props.expanded.map(this.renderExpandedNumberNum
                 , this) : <button className='btn btn-disabled'>
                    None Selected</button>
 
     }
 
     handleScrollToClick = ({ target: { dataset: { rowIndex } } }) => {
-        this.handleScrollTo(parseInt(rowIndex, 10));
+        this.props.onSetState({ scrollTo: parseInt(rowIndex, 10) });
     };
 
-    handleNumChange = numberChange(state => this.setState(state));
+    handleNumberChange = ({ target: { name, value } }) => {
+        this.props.onSetState({ [name]: parseInt(value, 10) });
+    };
 
     render() {
         //don't pass in fakeFetch
-        const { fakeFetch, ...props } = this.state;
+        const { fakeFetch, onSetState, ...props } = this.props;
         return <div>
-            <Configure onSetState={this.handleState}
-                       data={example} {...this.state}>
+            <Configure {...this.props}>
                 <Slider name='expandedHeight' label='Expanded Row Height'
-                        value={this.state}
+                        value={this.props}
                         max={600}
-                        onChange={this.handleNumChange}/>
+                        onChange={this.handleNumberChange}/>
             </Configure>
             <h3>Virtualized Expandable</h3>
             <div>

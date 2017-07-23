@@ -76,7 +76,6 @@ export default class ScrollerExample extends Component {
 
     render() {
         //don't pass in fakeFetch
-        //don't pass in fakeFetch
         const { onSetState, height, fakeFetch, rowsVisible, ...props } = this.props;
         if (rowsVisible) {
             props.rowsVisible = rowsVisible;

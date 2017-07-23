@@ -16,7 +16,7 @@ const Checkbox = ({ label, checked, value, name, ...rest }) => {
     </div>);
 };
 
-export default ({ label, type = 'range', min = 0, value, name, ...rest }) => {
+export default ({ label, help, type = 'range', value, name, ...rest }) => {
     if (type == 'checkbox') {
         return <Checkbox label={label} value={value} name={name} {...rest}/>
     }
@@ -28,7 +28,6 @@ export default ({ label, type = 'range', min = 0, value, name, ...rest }) => {
                 className='addon'
                 id={name + 'text'}
                 name={name}
-                min={min}
                 value={value[name]}
                 {...rest}/></div>}
             <span className={`form-input-${type}`}>
@@ -37,11 +36,11 @@ export default ({ label, type = 'range', min = 0, value, name, ...rest }) => {
                className='form-control'
                id={name}
                name={name}
-               min={min}
                value={value[name]}
                {...rest}/>
         </span>
         </div>
+        {help && <p class="help-block">{help}</p>}
     </div>)
 };
 

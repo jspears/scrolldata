@@ -5,6 +5,7 @@ import Configure, { numberChange } from './Configure';
 import Slider from './Slider'
 import tc from './tc';
 import { makeCompare } from '../src/util'
+import { fake } from './helper'
 
 function between(min, max) {
     min = Math.ceil(min);
@@ -90,7 +91,7 @@ const columns = [
 
 export default class TableExample extends Component {
 
-    state = {
+    static defaultProps = {
         columns       : columns.slice(0, 7),
         expanded      : [],
         expandedContent,
@@ -98,9 +99,11 @@ export default class TableExample extends Component {
         columnCount   : 7
     };
 
-    handleState = (state) => this.setState(state);
+    handleState     = (state) => this.props.onSetState(state);
+    handleNumChange = numberChange(this.props.onSetState);
 
     rowData         = (offset, count, { sortColumn, sortDirection } = {}) => {
+        let ret;
         if (sortColumn && sortDirection) {
             let {
                     columnKey,
@@ -116,9 +119,11 @@ export default class TableExample extends Component {
             } else {
                 data.sort(comparator);
             }
-            return data.slice(offset, offset + count);
+            ret = data.slice(offset, offset + count);
+        } else {
+            ret = example.slice(offset, offset + count);
         }
-        return example.slice(offset, offset + count);
+        return fake(this.props.fakeFetch, ret);
     };
     handleMenuClick = ({ target: { dataset: { action, rowIndex } } }) => alert(
         `'${action}' was clicked on row: '${rowIndex}'`);
@@ -126,11 +131,12 @@ export default class TableExample extends Component {
     handleColumnCount = ({ target: { name, value } }) => {
         value            = parseInt(value, 10);
         const newColumns = columns.slice(0, value)
-        this.setState({ columns: newColumns, columnCount: value });
+        this.props.onSetState({ columns: newColumns, columnCount: value });
     };
 
     handleSort = (sortColumn, sortDirection) => {
-        this.setState({ cacheAge: Date.now(), sortColumn, sortDirection });
+        this.props.onSetState(
+            { cacheAge: Date.now(), sortColumn, sortDirection });
     };
 
     renderExpandedNumberNum(rowIndex, idx) {
@@ -141,8 +147,8 @@ export default class TableExample extends Component {
     };
 
     renderExpandedNumber() {
-        return this.state.expanded.length
-            ? this.state.expanded.map(this.renderExpandedNumberNum
+        return this.props.expanded.length
+            ? this.props.expanded.map(this.renderExpandedNumberNum
                 , this) : <button className='btn btn-disabled'>
                    None Selected</button>
 
@@ -152,9 +158,8 @@ export default class TableExample extends Component {
         this.handleScrollTo(parseInt(rowIndex, 10));
     };
     handleToggle        = (expanded) => {
-        this.setState({ expanded });
+        this.props.onSetState({ expanded });
     };
-    handleNumChange     = numberChange(state => this.setState(state));
 
     render() {
         //don't pass in fakeFetch
@@ -167,13 +172,13 @@ export default class TableExample extends Component {
         return <div>
             <Configure  {...this.props}>
                 <Slider name='columnCount' label='Number of Columns'
-                        value={this.state}
+                        value={this.props}
                         max={columns.length}
                         onChange={this.handleColumnCount}/>
                 <Slider name='expandedHeight' label='Expanded Row Height'
-                        value={this.state}
-                        max={600}
-                        onChange={this.handleNumChange}/>
+                        value={this.props}
+                        onChange={this.props.onSetState}
+                        max={600}/>
             </Configure>
             <h3>Virtualized Table</h3>
             <div>
@@ -185,7 +190,7 @@ export default class TableExample extends Component {
                            onMenuItemClick={this.handleMenuClick}
                            onSort={this.handleSort}
                            onExpandToggle={this.handleToggle}
-                           {...this.state}
+
             />
 
         </div>
