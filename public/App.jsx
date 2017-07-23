@@ -34,9 +34,7 @@ export default class App extends PureComponent {
     handleState = (state) => this.setState(state);
 
 
-    handleScrollTo = (scrollTo) => {
-        this.setState({ scrollTo })
-    };
+    handleScrollTo = (scrollTo) => this.setState({ scrollTo });
 
 
     rowData = (rowIndex, count = 1) => fake(this.state.fakeFetch,
@@ -57,8 +55,8 @@ export default class App extends PureComponent {
     }
 
     render() {
-        const { route, fakeFetch, ...props } = this.state;
-        const Example                        = Routes[route] || Scroller;
+        const { route, ...props } = this.state;
+        const Example             = Routes[route] || Scroller;
         return <div>
             <h2>Scrolldata</h2>
             <p>This is a little example to show how it would work&nbsp;
