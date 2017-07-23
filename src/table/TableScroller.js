@@ -34,7 +34,9 @@ const ignore = ignoreKeys(tablePropTypes);
 
 
 const Selectable       = ({ rowIndex, width, state, data, onSelect, className }) => {
-    return <IndeterminateCheckbox rowIndex={rowIndex} state={state}
+    return <IndeterminateCheckbox rowIndex={rowIndex}
+                                  state={state}
+                                  style={{ minWidth: width, maxWidth: width }}
                                   data={data}
                                   onSelect={onSelect}/>
 
@@ -42,6 +44,7 @@ const Selectable       = ({ rowIndex, width, state, data, onSelect, className })
 Selectable.displayName = 'Selectable';
 
 export default class TableScroller extends PureComponent {
+    static displayName = 'TableScroller';
 
     static propTypes = {
         ...tablePropTypes,
@@ -214,11 +217,10 @@ export default class TableScroller extends PureComponent {
             cells[c++]       = <RenderCell {...config}
                                            key={`cell-${c}`}
                                            columnKey={columnKey}
-
                                            rowIndex={rowIndex}
                                            colIndex={i}
                                            height={height}
-                                           className={cellClassName}
+                                           className={config.className}
                                            data={cellData}/>
         }
 
@@ -314,6 +316,7 @@ export default class TableScroller extends PureComponent {
             rowWidth += col.width;
 
             cols[c++] = <Column {...col}
+                                className={col.headerClassName}
                                 columnIndex={i}
                                 key={`column-${col.columnKey}-${i}-${c}`}
                                 onSort={this.handleSort}

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { func, array } from 'prop-types'
-import { fire, makeCompare } from './util';
+import {  makeCompare } from './util';
 
 export default class ScrollArray extends PureComponent {
     static propTypes = {
@@ -32,7 +32,7 @@ export default class ScrollArray extends PureComponent {
     };
 
     render() {
-        const { Scoller, data: { length }, ...props } = this.props;
+        const { Scroller, data: { length }, ...props } = this.props;
         return <Scroller rowData={this.rowData}
                          onSort={this.handleSort}
                          rowCount={length}

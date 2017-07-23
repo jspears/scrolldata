@@ -1,15 +1,23 @@
 import React, { PureComponent } from 'react';
 import { themeClass } from '../themes/index'
+import { createShouldComponentUpdate } from '../util'
+import { string, number } from 'prop-types';
 
 export default class Blank extends PureComponent {
-    static defaultProps = {
-        className: 'blank'
+
+    static displayName = 'Blank';
+    static propTypes   = {
+        width    : number,
+        height   : number
     };
 
+    static defaultProps = {};
+
+
     render() {
-        const { width, height, className } = this.props;
+        const { width, height } = this.props;
         return (<div style={{ minWidth: width, maxWidth: width, height }}
-                     className={tc(className)}>
+                     className={tc('blank')}>
             <div/>
         </div>);
     }

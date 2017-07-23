@@ -5,6 +5,8 @@ import { result } from '../util';
 const tc = themeClass({ displayName: 'Row' });
 
 export default class Row extends PureComponent {
+    static displayName = 'Row';
+
     static defaultProps = {
         rowExpandedClass       : 'expanded',
         rowExpandedContentClass: 'expanded-content',

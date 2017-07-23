@@ -50,9 +50,11 @@ const propTypes    = {
     viewPort            : oneOf(['top', 'translate']),
     //styling classes
     scrollerClassName   : string,
+    //Typically not used, but for completeness you can style the sizer element
     sizerClassName      : string,
     viewportClassName   : string,
-    renderHeader        : func,
+    //Typically a Date.now() of the lastCache, to ensure we are fetching new data
+    //when necessary
     cacheAge            : number
 };
 const defaultProps = {
@@ -82,6 +84,7 @@ const defaultProps = {
 const ignore = ignoreKeys(propTypes, defaultProps);
 
 export default class Scroller extends PureComponent {
+    static displayName  = 'Scroller';
     static propTypes    = propTypes;
     static defaultProps = defaultProps;
 

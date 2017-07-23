@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import { oneOf, any, object } from 'prop-types';
 import { themeClass } from '../themes';
-import { stop } from '../util';
+import { stop, classes } from '../util';
 
 /**
  * This is an indeterminate checkbox.  It allows for the third Boolean, null;
@@ -9,10 +9,14 @@ import { stop } from '../util';
  */
 
 export default class IndeterminateCheckbox extends PureComponent {
+
+    static displayName = 'IndeterminateCheckbox';
+
     static propTypes = {
-        state: PropTypes.oneOf(
+        state: oneOf(
             ['checked', 'INDETERMINATE', 'ALL', 'NONE', 'unchecked', true, false, null]),
-        data : PropTypes.any
+        data : any,
+        style: object
     };
 
 
@@ -46,8 +50,10 @@ export default class IndeterminateCheckbox extends PureComponent {
             }
 
             return <i onClick={this.handleClick}
+                      style={this.props.style}
                       data-data={this.props.data}
-                      className={tc('icon', state, this.props.className)}
+                      className={classes(tc('icon', state),
+                          this.props.className)}
             />
         }
     }

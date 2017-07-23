@@ -49,6 +49,7 @@ export const columnPropTypes = {
 };
 
 export default class Column extends PureComponent {
+    static displayName = 'Column';
 
     static propTypes = columnPropTypes;
 
@@ -67,7 +68,7 @@ export default class Column extends PureComponent {
     };
 
     state = {
-        maxWidth: this.props.maxWidth || MAX,
+        maxWidth: this.props.maxWidth || Number.MAX_SAFE_INTEGER,
         minWidth: this.props.minWidth || 0,
         width   : this.props.width
     };
@@ -75,10 +76,11 @@ export default class Column extends PureComponent {
     componentWillReceiveProps({ maxWidth, minWidth, width }) {
         const updateState = {};
         if (this.props.maxWidth != maxWidth) {
-            updateState.maxWidth = maxWidth || Number.MAX_SAFE_INTEGER;
+            updateState.maxWidth =
+                maxWidth == null ? Number.MAX_SAFE_INTEGER : 0;
         }
         if (this.props.minWidth != minWidth) {
-            updateState.minWidth = minWidth || 0;
+            updateState.minWidth = minWidth == null ? 0 : minWidth;
         }
         if (this.props.width != width) {
             updateState.width = width;

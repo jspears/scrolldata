@@ -6,6 +6,7 @@ const SortIndicator = (props) => (
     <i aria-label={`Sort ${props.sortDirection || 'ASC'}`}
        className={tc('icon', props.sortDirection)}/>);
 
+SortIndicator.displayName = 'SortIndicator';
 
 const tc = themeClass(SortIndicator);
 

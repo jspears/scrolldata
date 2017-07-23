@@ -40,7 +40,7 @@ export default ({ label, help, type = 'range', value, name, ...rest }) => {
                {...rest}/>
         </span>
         </div>
-        {help && <p class="help-block">{help}</p>}
+        {help && <p className="help-block">{help}</p>}
     </div>)
 };
 

@@ -15,6 +15,8 @@ export const expanded = oneOfType([arrayOf(number), func]);
  */
 export class ToggleItem extends PureComponent {
 
+    static displayName = 'ToggleItem';
+
     static propTypes = {
         onToggle  : func.isRequired,
         rowIndex  : number,
@@ -39,6 +41,8 @@ export class ToggleItem extends PureComponent {
 
 
 export default class ExpandableScroller extends PureComponent {
+    static displayName = 'ExpandableScroller';
+
     static propTypes    = {
         ...Scroller.propTypes,
         //accepts an array of rowIndexes that will be Toggled

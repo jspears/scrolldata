@@ -23,3 +23,5 @@
     @extend .cell-column-border-left-base
     border-color $dividerColor
 
+.cell-header:first-child
+    padding: 15px 0 10px 0

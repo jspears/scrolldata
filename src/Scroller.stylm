@@ -26,5 +26,3 @@
     width 100%
     position absolute
 
-html, body
-    height: 105%
