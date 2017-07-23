@@ -58,7 +58,6 @@ export default class Column extends PureComponent {
         className           : '',
         label               : '',
         style               : {},
-        parent              : document,
         onDragStart         : drag,
         onDrag              : drag,
         onDragEnd           : drag,
@@ -105,7 +104,7 @@ export default class Column extends PureComponent {
     }
 
     handleMouseDown = stop((event) => {
-
+        const parent = this.props.parent || document;
         this.listeners(
             listen(parent, 'mousemove', this.handleMouseMove),
             listen(parent, 'mouseup', this.handleMouseUp)

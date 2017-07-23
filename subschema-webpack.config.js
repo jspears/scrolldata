@@ -6,8 +6,7 @@ const hyphenize = v => v.replace(/([A-Z])/g, (g) => `-${lc(g[0])}`);
 module.exports  = function (options, webpack) {
     webpack.module.rules.push({
         test: /\.stylm$/,
-        use : [
-            'style-loader',
+        use : options.useStyle(
             {
                 loader : 'css-loader',
                 options: {
@@ -46,7 +45,7 @@ module.exports  = function (options, webpack) {
                     'include css'     : true,
                     'hoist atrules'   : true
                 },
-            }]
+            })
     });
     if (options.useHot) {
         webpack.plugins.unshift(new options.webpack.NamedModulesPlugin())

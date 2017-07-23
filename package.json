@@ -26,7 +26,7 @@
     "server": "subschema-webpack-dev-server",
     "demo": "subschema-webpack --demo ./docs ",
     "gh-pages": "git subtree push --prefix docs origin gh-pages",
-    "dist": "subschema-webpack  --devtool source-map",
+    "dist": "subschema-webpack  --devtool source-map --no-style-loader",
     "preversion": "npm run dist && npm run test"
   }
 }
