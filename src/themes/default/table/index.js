@@ -5,6 +5,7 @@ import IndeterminateCheckbox from './IndeterminateCheckbox.stylm';
 import Row from './Row.stylm';
 import Cell from './Cell.stylm';
 import Blank from './Blank.stylm';
+import RowActions from './RowActions.stylm'
 
 export default ({
     Blank,
@@ -12,6 +13,7 @@ export default ({
     Column,
     IndeterminateCheckbox,
     Row,
+    RowActions,
     SortIndicator,
     TableScroller,
 });

@@ -1,8 +1,10 @@
 import { oneOfType, number, func, string, checkPropTypes } from 'prop-types';
 import { Component } from 'react';
 
+export const isComponent = (val) => val && val.prototype instanceof Component;
+
 export const result = (val, ...args) => {
-    if (val && val.prototype instanceof Component) {
+    if (isComponent(val)) {
         return val;
     }
     return typeof val === 'function' ? val(

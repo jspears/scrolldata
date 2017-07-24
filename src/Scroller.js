@@ -5,7 +5,7 @@ import {
 } from 'prop-types';
 import {
     numberOrFunc, result, ignoreKeys, EMPTY_ARRAY, classes, orProp,
-    createShouldComponentUpdate
+    createShouldComponentUpdate, fire
 } from './util';
 
 const propTypes    = {
@@ -53,8 +53,8 @@ const propTypes    = {
     //Typically not used, but for completeness you can style the sizer element
     sizerClassName      : string,
     viewportClassName   : string,
-    //Typically a Date.now() of the lastCache, to ensure we are fetching new data
-    //when necessary
+    //Typically a Date.now() of the lastCache, to ensure we are fetching new
+    // data when necessary
     cacheAge            : number
 };
 const defaultProps = {
@@ -70,12 +70,14 @@ const defaultProps = {
     viewPort  : 'top',
     translateViewPort(top) {
         return {
-            transform: `translate3d(0,${top}px,0)`
+            transform: `translate3d(0,${top}px,0)`,
+            overflow : 'hidden'
         }
     },
     topViewPort(top) {
         return {
-            top
+            top,
+            overflow : 'hidden'
         }
     }
 };
@@ -117,7 +119,9 @@ export default class Scroller extends PureComponent {
         //direct manip so that state will be updated later... plenty of
         //chance for a setState to happen
         this.state.page = props.page;
+
         this.scrollTo(props.scrollTo, props);
+
     }
 
     scrollDelay(from, to) {
@@ -294,8 +298,7 @@ export default class Scroller extends PureComponent {
 
     handleScrollToChange(scrollTo) {
         if (scrollTo != this.state.scrollTo) {
-            this.props.onScrollToChanged && this.props.onScrollToChanged(
-                scrollTo);
+            fire(this.props.onScrollToChanged, scrollTo);
         }
 
     }
@@ -370,12 +373,12 @@ export default class Scroller extends PureComponent {
     render() {
         const {
                   props   : {
-                      width,
                       children,
                       className,
                       scrollerClassName,
                       viewportClassName, sizerClassName,
                       viewPort,
+                      width
                   }, state: { totalHeight, height, offsetHeight = 0 }
               }             = this;
         const viewPortStyle = this.props[`${viewPort}ViewPort`](
@@ -384,7 +387,7 @@ export default class Scroller extends PureComponent {
                      style={{ ...this.props.style }}>
             {children}
             <div className={classes(scroller, scrollerClassName)}
-                 style={{ height, width }}
+                 style={{ height, minWidth: width + 16 }}
                  onScroll={this.handleScroll}
                  ref={this.innerOffsetNode}>
                 <div className={classes(sizer, sizerClassName)}

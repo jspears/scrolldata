@@ -30,6 +30,7 @@
     mask-image url('./unchecked.svg');
     background-color: rgba(0, 0, 0, 0.50)
 
+
 .checked:hover::after
     background-color rgba(33, 150, 243, .5)
 

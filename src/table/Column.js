@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
-    string, bool, func, oneOfType, oneOf, number, shape
+    string, bool, func, oneOfType, oneOf, number, shape, any,
 } from 'prop-types';
 
 import {
@@ -34,8 +34,9 @@ export const columnPropTypes = {
     sorted              : bool,
     columnKey           : string,
     columnIndex         : number,
+    containerHeight     : number,
     label               : stringFuncOrFalse,
-    formatter           : stringOrFunc,
+    formatter           : any,
     headerRender        : func,
     width               : numberOrFunc,
     minWidth            : number,
@@ -169,6 +170,7 @@ export default class Column extends PureComponent {
 
     render() {
         const {
+                  state,
                   props: {
                       style = {},
                       columnKey,
@@ -190,35 +192,28 @@ export default class Column extends PureComponent {
                       maxWidth,
                       height,
                       selectable,
-                      state,
                       ...props
                   },
                   handleMouseDown,
-              } = this;
-
-        let sortableClass;
-        if (sortable !== false) {
-            sortableClass = 'sortable'
-        }
-
+              }          = this;
+        const isSortable = sortable !== false;
         return (
             <div ref={this.refColumn}
-                 {...props}
                  className={classes(tc('cell-header'), className)}
                  onClick={sortable && this.handleSort}
                  style={{
                      ...style,
-                     minWidth: this.state.width,
-                     maxWidth: this.state.width
+                     minWidth: state.width,
+                     maxWidth: state.width
                  }}>
                 {label !== false && result(label || columnKey, this.props)}
-                {sortable !== false && <SortIndicator
+                {isSortable && <SortIndicator
                     key={`sort-indicator-${columnKey}`}
                     sortDirection={sortDirection}
                 />}
                 {resizable !== false && <span key={`drag-handle-${columnKey}`}
-                                              className={tc('handle',
-                                                  sortableClass)}
+                                              className={tc('handle', isSortable
+                 && 'sortable')}
                                               onClick={this.cancelClick}
                                               onMouseDown={this.handleMouseDown}
                                               {...handle}/>}

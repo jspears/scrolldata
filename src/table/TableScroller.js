@@ -17,17 +17,18 @@ import Row from './Row';
 import Blank from './Blank';
 
 export const tablePropTypes = {
-    rowClassName    : string,
-    columns         : arrayOf(shape(columnPropTypes)),
-    rowRender       : func,
-    headerRender    : func,
-    className       : string,
-    renderItem      : func,
-    renderSelectable: func,
-    onRowSelect     : func,
+    rowClassName        : string,
+    columns             : arrayOf(shape(columnPropTypes)),
+    rowRender           : func,
+    headerRender        : func,
+    className           : string,
+    renderItem          : func,
+    renderSelectable    : func,
+    onRowSelect         : func,
     //If all all are selected, other wise an array of selected
-    selected        : arrayOf(any),
-    selectedState   : oneOf(['ALL', 'INDETERMINATE'])
+    selected            : arrayOf(any),
+    selectedState       : oneOf(['ALL', 'INDETERMINATE']),
+    onColumnConfigChange: func
 };
 
 const ignore = ignoreKeys(tablePropTypes);
@@ -192,36 +193,37 @@ export default class TableScroller extends PureComponent {
                   rowIndex,
                   height,
                   data,
-              }             = row;
-        const cells         = [];
-        const { columns }   = this.state;
-        const cellClassName = 'cell';
+              }           = row;
+        const cells       = [];
+        const { columns } = this.state;
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
-            let { columnKey, renderCell, ...config } = columns[i];
+            let { columnKey, cellRender, renderCell, ...config } = columns[i];
             if (config.hidden) {
                 continue;
             }
-            const cellData = data[columnKey];
             if (config.selectable) {
                 config = {
                     ...config,
                     width     : 30,
                     renderCell: this.props.renderSelectable,
-                    data      : rowIndex,
+                    data      : data[columnKey],
                     onSelect  : this.handleRowSelection,
-                    state     : this.isSelected(cellData)
+                    state     : this.isSelected(data[columnKey])
                 }
 
             }
+
             const RenderCell = config.renderCell || this.props.renderCell;
-            cells[c++]       = <RenderCell {...config}
-                                           key={`cell-${c}`}
-                                           columnKey={columnKey}
-                                           rowIndex={rowIndex}
-                                           colIndex={i}
-                                           height={height}
-                                           className={config.className}
-                                           data={cellData}/>
+
+            cells[c++] = <RenderCell data={data}
+                                     {...config}
+                                     key={`cell-${c}`}
+                                     columnKey={columnKey}
+                                     rowIndex={rowIndex}
+                                     colIndex={i}
+                                     height={height}
+                                     className={config.className}
+            />
         }
 
         const RowRender = this.props.rowRender;
@@ -320,6 +322,7 @@ export default class TableScroller extends PureComponent {
                                 columnIndex={i}
                                 key={`column-${col.columnKey}-${i}-${c}`}
                                 onSort={this.handleSort}
+                                containerHeight={this.props.height}
                                 onColumnConfigChange={this.handleColumnConfigChange}/>
         }
 

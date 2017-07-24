@@ -7,3 +7,4 @@ export IndeterminateCheckbox from './IndeterminateCheckbox';
 export Row from './Row';
 export SortIndicator from './SortIndicator';
 export TableScroller from './TableScroller';
+export RowActions from './RowActions';
