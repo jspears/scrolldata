@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { themeClass } from '../themes';
 import { result } from '../util';
+import RowActions from './RowActions';
 
 const tc = themeClass({ displayName: 'Row' });
 
@@ -21,14 +22,23 @@ export default class Row extends PureComponent {
                   className,
                   rowExpandedContentClass,
                   expandedContent,
-                  rowExpandedClass
+                  rowExpandedClass,
+                  offsetLeft,
+                  rowActions,
+                  data,
+                  onRowAction,
               } = this.props;
 
         if (isExpanded) {
             return <div style={{ height: rowHeight }}
                         className={tc(rowExpandedClass)}>
                 <div className={tc(className)}
-                     onClick={onToggle}>{children}</div>
+                     onClick={onToggle}>{children}{rowActions && <RowActions
+                    actions={rowActions}
+                    offsetLeft={offsetLeft}
+                    onRowAction={onRowAction}
+                    rowData={data}
+                />}</div>
                 <div className={tc(rowExpandedContentClass)}>
                     {result(expandedContent, this.props)}
                 </div>
@@ -37,7 +47,12 @@ export default class Row extends PureComponent {
 
         return <div style={{ height: rowHeight, }}
                     className={tc(className)}
-                    onClick={onToggle}>{children}</div>;
+                    onClick={onToggle}>{children}{rowActions && <RowActions
+            actions={rowActions}
+            offsetLeft={offsetLeft}
+            onRowAction={onRowAction}
+            rowData={data}
+        />}</div>;
     }
 }
 

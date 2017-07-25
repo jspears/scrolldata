@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { themeClass } from '../index';
+import { themeClass } from '../themes';
 import { arrayOf, number, string, func, shape, any } from 'prop-types'
 import { stop, fire, execLoop as removeListener, listen, } from '../util';
 
@@ -8,14 +8,15 @@ export default class RowActions extends PureComponent {
     static displayName = 'RowActions';
 
     static propTypes    = {
-        onRowAction  : func,
-        rowData      : any,
-        actions      : arrayOf(shape({
+        onRowAction   : func,
+        rowData       : any,
+        actions       : arrayOf(shape({
             action: string.isRequired,
             label : string.isRequired,
             icon  : string,
         })),
-        maxRowActions: number
+        maxRowActions : number,
+        containerWidth: number
     };
     static defaultProps = {
         maxRowActions: 3
@@ -68,9 +69,15 @@ export default class RowActions extends PureComponent {
         </li>
     };
 
+    renderMenu(menuActionList) {
+        return <ul className={tc('action-menu')}>
+            {menuActionList.map(this.renderAction, this)}
+        </ul>;
+    }
+
     renderActions() {
 
-        const { actions, maxRowActions } = this.props;
+        const { props: { actions, maxRowActions }, state: { active } } = this;
 
         const actionList = actions.slice(0,
             Math.min(actions.length, maxRowActions));
@@ -85,13 +92,10 @@ export default class RowActions extends PureComponent {
         if (menuActionList.length) {
             ret[actionList.length] =
                 (<li key='action-menu'
-                     className={tc('menu-item', this.state.active
-                                                && 'active')}
+                     className={tc('menu-item', active && 'active')}
                      onClick={this.handleMenu}>
                     <i className={tc('icon', 'icon-vertical')}/>
-                    <ul className={tc('action-menu')}>
-                        {menuActionList.map(this.renderAction, this)}
-                    </ul>
+                    {active && this.renderMenu(menuActionList)}
                 </li>);
 
         }
@@ -99,10 +103,14 @@ export default class RowActions extends PureComponent {
 
     }
 
-    _menuRef = (node) => this.menuNode = node;
-
     render() {
-        return <ul ref={this._menuRef} className={tc('container')}>
+        const { offsetLeft } = this.props;
+        let style            = {};
+        if (offsetLeft) {
+            style.left      = offsetLeft;
+            style.positiion = 'sticky';
+        }
+        return <ul className={tc('actions')} style={style}>
             {this.renderActions()}
         </ul>
 

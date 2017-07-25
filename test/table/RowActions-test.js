@@ -37,7 +37,7 @@ describe('RowActions', function () {
     }
     ];
 
-    it.only('should render', function () {
+    it('should render', function () {
 
 
         const menu = into(
@@ -52,18 +52,32 @@ describe('RowActions', function () {
         expect(menu).toExist();
 
     });
-    it('should render in a scroller', function () {
+    it.only('should render in a scroller', function () {
 
 
         const menu = into(
-            <div style={{ width: 600, overflow: 'auto' }}>
+            <div style={{ width: 600, overflow: 'auto' }} className='parent'>
                 <div style={{
                     width     : 1200,
                     position  : 'relative',
                     background: 'gray',
                     height    : 50
                 }}>
-                    <RowActions actions={actions}/>
+                </div>
+                <div style={{
+                    width     : 1200,
+                    position  : 'relative',
+                    background: 'gray',
+                    height    : 50
+                }}>
+                    <RowActions actions={actions} containerWidth={600}/>
+                </div>
+                <div style={{
+                    width     : 1200,
+                    position  : 'relative',
+                    background: 'gray',
+                    height    : 50
+                }}>
                 </div>
             </div>, true);
 

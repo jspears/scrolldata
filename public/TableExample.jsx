@@ -88,7 +88,30 @@ const columns = [
         "width"    : 200
     }];
 
+const rowActions = [{
+    action: 'asterisk',
+    label : 'More Info',
+    icon  : 'glyphicon glyphicon-asterisk',
+}, {
+    action: 'video',
+    label : 'Watch Video',
+    icon  : 'glyphicon glyphicon-facetime-video',
 
+}, {
+    action: 'download',
+    label : 'Download',
+    icon  : 'glyphicon glyphicon-cloud-download',
+}, {
+    action: 'do something',
+    label : 'Action',
+}, {
+    action: "move-to",
+    label : 'Move to...'
+}, {
+    icon  : 'glyphicon glyphicon-remove',
+    label : 'Delete',
+    action: "Delete"
+}];
 export default class TableExample extends Component {
 
     static defaultProps = {
@@ -155,7 +178,7 @@ export default class TableExample extends Component {
     }
 
     handleScrollToClick = ({ target: { dataset: { rowIndex } } }) => {
-        this.handleScrollTo(parseInt(rowIndex, 10));
+        this.props.onSetState({scrollTo:parseInt(rowIndex, 10)});
     };
     handleToggle        = (expanded) => {
         this.props.onSetState({ expanded });
@@ -190,35 +213,9 @@ export default class TableExample extends Component {
                            onMenuItemClick={this.handleMenuClick}
                            onSort={this.handleSort}
                            onExpandToggle={this.handleToggle}
-                           rowActions={[{
-                               action: 'asterisk',
-                               label : 'More Info',
-                               icon  : 'glyphicon glyphicon-asterisk',
-                           }, {
-                               action: 'video',
-                               label : 'Watch Video',
-                               icon  : 'glyphicon glyphicon-facetime-video',
-
-                           }, {
-                               action: 'download',
-                               label : 'Download',
-                               icon  : 'glyphicon glyphicon-cloud-download',
-                           },
-
-                               {
-                                   acton: 'do something',
-                                   label: 'Action',
-                               },
-                               {
-                                   action: "Move to",
-                               },
-                               {
-                                   icon  : 'glyphicon glyphicon-cloud-delete',
-                                   action: "Delete"
-                               }
-                           ]}
+                           rowActions={rowActions}
             />
-
+            <p>More Stuff Down Here</p>
         </div>
     }
 }

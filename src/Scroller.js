@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
-import { viewport, scroller, container, sizer } from './Scroller.stylm';
+import {themeClass} from './themes';
+//import { viewport, scroller, container, sizer } from './Scroller.stylm';
 import {
     any, number, func, string, oneOfType, array, object, oneOf,
 } from 'prop-types';
@@ -383,20 +384,20 @@ export default class Scroller extends PureComponent {
               }             = this;
         const viewPortStyle = this.props[`${viewPort}ViewPort`](
             offsetHeight);
-        return (<div className={classes(container, className)}
+        return (<div className={classes(tc('container'), className)}
                      style={{ ...this.props.style }}>
             {children}
-            <div className={classes(scroller, scrollerClassName)}
+            <div className={classes(tc('scroller'), scrollerClassName)}
                  style={{ height, minWidth: width + 16 }}
                  onScroll={this.handleScroll}
                  ref={this.innerOffsetNode}>
-                <div className={classes(sizer, sizerClassName)}
+                <div className={classes(tc('sizer'), sizerClassName)}
                      style={{
                          height: totalHeight,
                          right : 0
                      }}>
                 </div>
-                <div className={classes(viewport, viewportClassName)}
+                <div className={classes(tc('viewport'), viewportClassName)}
                      style={viewPortStyle}>
                     {this.renderItems()}
                 </div>
@@ -404,3 +405,4 @@ export default class Scroller extends PureComponent {
         </div>);
     }
 }
+const tc = themeClass(Scroller);
