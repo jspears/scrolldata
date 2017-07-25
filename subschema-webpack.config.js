@@ -1,9 +1,8 @@
 'use strict';
-const path      = require('path');
-const project   = path.resolve.bind(path, __dirname);
-const lc        = Function.call.bind(String.prototype.toLowerCase);
-const hyphenize = v => v.replace(/([A-Z])/g, (g) => `-${lc(g[0])}`);
-module.exports  = function (options, webpack) {
+const path          = require('path');
+const project       = path.resolve.bind(path, __dirname);
+const getLocalIdent = require('./getLocalIdent');
+module.exports      = function (options, webpack) {
     webpack.module.rules.push({
         test: /\.stylm$/,
         use : options.useStyle(
@@ -15,22 +14,9 @@ module.exports  = function (options, webpack) {
                     camelCase     : false,
                     localIdentName: '[name]',
                     context       : 'src',
-                    getLocalIdent(loaderContext, localIdentName, localName,
-                                  options) {
-                        if (!options.context) {
-                            options.context = loaderContext.options
-                                              && typeof loaderContext.options.context
-                                                 === "string"
-                                ? loaderContext.options.context
-                                : loaderContext.context;
-                        }
-
-                        const request = path.basename(
-                            path.relative(options.context,
-                                loaderContext.resourcePath), '.stylm');
-                        return `scrolldata${hyphenize(request)}-${localName}`;
-                    }
+                    getLocalIdent,
                 }
+
             }, {
                 loader : 'stylus-loader',
                 options: {

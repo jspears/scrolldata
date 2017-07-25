@@ -12,9 +12,10 @@ export default class RowActions extends PureComponent {
         rowData       : any,
         actions       : arrayOf(shape({
             action: string.isRequired,
-            label : string.isRequired,
+            label : string,
             icon  : string,
         })),
+        height        : number,
         maxRowActions : number,
         containerWidth: number
     };
@@ -35,29 +36,29 @@ export default class RowActions extends PureComponent {
         this._listeners = listeners;
     }
 
-    handleAction = stop(({ target: { dataset: { action } } }) => {
-        if (fire(this.props.onRowAction, action, this.props.rowData)) {
+    handleAction = stop((e) => {
+        if (fire(this.props.onRowAction, e, e.currentTarget.dataset.action,
+                this.props.rowData)) {
             this.setState({ active: false });
         }
     });
 
-    handleMenu = stop(() => {
+    handleMenu    = stop(() => {
         this.setState({ active: true });
         this.listeners(listen(document, 'click', this.handleMenuOut),
             listen(document, 'keyup', this.handleKeyUp));
     });
-
-    handleKeyUp = ({ keyCode }) => {
+    handleMenuOut = stop(() => {
+        this.setState({ active: false });
+        this.listeners();
+    });
+    handleKeyUp   = ({ keyCode }) => {
         //esc
         if (keyCode === 27) {
             this.handleMenuOut()
         }
     };
 
-    handleMenuOut = stop(() => {
-        this.setState({ active: false });
-        this.listeners();
-    });
 
     renderAction({ action, label, icon }) {
         return <li key={`action-${action}`}
@@ -65,12 +66,15 @@ export default class RowActions extends PureComponent {
                    data-action={action}
                    onClick={this.handleAction}>
             {icon && <i className={tc('icon', icon)}/>}
-            <span className={tc('label')}>{label}</span>
+            <span className={tc('label')}>{label || action}</span>
         </li>
     };
 
     renderMenu(menuActionList) {
-        return <ul className={tc('action-menu')}>
+        const rect = this.rowRef.getBoundingClientRect();
+        const top  = rect.top;
+        const left = this.rowRef.offsetLeft;
+        return <ul className={tc('action-menu')} style={{ left, top }}>
             {menuActionList.map(this.renderAction, this)}
         </ul>;
     }
@@ -82,20 +86,18 @@ export default class RowActions extends PureComponent {
         const actionList = actions.slice(0,
             Math.min(actions.length, maxRowActions));
 
-        const menuActionList = actions.slice(actionList.length);
-
         const ret = [];
 
         for (let i = 0, l = actionList.length; i < l; i++) {
             ret[i] = this.renderAction(actionList[i])
         }
-        if (menuActionList.length) {
+        if (actions.length > maxRowActions) {
             ret[actionList.length] =
                 (<li key='action-menu'
                      className={tc('menu-item', active && 'active')}
                      onClick={this.handleMenu}>
                     <i className={tc('icon', 'icon-vertical')}/>
-                    {active && this.renderMenu(menuActionList)}
+
                 </li>);
 
         }
@@ -103,16 +105,28 @@ export default class RowActions extends PureComponent {
 
     }
 
+    _rowRef = (node) => {
+        this.rowRef = node;
+    };
+
     render() {
-        const { offsetLeft } = this.props;
-        let style            = {};
+        const { offsetLeft, actions, height, maxRowActions } = this.props;
+        let style                                            = {};
+
         if (offsetLeft) {
-            style.left      = offsetLeft;
-            style.positiion = 'sticky';
+            style.left = offsetLeft;
         }
-        return <ul className={tc('actions')} style={style}>
-            {this.renderActions()}
-        </ul>
+        if (height) {
+            style.height = height;
+        }
+        const menuActionList = actions.slice(maxRowActions);
+        return <div className={tc('row-actions')} ref={this._rowRef}>
+            <ul className={tc('actions')} style={style}>
+                {this.renderActions()}
+            </ul>
+            {menuActionList.length && this.state.active && this.renderMenu(
+                menuActionList, offsetLeft)}
+        </div>
 
     }
 }

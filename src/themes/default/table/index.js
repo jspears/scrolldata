@@ -6,7 +6,6 @@ import Row from './Row.stylm';
 import Cell from './Cell.stylm';
 import Blank from './Blank.stylm';
 import RowActions from './RowActions.stylm'
-import Scroller from './Scroller.stylm';
 
 export default ({
     Blank,
@@ -15,7 +14,6 @@ export default ({
     IndeterminateCheckbox,
     Row,
     RowActions,
-    Scroller,
     SortIndicator,
     TableScroller,
 });

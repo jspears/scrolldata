@@ -48,6 +48,7 @@ export default class Row extends PureComponent {
         return <div style={{ height: rowHeight, }}
                     className={tc(className)}
                     onClick={onToggle}>{children}{rowActions && <RowActions
+            height={rowHeight}
             actions={rowActions}
             offsetLeft={offsetLeft}
             onRowAction={onRowAction}

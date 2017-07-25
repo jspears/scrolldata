@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
-import {themeClass} from './themes';
+import { themeClass } from './themes';
 //import { viewport, scroller, container, sizer } from './Scroller.stylm';
 import {
     any, number, func, string, oneOfType, array, object, oneOf,
 } from 'prop-types';
 import {
     numberOrFunc, result, ignoreKeys, EMPTY_ARRAY, classes, orProp,
-    createShouldComponentUpdate, fire
+    createShouldComponentUpdate, fire, scrollContext
 } from './util';
 
 const propTypes    = {
@@ -78,7 +78,7 @@ const defaultProps = {
     topViewPort(top) {
         return {
             top,
-            overflow : 'hidden'
+            overflow: 'hidden'
         }
     }
 };
@@ -86,7 +86,7 @@ const defaultProps = {
 
 const ignore = ignoreKeys(propTypes, defaultProps);
 
-export default class Scroller extends PureComponent {
+export class Scroller extends PureComponent {
     static displayName  = 'Scroller';
     static propTypes    = propTypes;
     static defaultProps = defaultProps;
@@ -101,6 +101,8 @@ export default class Scroller extends PureComponent {
         scrollTo    : this.props.scrollTo,
         height      : this.props.height
     };
+
+
 
     offsetTop = 0;
 
@@ -314,14 +316,14 @@ export default class Scroller extends PureComponent {
         const origOffsetTop = this.offsetTop || 0;
         this.offsetTop      = scrollTop;
         this.calculate(this.props, scrollTop, true);
-        this._tracking = setTimeout(() => {
+        const ti = setTimeout(() => {
+            clearTimeout(ti);
             this.calculate(this.props, scrollTop, false);
-        }, this.scrollDelay(origOffsetTop, scrollTop));
+        }, Math.min(this.scrollDelay(origOffsetTop, scrollTop), 100));
     };
 
     handleScroll = (e) => {
-        if (this.props.onScrollContainer ? this.props.onScrollContainer(e)
-                                           !== false : true) {
+        if (fire(this.props.onScrollContainer, e)) {
             // e.preventDefault();
             // e.stopPropagation();
             // this.setState({ scrollLeft: e.target.scrollLeft });
@@ -337,8 +339,7 @@ export default class Scroller extends PureComponent {
                   props
               } = this;
 
-        const ret = Array(data.length / 2);
-
+        const ret      = [];
         let startIndex = page.rowIndex;
         let rowsData   = page.data;
         let rowOd      = -1;
@@ -369,7 +370,6 @@ export default class Scroller extends PureComponent {
         }
         return ret;
     }
-
 
     render() {
         const {

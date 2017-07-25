@@ -24,7 +24,6 @@ export const tablePropTypes = {
     rowRender           : func,
     headerRender        : func,
     className           : string,
-    renderItem          : func,
     renderSelectable    : func,
     onRowSelect         : func,
     //If all all are selected, other wise an array of selected
@@ -51,8 +50,9 @@ export default class TableScroller extends PureComponent {
 
     static propTypes = {
         ...tablePropTypes,
-        expandedHeight: numberOrFunc,
-        renderItem    : func,
+        expandedHeight : numberOrFunc,
+        expandedContent: func,
+        renderItem     : func,
     };
 
     static defaultProps = {
@@ -74,19 +74,8 @@ export default class TableScroller extends PureComponent {
         isContainerExpandable: this.props.expandedContent != null,
     };
 
-    listeners(...args) {
-        this._listeners && this._listeners.forEach(removeListener);
-        this._listeners = args;
-    }
-
     componentDidMount() {
         this.handleMenuOffset();
-        this.listeners(
-            listen(window, 'resize', () => this.handleMenuOffset()));
-    }
-
-    componentWillUnmount() {
-        this.listeners();
     }
 
     componentWillReceiveProps({ columns, selected, expandedContent }) {
@@ -204,7 +193,7 @@ export default class TableScroller extends PureComponent {
     }
 
 
-    renderItem      = (row) => {
+    renderItem = (row) => {
         const {
                   rowIndex,
                   height,
@@ -228,13 +217,14 @@ export default class TableScroller extends PureComponent {
                 continue;
             }
             if (config.selectable) {
+                const selectData = data && data[columnKey];
                 config = {
                     ...config,
                     width     : 30,
                     renderCell: renderSelectable,
-                    data      : data[columnKey],
+                    data      : selectData,
                     onSelect  : this.handleRowSelection,
-                    state     : this.isSelected(data[columnKey])
+                    state     : this.isSelected(selectData)
                 }
 
             }
@@ -265,15 +255,13 @@ export default class TableScroller extends PureComponent {
         return <RowRender  {...cfg}
                            data={row.data}
                            offsetLeft={this.state.menuOffset}
-                           onRowAction={this.handleRowAction}
+                           onRowAction={this.props.onRowAction}
                            rowActions={this.props.rowActions}
                            rowHeight={row.rowHeight}
                            containerWidth={containerWidth}
                            rowIndex={row.rowIndex}>{cells}</RowRender>
 
     };
-    handleRowAction = (action, rowData) => fire(this.props.onRowAction, action,
-        rowData);
 
     renderBlank = (row) => {
         if (this._blanks) {
@@ -312,12 +300,14 @@ export default class TableScroller extends PureComponent {
 
     refContainer = (node) => {
         this._refContainer = node;
+        this.handleMenuOffset(node);
     };
 
     handleScroll = ({ target }) => this.handleMenuOffset(target);
 
     handleMenuOffset(refContainer) {
-        const { offsetWidth, scrollLeft } = refContainer || this._refContainer;
+
+        const { offsetWidth, scrollLeft } = refContainer || this._refContainer || {}    ;
         this.setState({ menuOffset: offsetWidth + scrollLeft });
     };
 

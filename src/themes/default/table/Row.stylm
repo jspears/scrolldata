@@ -2,8 +2,6 @@
 
 .row
     border-top 1px solid rgba(0, 0, 0, 0.12)
-    i
-        min-height 50px
 
 .expanded .row
     border-bottom 1px solid rgba(0, 0, 0, 0.12)

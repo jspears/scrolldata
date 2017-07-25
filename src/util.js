@@ -199,3 +199,9 @@ export const orProp = (current, rest) => {
     return chainedCheckType;
 
 };
+
+export const scrollContext = {
+    subscribe  : func,
+    unsubscribe: func,
+    getParent  : func
+};
