@@ -52,11 +52,6 @@ export default class Configure extends React.PureComponent {
                     help='The number of data items to buffer'
                     onChange={this.handleNumChange}/>
 
-            <Slider name='scrollDelay' label='Scoll Delay'
-                    value={props}
-                    help='Amount of time to delay when scrolling before fetching data number (in ms)'
-                    onChange={this.handleNumChange}/>
-
             <Slider name='fakeFetch'
                     label='Time to delay fetch (s)'
                     value={props}

@@ -138,7 +138,6 @@ export default class Scroller extends PureComponent {
     }
 
 
-
     scrollTo(scrollTo) {
         if (this.state.rowIndex != scrollTo) {
             this.calculate(scrollTo, null, this.props);
@@ -185,7 +184,10 @@ export default class Scroller extends PureComponent {
         if (props.hash !== this.props.hash) {
             newState.page = { rowIndex: 0, data: [] };
         }
-        if (fire(this.props.onScrollToChanged, newState.rowIndex)) {
+        const suppressFire = this.state.rowIndex == newState.rowIndex &&
+                           newState.rowIndex == props.scrollTo;
+
+        if (suppressFire || fire(this.props.onScrollToChanged, newState.rowIndex)) {
 
 
             const resp = this._fetchPage(newState);
@@ -198,13 +200,6 @@ export default class Scroller extends PureComponent {
         }
     }
 
-
-    handleScrollToChange(scrollTo) {
-        if (scrollTo != this.state.rowIndex) {
-            fire(this.props.onScrollToChanged, scrollTo);
-        }
-
-    }
 
     handleScroll = (coords) => {
         const { scrollTop, height, width, scrollLeft } = coords;
