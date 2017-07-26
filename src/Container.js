@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react';
 import { func } from 'prop-types';
-import { scrollContext } from './util';
 
-const events = [
+const EVENTS = [
     'resize',
     'scroll',
     'touchstart',
@@ -16,14 +15,14 @@ export default class Container extends PureComponent {
 
     subscribers = [];
 
-    getParent = () => this.node;
-
+    static propTypes = {
+        onMovement: func
+    };
 
     notifySubscribers = ({ target }) => {
         if (!this.framePending) {
             requestAnimationFrame(() => {
                 this.framePending = false;
-                console.log('notify')
                 const {
                           top, bottom,
                           height, width
@@ -65,7 +64,9 @@ export default class Container extends PureComponent {
     };
 
     subscribe = handler => {
-        this.subscribers = this.subscribers.concat(handler);
+        if (this.subscribers.indexOf(handler) == -1) {
+            this.subscribers = this.subscribers.concat(handler);
+        }
     };
 
     unsubscribe = handler => {
@@ -82,26 +83,27 @@ export default class Container extends PureComponent {
     }
 
     componentDidMount() {
-        events.forEach(this.addListener, this);
+        EVENTS.forEach(this.addListener, this);
         this.subscribe(this.props.onMovement);
+        this._updateScrollTop();
     }
 
     componentWillUnmount() {
-        events.forEach(this.removeListener, this);
-        this.unsubscribe(this.props.onMovement);
+        this.subscribers = [];
+        EVENTS.forEach(this.removeListener, this);
     }
 
-    _handleNode = (node) => {
+    setParent = (node) => {
         this.node = node
-
     };
+    getParent = () => this.node;
 
     render() {
         const { onMovement, offsetHeight, onTouchStart, onTouchMove, onTouchEnd, children, ...props } = this.props;
 
         return (
             <div {...props}
-                 ref={this._handleNode}
+                 ref={this.setParent}
                  onScroll={this.notifySubscribers}
                  onTouchStart={this.notifySubscribers}
                  onTouchMove={this.notifySubscribers}

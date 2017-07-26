@@ -1,5 +1,17 @@
 import { result } from './util';
 
+/**
+ * This is the magic .  Positions things, see's whats in view.
+ * Its meant to be fast not pretty. It may be called hundreds
+ * of times a second (while scrolling) so built for speed not
+ * for comfort.
+ *
+ * @param newScrollTo
+ * @param newOffsetTop
+ * @param props
+ * @param cachedData
+ * @returns {*}
+ */
 export default function position(newScrollTo, newOffsetTop, props,
                                  cachedData = []) {
     const { rowHeight, rowCount, rowsVisible, height } = props;
@@ -8,7 +20,6 @@ export default function position(newScrollTo, newOffsetTop, props,
     }
     const totalRows = result(rowCount);
 
-    // let { data }    = this.state;
     let totalHeight     = 0;
     let data            = [];
     let newOffsetHeight = newOffsetTop == null ? 0 : newOffsetTop;

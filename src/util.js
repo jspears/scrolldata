@@ -52,21 +52,8 @@ export const execLoop = (c) => typeof c === 'function' && c();
 
 export const classes = (...args) => args.filter(Boolean).join(' ');
 
-export const ignoreKeys                  = (...args) => {
-    const ignoreKeys = args.reduce(function (ret, arg) {
-        if (typeof arg === 'string') {
-            if (ret.indexOf(arg) === -1) {
-                ret.push(arg);
-            }
-            return ret;
-        }
-        (Array.isArray(arg) ? arg : Object.keys(arg)).forEach(function (key) {
-            if (indexOf(ret, key) === -1) {
-                ret.push(key);
-            }
-        });
-        return ret;
-    }, []);
+export const ignoreKeys = (...args) => {
+    const ignoreKeys = uniqueKeys(args);
 
     return (obj) => {
         if (!obj) {
@@ -80,22 +67,30 @@ export const ignoreKeys                  = (...args) => {
         }, {});
     };
 };
-export const createShouldComponentUpdate = (...args) => {
-    const propKeys = args.reduce(function (ret, arg) {
-        if (typeof arg === 'string') {
-            if (ret.indexOf(arg) === -1) {
-                ret.push(arg);
-            }
-            return ret;
-        }
 
-        (Array.isArray(arg) ? arg : Object.keys(arg)).forEach(function (key) {
-            if (indexOf(ret, key) === -1) {
-                ret.push(key);
-            }
-        });
+const uniqueKeys$inner       = (ret, key) => {
+    if (indexOf(ret, key) === -1) {
+        ret.push(key);
+    }
+    return ret;
+};
+const uniqueKeys$innerString = (ret, arg) => {
+    if (typeof arg === 'string') {
+        if (indexOf(ret, arg) === -1) {
+            ret.push(arg);
+        }
         return ret;
-    }, []);
+    }
+
+    return (Array.isArray(arg) ? arg : Object.keys(arg)).reduce(
+        uniqueKeys$inner, ret);
+};
+
+export const uniqueKeys = (args, ret = []) => args.reduce(
+    uniqueKeys$innerString, ret);
+
+export const createShouldComponentUpdate = (...args) => {
+    const propKeys = uniqueKeys(args);
     const length   = propKeys.length;
     return function (newProps, newState) {
         for (let i = 0; i < length; i++) {
@@ -117,26 +112,15 @@ export const createShouldComponentUpdate = (...args) => {
 
 export const toString = (val) => val == null ? '' : String(val);
 
-
-export const hashCode = (val) => {
-    let hash = 0;
-    if (val.length == 0) {
-        return hash;
-    }
-    for (let i = 0, l = val.length; i < l; i++) {
-        const char = this.charCodeAt(i);
-        hash       = ((hash << 5) - hash) + char;
-        hash       = hash & hash; // Convert to 32bit integer
-    }
-    return hash;
-}
-
 export const fire = (fn, ...args) => (fn ? fn(...args) !== false
     : true);
 
-export const makeCompare = (key) => {
+export const makeCompare = (formatter, key, options) => {
+    if (typeof formatter !== 'function') {
+        formatter = (data) => data[key];
+    }
     return (a, b) => {
-        if (a === b || !(b || a )) {
+        if (a === b || !(a || b )) {
             return 0;
         }
         if (!b) {
@@ -145,8 +129,8 @@ export const makeCompare = (key) => {
         if (!a) {
             return -1;
         }
-        a = a[key];
-        b = b[key];
+        a = formatter(a, key, options);
+        b = formatter(b, key, options);
         if (a === b || !(a || b)) {
             return 0;
         }

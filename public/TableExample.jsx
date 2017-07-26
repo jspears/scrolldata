@@ -7,6 +7,7 @@ import tc from './tc';
 import { makeCompare } from '../src/util'
 import { fake } from './helper'
 
+const reverse = (fn) => (...args) => fn(...args) * -1;
 
 const expandedContent = () => (<div key='expanded-content'
                                     className={tc('expanded-content')}>
@@ -128,18 +129,15 @@ export default class TableExample extends Component {
         if (sortColumn && sortDirection) {
             let {
                     columnKey,
-                    comparator
+                    sorter,
+                    formatter,
                 } = sortColumn;
 
             let data = example.concat();
-            if (typeof comparator !== 'function') {
-                comparator = makeCompare(columnKey);
+            if (typeof sorter !== 'function') {
+                sorter = makeCompare(formatter, columnKey, sortColumn);
             }
-            if (sortDirection === 'DESC') {
-                data.sort((a, b) => comparator(a, b) * -1);
-            } else {
-                data.sort(comparator);
-            }
+            data.sort(sortDirection === 'DESC' ? reverse(sorter) : sorter);
             ret = data.slice(offset, offset + count);
         } else {
             ret = example.slice(offset, offset + count);
@@ -180,6 +178,9 @@ export default class TableExample extends Component {
     };
     handleToggle        = (expanded) => {
         this.props.onSetState({ expanded });
+    };
+    handleScrollTo      = (scrollTo) => {
+        this.props.onSetState({ scrollTo });
     };
 
     render() {

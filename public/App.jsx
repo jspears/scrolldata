@@ -77,7 +77,7 @@ export default class App extends PureComponent {
             </p>
             <Example onSetState={this.handleState}
                      rowData={this.rowData}
-                     onScrollToChange={this.handleScrollTo} {...props}/>
+                     onScrollToChanged={this.handleScrollTo} {...props}/>
         </div>
     }
 }

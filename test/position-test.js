@@ -2,7 +2,7 @@ import position from '../src/position';
 import expect from 'expect';
 
 
-describe.only('position', function () {
+describe('position', function () {
 
 
     it('should find height and position', function () {

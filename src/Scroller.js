@@ -51,8 +51,6 @@ const propTypes    = {
     hash                : any,
     //
     onScrollToChanged   : func,
-    //Controls how much time to use when scrolling
-    scrollDelay         : numberOrFunc,
     //How many extra items to request before render for better scrolling
     bufferSize          : numberOrFunc,
     //When the event fires, returning false will cancel the scroll
@@ -139,12 +137,6 @@ export default class Scroller extends PureComponent {
         }
     }
 
-    scrollDelay(from, to) {
-        if (this.props.scrollDelay != null) {
-            return result(this.props.scrollDelay, from, to);
-        }
-        return Math.min(Math.abs(from - to), 2);
-    }
 
 
     scrollTo(scrollTo) {
@@ -189,20 +181,20 @@ export default class Scroller extends PureComponent {
     };
 
     calculate(newScrollTo, newOffsetTop, props) {
-        console.log('calculating')
         const newState = position(newScrollTo, newOffsetTop, props);
         if (props.hash !== this.props.hash) {
             newState.page = { rowIndex: 0, data: [] };
         }
-        const resp = this._fetchPage(newState);
+        if (fire(this.props.onScrollToChanged, newState.rowIndex)) {
 
 
-        // this.handleScrollToChange(newState.rowOffset);
+            const resp = this._fetchPage(newState);
 
-        if (!(resp instanceof Promise)) {
-            this.setState({ ...newState, ...resp, });
-        } else {
-            this.setState(newState);
+            if (!(resp instanceof Promise)) {
+                this.setState({ ...newState, ...resp, });
+            } else {
+                this.setState(newState);
+            }
         }
     }
 
