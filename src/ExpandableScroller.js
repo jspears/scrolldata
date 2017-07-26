@@ -61,11 +61,13 @@ export default class ExpandableScroller extends PureComponent {
     };
 
     render() {
-        const { expanded, onExpandToggle, renderItem, hash, expandedHeight, renderBlank, rowHeight, ...props } = this.props;
-        const newHash                                                                                          = `${hash}-${this.state.expanded.join(
-            ' ')}-${typeof this.props.expandedHeight === 'number'
-            ? this.props.expandedHeight : ''} ${typeof this.props.rowHeight
-                                                === 'number'
+        const {
+                  expanded, onExpandToggle, renderItem, hash,
+                  expandedHeight, renderBlank, rowHeight, ...props
+              }       = this.props;
+
+        const newHash = `${hash}-${this.state.expanded.join(' ')} ${typeof this.props.rowHeight
+                    === 'number'
             ? this.props.rowHeight : ''}`;
         return <Scroller {...props}
                          hash={newHash}
@@ -75,7 +77,8 @@ export default class ExpandableScroller extends PureComponent {
     }
 
     state = {
-        expanded: result(this.props.expanded) || EMPTY_ARRAY
+        expanded: result(this.props.expanded) || EMPTY_ARRAY,
+
     };
 
     constructor(props, ...rest) {

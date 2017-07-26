@@ -55,9 +55,10 @@ export default class ScrollerExample extends Component {
         return <div>
             <Configure onSetState={onSetState} {...this.props}/>
             <h3>Virtualized Scroller</h3>
+
             <Scroller className={tc('container')} renderItem={Render}
-                      renderBlank={Blank}
-                      {...props}/>
+                          renderBlank={Blank}
+                          {...props}/>
         </div>
     }
 }

@@ -7,24 +7,22 @@ import tc from './tc';
 import { makeCompare } from '../src/util'
 import { fake } from './helper'
 
-function between(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 const expandedContent = () => (<div key='expanded-content'
                                     className={tc('expanded-content')}>
     <span className={tc('centerable')}>This is expanded content</span>
 </div>);
 
-example.forEach((v, i) => (v.packageId = 127001 + between(0,
-    example.length)));
 
 const columns = [
     {
         "columnKey" : "requestId",
         "selectable": true,
+    },
+    {
+        "columnKey": "rowIndex",
+        "width"    : 100,
+        "label"    : "#"
     },
 
     {
@@ -178,7 +176,7 @@ export default class TableExample extends Component {
     }
 
     handleScrollToClick = ({ target: { dataset: { rowIndex } } }) => {
-        this.props.onSetState({scrollTo:parseInt(rowIndex, 10)});
+        this.props.onSetState({ scrollTo: parseInt(rowIndex, 10) });
     };
     handleToggle        = (expanded) => {
         this.props.onSetState({ expanded });

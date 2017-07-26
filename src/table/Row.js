@@ -29,8 +29,9 @@ export default class Row extends PureComponent {
                   onRowAction,
               } = this.props;
 
+        const rowStyle = {minHeight:rowHeight, maxHeight:rowHeight, margin:0};
         if (isExpanded) {
-            return <div style={{ height: rowHeight }}
+            return <div style={rowStyle}
                         className={tc(rowExpandedClass)}>
                 <div className={tc(className)}
                      onClick={onToggle}>{children}{rowActions && <RowActions
@@ -45,7 +46,7 @@ export default class Row extends PureComponent {
             </div>
         }
 
-        return <div style={{ height: rowHeight, }}
+        return <div style={rowStyle}
                     className={tc(className)}
                     onClick={onToggle}>{children}{rowActions && <RowActions
             height={rowHeight}

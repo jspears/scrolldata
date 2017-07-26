@@ -7,6 +7,16 @@ import example from './exampleDataset.json';
 import { fake } from './helper'
 import 'subschema-css-bootstrap/lib/style.css';
 
+example.forEach(function (v, i) {
+    v.rowIndex = i;
+    v.packageId = 127001 + between(0, example.length)
+});
+function between(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 
 const Routes = {
     Scroller,

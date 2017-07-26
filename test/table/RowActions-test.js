@@ -52,7 +52,7 @@ describe('RowActions', function () {
         expect(menu).toExist();
 
     });
-    it.only('should render in a scroller', function () {
+    it('should render in a scroller', function () {
 
 
         const menu = into(

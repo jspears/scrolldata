@@ -68,7 +68,7 @@ export default class TableScroller extends PureComponent {
 
     state = {
         columns              : this.props.columns,
-        columnsHash          : Date.now(),
+        hash                 : Date.now(),
         selected             : this.props.selected,
         selectState          : this.props.selectState,
         isContainerExpandable: this.props.expandedContent != null,
@@ -83,18 +83,20 @@ export default class TableScroller extends PureComponent {
         if (this.props.columns !== columns) {
             state.columns = columns;
             if (this.state.columns !== columns) {
-                state.columnHash = Date.now();
-                this._blanks     = null;
+                state.hash   = Date.now();
+                this._blanks = null;
             }
         }
+
         if (this.props.selected != selected) {
             state.selected = selected;
             if (this.state.selected !== selected) {
-                state.selectedHash = Date.now();
+                state.hash = Date.now();
             }
         }
         if (this.props.expandedContent != expandedContent) {
             state.isContainerExpandable = expandedContent != null;
+            state.hash                  = Date.now();
         }
         this.setState(state);
     }
@@ -104,8 +106,12 @@ export default class TableScroller extends PureComponent {
         const sortDirection = this.state.sortDirection === 'ASC' ? 'DESC'
             : 'ASC';
         if (fire(this.props.onSort, this.state.columns[sortIndex],
-                sortDirection)) {
-            this.setState({ sortIndex, sortDirection, hash: Date.now() });
+                sortDirection) && fire(this.handleExpandToggle, [])) {
+            this.setState({
+                sortIndex,
+                sortDirection,
+                hash: Date.now()
+            });
         }
     };
 
@@ -116,7 +122,7 @@ export default class TableScroller extends PureComponent {
 
             columns[columnIndex] =
                 Object.assign({}, columns[columnIndex], config);
-            this.setState({ columns, columnHash: Date.now() });
+            this.setState({ columns, hash: Date.now() });
         }
     };
 
@@ -218,7 +224,7 @@ export default class TableScroller extends PureComponent {
             }
             if (config.selectable) {
                 const selectData = data && data[columnKey];
-                config = {
+                config           = {
                     ...config,
                     width     : 30,
                     renderCell: renderSelectable,
@@ -307,8 +313,17 @@ export default class TableScroller extends PureComponent {
 
     handleMenuOffset(refContainer) {
 
-        const { offsetWidth, scrollLeft } = refContainer || this._refContainer || {}    ;
+        const { offsetWidth, scrollLeft } = refContainer || this._refContainer
+                                            || {};
         this.setState({ menuOffset: offsetWidth + scrollLeft });
+    };
+
+    handleExpandToggle = (expanded) => {
+        if (fire(this.props.onExpandToggle, expanded)) {
+            this.setState({ expanded });
+            return true;
+        }
+        return false;
     };
 
     render() {
@@ -363,11 +378,16 @@ export default class TableScroller extends PureComponent {
                                 onColumnConfigChange={this.handleColumnConfigChange}/>
         }
 
+        const props = ignore(this.props);
+        if (isContainerExpandable) {
+            props.onExpandToggle = this.handleExpandToggle;
+            props.expanded       = this.state.expanded;
+        }
+
         return <div className={tc('container')} ref={this.refContainer}
                     onScroll={this.handleScroll}>
-            <UseScroller hash={classes(this.props.hash,
-                this.state.columnHash)}
-                         {...ignore(this.props)}
+            <UseScroller hash={this.state.hash}
+                         {...props}
                          width={rowWidth}
                          height={this.props.height}
                          className={tc('scroll-rows')}

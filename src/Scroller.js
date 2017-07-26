@@ -8,7 +8,18 @@ import {
     numberOrFunc, result, ignoreKeys, EMPTY_ARRAY, classes, orProp,
     createShouldComponentUpdate, fire, scrollContext
 } from './util';
+import Container from './Container';
+import position from './position';
 
+const debounce     = function (fn, timeout) {
+    let ti;
+
+    return (...args) => {
+        const to = Math.max(result(timeout || 100, ...args));
+        clearTimeout(ti);
+        ti = setTimeout(fn, to, ...args);
+    }
+};
 const propTypes    = {
     //What to render item
     renderItem: func.isRequired,
@@ -86,22 +97,23 @@ const defaultProps = {
 
 const ignore = ignoreKeys(propTypes, defaultProps);
 
-export class Scroller extends PureComponent {
+export default class Scroller extends PureComponent {
     static displayName  = 'Scroller';
     static propTypes    = propTypes;
     static defaultProps = defaultProps;
+    static contextTypes = scrollContext;
 
     state = {
-        page        : this.props.page,
+        page        : { data: [], rowIndex: 0 },
         //data for the currently showing items
         data        : [],
         rowOffset   : 0,
         offsetHeight: 0,
         totalHeight : 0,
-        scrollTo    : this.props.scrollTo,
+        rowIndex    : null,//do not set it is needed to determine when to first
+        // calculate scrollTo.
         height      : this.props.height
     };
-
 
 
     offsetTop = 0;
@@ -115,16 +127,16 @@ export class Scroller extends PureComponent {
     }
 
     componentDidMount() {
-        this.scrollTo(this.props.scrollTo, this.props);
+        this.calculate(this.props.scrollTo, null, this.props);
     }
 
     componentWillReceiveProps(props) {
-        //direct manip so that state will be updated later... plenty of
-        //chance for a setState to happen
-        this.state.page = props.page;
 
-        this.scrollTo(props.scrollTo, props);
-
+        if (this.props.scrollTo !== props.scrollTo) {
+            this.calculate(props.scrollTo, null, props);
+        } else {
+            this.calculate(this.state.rowIndex, null, props);
+        }
     }
 
     scrollDelay(from, to) {
@@ -135,56 +147,22 @@ export class Scroller extends PureComponent {
     }
 
 
-    scrollTo(scrollTo, props) {
-        const {
-                  rowHeight,
-                  rowCount,
-                  height,
-              } = props || this.props;
-
-        const count      = result(rowCount);
-        let totalHeight  = 0;
-        let offsetHeight = 0;
-
-        for (let rowIndex = 0; rowIndex < count; rowIndex++) {
-            if (rowIndex === scrollTo) {
-                offsetHeight = totalHeight;
-            }
-            totalHeight += result(rowHeight, rowIndex);
-        }
-        /**
-         * Story time -
-         * So if there is no scroll, than the scroll event won't fire.  So
-         * we need to force it.
-         *
-         * In theory we could not recalculate the total height again,
-         * but... whatever its relatively cheap.
-         */
-        if (totalHeight > height && this.offsetTop !== offsetHeight) {
-            this.offsetTop = offsetHeight;
-            this.setState({
-                scrollTo,
-                totalHeight,
-                offsetHeight
-            }, this._innerScrollTop);
-        } else {
-            this.calculate(props, offsetHeight, false);
+    scrollTo(scrollTo) {
+        if (this.state.rowIndex != scrollTo) {
+            this.calculate(scrollTo, null, this.props);
         }
     }
 
-    _innerScrollTop = () => {
-        this._innerOffsetNode.scrollTop = this.state.offsetHeight;
-    };
 
     innerOffsetNode = (node) => this._innerOffsetNode = node;
 
-    _fetchPage(rowIndex, rowCount) {
-        const page      = this.state.page;
+    _fetchPage({ rowIndex, rowCount, page }) {
+
+        page            = page || this.state.page;
         const pageFirst = page.rowIndex;
         const pageLast  = pageFirst + page.data.length;
-        if (rowIndex >= pageFirst && (rowIndex + rowCount) < pageLast) {
-            //already in buffer.
-            return;
+        if (rowIndex >= pageFirst && (rowIndex + rowCount) <= pageLast) {
+            return {};
         }
 
         const bufferSize = result(this.props.bufferSize, rowIndex, rowCount);
@@ -194,12 +172,12 @@ export class Scroller extends PureComponent {
 
         const ret = this.props.rowData(newRowIndex, rowCount + bufferSize);
         if (Array.isArray(ret)) {
-            this.setState({
+            return {
                 page: {
                     data    : ret,
                     rowIndex: newRowIndex,
                 }
-            })
+            }
         }
         Promise.resolve(ret)
                .then((data) => this.setState({
@@ -210,124 +188,37 @@ export class Scroller extends PureComponent {
                }));
     };
 
-
-    calculate({ rowHeight, rowCount, height = 0, rowsVisible }, _scrollTop,
-              isTracking) {
-        const count        = result(rowCount);
-        const offsetHeight = isTracking ? this.offsetTop : _scrollTop;
-        const bottom       = offsetHeight + height;
-
-        let data             = this.state.data;
-        let totalHeight      = 0;
-        let rowOffset        = -1;
-        let outView          = false;
-        let viewRowCount     = 0;
-        let withinBottom     = false;
-        let withinTop        = false;
-        let hasDataChange    = false;
-        let rowsVisibleIndex = 0;
-        let visibleHeight    = height;
-        for (let rowIndex = 0, r = 0; rowIndex < count; rowIndex++) {
-            const rHeight = result(rowHeight, rowIndex);
-
-            withinBottom = totalHeight < bottom;
-            withinTop    = totalHeight >= offsetHeight;
-            if (rowsVisible != null && withinTop && viewRowCount
-                                                    < rowsVisible) {
-                viewRowCount++;
-                visibleHeight += rHeight;
-                if (rowOffset === -1) {
-                    rowOffset = rowIndex;
-                }
-                if (rowIndex == count) {
-                    rowCount = rowIndex;
-                }
-                if (rowIndex <= count) {
-                    if (!hasDataChange && (data[r + 1] !== rowIndex
-                                           || data[r + 2] !== rHeight)) {
-                        hasDataChange = true;
-                        //copy the data if its changed this could be better
-                        data          = data.slice(0, r)
-                    }
-                    data[r++] = rowIndex;
-                    data[r++] = rHeight;
-                }
-                if (!(isTracking) && withinTop &&
-                    (viewRowCount > rowsVisible || rowIndex === count - 1 )
-                    && !outView) {
-                    outView = true;
-                    this._fetchPage(rowOffset, viewRowCount);
-                }
-            } else {
-                if (withinTop && withinBottom) {
-                    viewRowCount++;
-                    if (rowOffset === -1) {
-                        rowOffset = rowIndex;
-                    }
-                    if (rowIndex == count) {
-                        rowCount = rowIndex;
-                    }
-                    if (rowIndex <= count) {
-                        if (!hasDataChange && (data[r + 1] !== rowIndex
-                                               || data[r + 2] !== rHeight)) {
-                            hasDataChange = true;
-                            //copy the data if its changed this could be better
-                            data          = data.slice(0, r)
-                        }
-                        data[r++] = rowIndex;
-                        data[r++] = rHeight;
-                    }
-                }
-                if (!(isTracking) && withinTop &&
-                    (!withinBottom || rowIndex === count - 1 )
-                    && !outView) {
-                    outView = true;
-                    this._fetchPage(rowOffset, viewRowCount);
-                }
-            }
-            totalHeight += rHeight;
+    calculate(newScrollTo, newOffsetTop, props) {
+        console.log('calculating')
+        const newState = position(newScrollTo, newOffsetTop, props);
+        if (props.hash !== this.props.hash) {
+            newState.page = { rowIndex: 0, data: [] };
         }
-        if (!isTracking) {
-            this.handleScrollToChange(rowOffset);
+        const resp = this._fetchPage(newState);
+
+
+        // this.handleScrollToChange(newState.rowOffset);
+
+        if (!(resp instanceof Promise)) {
+            this.setState({ ...newState, ...resp, });
+        } else {
+            this.setState(newState);
         }
-        this.setState({
-            height: visibleHeight,
-            data,
-            rowOffset,
-            totalHeight,
-            offsetHeight
-        });
     }
 
+
     handleScrollToChange(scrollTo) {
-        if (scrollTo != this.state.scrollTo) {
+        if (scrollTo != this.state.rowIndex) {
             fire(this.props.onScrollToChanged, scrollTo);
         }
 
     }
 
-    tracking = (scrollTop) => {
-        const isScrolling = this.offsetTop !== scrollTop;
-        clearTimeout(this._tracking);
-        if (!isScrolling) {
-            this.calculate(this.props, this.offsetTop, false);
-            return;
-        }
-        const origOffsetTop = this.offsetTop || 0;
-        this.offsetTop      = scrollTop;
-        this.calculate(this.props, scrollTop, true);
-        const ti = setTimeout(() => {
-            clearTimeout(ti);
-            this.calculate(this.props, scrollTop, false);
-        }, Math.min(this.scrollDelay(origOffsetTop, scrollTop), 100));
-    };
+    handleScroll = (coords) => {
+        const { scrollTop, height, width, scrollLeft } = coords;
 
-    handleScroll = (e) => {
-        if (fire(this.props.onScrollContainer, e)) {
-            // e.preventDefault();
-            // e.stopPropagation();
-            // this.setState({ scrollLeft: e.target.scrollLeft });
-            this.tracking(e.target.scrollTop);
+        if (this.state.offsetHeight != scrollTop) {
+            this.calculate(null, scrollTop, this.props, this.state.data);
         }
     };
 
@@ -387,10 +278,11 @@ export class Scroller extends PureComponent {
         return (<div className={classes(tc('container'), className)}
                      style={{ ...this.props.style }}>
             {children}
-            <div className={classes(tc('scroller'), scrollerClassName)}
-                 style={{ height, minWidth: width + 16 }}
-                 onScroll={this.handleScroll}
-                 ref={this.innerOffsetNode}>
+            <Container onMovement={this.handleScroll}
+                       className={classes(tc('scroller'), scrollerClassName)}
+                       style={{ height, minWidth: width + 16 }}
+                       offsetHeight={offsetHeight}
+            >
                 <div className={classes(tc('sizer'), sizerClassName)}
                      style={{
                          height: totalHeight,
@@ -401,8 +293,9 @@ export class Scroller extends PureComponent {
                      style={viewPortStyle}>
                     {this.renderItems()}
                 </div>
-            </div>
+            </Container>
         </div>);
     }
 }
+
 const tc = themeClass(Scroller);

@@ -111,7 +111,7 @@ export const createShouldComponentUpdate = (...args) => {
                 return true;
             }
         }
-        return true;
+        return false;
     };
 };
 
