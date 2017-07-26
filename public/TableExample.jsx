@@ -198,7 +198,7 @@ export default class TableExample extends Component {
                         onChange={this.handleColumnCount}/>
                 <Slider name='expandedHeight' label='Expanded Row Height'
                         value={this.props}
-                        onChange={this.props.onSetState}
+                        onChange={this.handleNumChange}
                         max={600}/>
             </Configure>
             <h3>Virtualized Table</h3>

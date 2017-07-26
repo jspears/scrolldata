@@ -73,8 +73,8 @@ export default class RowActions extends PureComponent {
     renderMenu(menuActionList) {
         const rect = this.rowRef.getBoundingClientRect();
         const top  = rect.top;
-        const left = this.rowRef.offsetLeft;
-        return <ul className={tc('action-menu')} style={{ left, top }}>
+//        const left = this.rowRef.offsetLeft;
+        return <ul className={tc('action-menu')} style={{ right:0, top }}>
             {menuActionList.map(this.renderAction, this)}
         </ul>;
     }

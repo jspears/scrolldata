@@ -80,7 +80,8 @@ export default class TogglerExample extends Component {
         this.props.onSetState({ scrollTo: parseInt(rowIndex, 10) });
     };
 
-    handleNumberChange = ({ target: { name, value } }) => {
+    handleNumberChange = (e) => {
+        const { target: { name, value } } =e;
         this.props.onSetState({ [name]: parseInt(value, 10) });
     };
 
@@ -89,7 +90,8 @@ export default class TogglerExample extends Component {
         const { fakeFetch, onSetState, ...props } = this.props;
         return <div>
             <Configure {...this.props}>
-                <Slider name='expandedHeight' label='Expanded Row Height'
+                <Slider name='expandedHeight'
+                        label='Expanded Row Height'
                         value={this.props}
                         max={600}
                         onChange={this.handleNumberChange}/>

@@ -78,7 +78,7 @@ export default class TableScroller extends PureComponent {
         this.handleMenuOffset();
     }
 
-    componentWillReceiveProps({ columns, selected, expandedContent }) {
+    componentWillReceiveProps({ columns, selected, expanded, expandedContent }) {
         const state = {};
         if (this.props.columns !== columns) {
             state.columns = columns;
@@ -97,6 +97,9 @@ export default class TableScroller extends PureComponent {
         if (this.props.expandedContent != expandedContent) {
             state.isContainerExpandable = expandedContent != null;
             state.hash                  = Date.now();
+        }
+        if (this.props.expanded != expanded) {
+            state.expanded = expanded;
         }
         this.setState(state);
     }
