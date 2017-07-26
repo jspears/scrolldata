@@ -1,4 +1,0 @@
-@import '../../../table/Cell.styl'
-
-.cell
-    padding 0 5px

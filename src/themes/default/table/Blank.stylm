@@ -1,5 +1,0 @@
-@import '../../../table/Blank.styl'
-.blank
-    > div
-        background #f6f7f8
-        background linear-gradient(to right, #eeeeee 8%, #f6f7f8 18%, #eeeeee 33%)
