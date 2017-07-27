@@ -3,6 +3,7 @@ import Expandable from '../src/ExpandableScroller';
 import Slider from './Slider';
 import Configure from './Configure';
 import tc from './tc';
+import Sample from './Sample';
 
 const Render = ({
                     rowIndex, isExpanded, onToggle, rowHeight,
@@ -50,9 +51,21 @@ const Blank = ({
 };
 
 
-export default class TogglerExample extends Component {
-
-    static defaultProps = {
+export default class ExpandableExample extends Component {
+    static configureSample = {
+        component : 'Table',
+        properties: Sample.defaultProps.properties.concat({
+                name: 'expandedHeight',
+                help: 'The size to expand to when clicked',
+                type: 'number'
+            },
+            {
+                name: 'expanded',
+                type: 'array',
+                help: 'The rows to be expanded'
+            },)
+    }
+    static defaultProps    = {
         expandedHeight: 200,
         expanded      : []
     };
@@ -81,7 +94,7 @@ export default class TogglerExample extends Component {
     };
 
     handleNumberChange = (e) => {
-        const { target: { name, value } } =e;
+        const { target: { name, value } } = e;
         this.props.onSetState({ [name]: parseInt(value, 10) });
     };
 

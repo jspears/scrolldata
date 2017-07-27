@@ -6,11 +6,13 @@ import Table from './TableExample';
 import example from './exampleDataset.json';
 import { fake } from './helper'
 import 'subschema-css-bootstrap/lib/style.css';
+import Sample from './Sample';
 
 example.forEach(function (v, i) {
-    v.rowIndex = i;
+    v.rowIndex  = i;
     v.packageId = 127001 + between(0, example.length)
 });
+
 function between(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -67,6 +69,13 @@ export default class App extends PureComponent {
     render() {
         const { route, ...props } = this.state;
         const Example             = Routes[route] || Scroller;
+
+        const {
+                  component  = Example.displayName,
+                  properties = Sample.defaultProps.properties
+              } = Example.configureSample || {};
+
+        const conf = { component, properties };
         return <div>
             <h2>Scrolldata</h2>
             <p>This is a little example to show how it would work&nbsp;
@@ -75,6 +84,8 @@ export default class App extends PureComponent {
                 <a href='#Slideout'>Slideout</a> |
                 <a href='#Table'>Table</a>
             </p>
+            <Sample {...conf} value={props}
+                    onChange={this.handleState}/>
             <Example onSetState={this.handleState}
                      rowData={this.rowData}
                      onScrollToChanged={this.handleScrollTo} {...props}/>

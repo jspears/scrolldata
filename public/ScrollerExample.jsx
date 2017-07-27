@@ -41,6 +41,10 @@ const Blank = ({
 
 export default class ScrollerExample extends Component {
 
+    static configureSample = {
+        component: 'Scroller'
+    };
+
     defaultProps = {};
 
 
@@ -57,8 +61,8 @@ export default class ScrollerExample extends Component {
             <h3>Virtualized Scroller</h3>
 
             <Scroller className={tc('container')} renderItem={Render}
-                          renderBlank={Blank}
-                          {...props}/>
+                      renderBlank={Blank}
+                      {...props}/>
         </div>
     }
 }

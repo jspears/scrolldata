@@ -1,13 +1,29 @@
 Scrolldata
 ===
-It is yet another virtual scroller, with a few advantages.
+It is yet another virtual scroller, with a few advantages. I did not want to
+write this component but all the components I tested missed something I needed.
+
+I looked at
+ * reactvirtualized - did not have resizable columns, or expandable content
+ * fixed-data-tables - expandable content did not work, and a million extra nodes.
+ * smarttable - some internal thing that works ok, but totally featureless.
+ * a couple of others, but they all had fatal flaws (table based layout,
+
+
 * Very few additonal dom nodes.
-* Rows are not wrapped.
-* Does not store data, other than what is in display.
-* Has in place holders.
-* Elements can use natural positioning, when rendered.
+* Very few reflows and unnessary virtual tree updates.
+  * can scrollTo row
+  * does not ref any data not being shown.
+* Has a table
+  * table is sortable
+  * expandable
+  * columns are resizable
+  * configurable
+  * Row level actions
 
 
+## Todo -
+  - Write real docs.
 
 
 
@@ -59,26 +75,6 @@ Or run it
      </div>
  };
 
- function toString(val) {
-     if (typeof val === 'function') {
-         return val.name;
-     }
-     return String(val);
- }
-
- const Slider = ({ label, type = 'range', min = 0, value, name, ...rest }) => {
-     return (<div className='form-group'>
-         <label htmlFor={name}>{label} ({toString(value[name])})</label>
-         <input type={type}
-                className='form-control'
-                id={name}
-                name={name}
-                min={min}
-                value={value[name]}
-                {...rest}/>
-     </div>)
- };
-
  const wait = (timeout, value) => new Promise(
      r => setTimeout(r, timeout * 1000, value));
 
@@ -88,8 +84,7 @@ Or run it
          rowHeight : 50,
          height    : 600,
          rowCount  : example.length,
-         renderItem: Render,
-         fakeFetch : 1
+         renderItem: Render
      };
 
      handleNumChange = ({ target: { value, name } }) =>
@@ -114,51 +109,11 @@ Or run it
      render() {
          //don't pass in fakeFetch
          const { fakeFetch, ...props } = this.state;
-         return <form className='inline-form'>
-             <Slider name='scrollTo' label='Scroll To' value={this.state}
-                     max={this.state.rowCount}
-                     onChange={this.handleNumChange}/>
-             <Slider name='rowHeight' label='Row Height' value={this.state}
-                     max={600}
-                     onChange={this.handleNumChange}/>
-             <Slider name='rowCount' label='Row Count' value={this.state}
-                     max={example.length}
-                     onChange={this.handleNumChange}/>
-             <Slider name='height' label='Height' value={this.state}
-                     max={1600}
-                     onChange={this.handleNumChange}/>
-             <Slider name='renderItem'
-                     type='checkbox'
-                     label='Change Render'
-                     checked={this.state.renderItem === Render}
-                     value={this.state}
-                     onChange={this.handleRenderItem}
-             />
-             <Slider name='fakeFetch'
-                     label='Time to delay fetch (s)'
-                     checked={this.state.renderItem === Render}
-                     value={this.state}
-                     min={0}
-                     max={10}
-                     onChange={this.handleNumChange}
-             />
-             <h1>Virtualized</h1>
-             <Scroller renderItem={Render}
+         return <Scroller renderItem={Render}
                        renderBlank={Blank}
                        rowData={this.rowData}
                        onScrollToChanged={this.handleScrollTo}
                        {...props}/>
-         </form>
-     }
- }
-
- export default class App extends PureComponent {
-     render() {
-         return <div>
-             <h3>Scrolldata</h3>
-             <p>This is a little example to show how it would work</p>
-             <ExampleState/>
-         </div>
      }
  }
 
