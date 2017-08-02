@@ -85,7 +85,7 @@ export default class ScrollerExample extends Component {
         return <div>
             <Configure onSetState={onSetState} {...this.props}/>
             <h3>Virtualized Slideout Menu</h3>
-            <Scroller className={tc('container')} renderItem={Render}
+            <Scroller renderItem={Render}
                       renderBlank={Blank}
                       onMenuItemClick={this.handleMenuClick}
                       {...props}/>

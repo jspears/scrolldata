@@ -16,7 +16,7 @@ import IndeterminateCheckbox from './IndeterminateCheckbox';
 import Cell from './Cell';
 import Row from './Row';
 import Blank from './Blank';
-import RowActions from './RowActions';
+import '../themes/default/table';
 
 export const tablePropTypes = {
     rowClassName        : string,
@@ -193,7 +193,7 @@ export default class TableScroller extends PureComponent {
             }
             const Blank = renderBlank;
             ret[c++]    = <Blank key={`cell-blank-${c}`}
-                                 width={selectable ? 30 : width}
+                                 width={width}
                                  height={height}/>
         }
 
@@ -228,8 +228,8 @@ export default class TableScroller extends PureComponent {
             if (config.selectable) {
                 const selectData = data && data[columnKey];
                 config           = {
-                    ...config,
                     width     : 30,
+                    ...config,
                     renderCell: renderSelectable,
                     data      : selectData,
                     onSelect  : this.handleRowSelection,
@@ -351,12 +351,13 @@ export default class TableScroller extends PureComponent {
             }
             if (col.selectable === true) {
                 col = {
-                    ...col,
                     width    : 30,
+                    className: tc('cell-header-select'),
+                    label    : this.props.renderSelectable,
+                    ...col,
+                    //do not override
                     sortable : false,
                     resizable: false,
-                    label    : this.props.renderSelectable,
-                    className: tc('cell-header-select'),
                     onSelect : this.handleIndeterminateSelection,
                     state    : this.selectState()
                 }

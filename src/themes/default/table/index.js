@@ -6,8 +6,9 @@ import Row from './Row.stylm';
 import Cell from './Cell.stylm';
 import Blank from './Blank.stylm';
 import RowActions from './RowActions.stylm'
+import theme from '../../index';
 
-export default ({
+theme({
     Blank,
     Cell,
     Column,

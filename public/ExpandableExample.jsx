@@ -113,7 +113,7 @@ export default class ExpandableExample extends Component {
             <div>
                 <div className="btn-group">{this.renderExpandedNumber()}</div>
             </div>
-            <Expandable className={tc('container')} renderItem={Render}
+            <Expandable renderItem={Render}
                         renderBlank={Blank}
                         rowData={this.rowData}
                         onExpandToggle={this.handleToggle}

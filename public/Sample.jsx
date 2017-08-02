@@ -190,38 +190,8 @@ class TinySlider extends PureComponent {
         return (<div className={tc('tiny')}>
             <input type='range'
                    {...rest}
-                   key={`input-range`}
-                   className={tc('tiny-input')}/>
+                   key={`input-range`}/>
             {help && <p className={tc("tiny-help-block")}>{help}</p>}
         </div>)
     }
 }
-
-/*
-<div id="DIV_1"><pre id="PRE_2">&lt;
-            <span className="pl-ent" id="SPAN_3">
-            <span className="pl-c1" id="SPAN_4">{this.props.component}</span>
-        </span>
-        <span className="pl-e" id="SPAN_5">columns</span>
-        <span className="pl-k" id="SPAN_6">{'='}</span>
-        <span className="pl-pse" id="SPAN_7">{'{'}</span>
-            <span className="pl-s1" id="SPAN_8">{'[]'}</span>
-            <span className="pl-pse" id="SPAN_9">{'}'}</span>
-        <span className="pl-e" id="SPAN_10">rowCount</span>
-        <span className="pl-k" id="SPAN_11">=</span>
-        <span className="pl-pse" id="SPAN_12">{'{'}</span>
-            <span className="pl-s1" id="SPAN_13">
-            <span className="pl-c1" id="SPAN_14">100</span>
-            </span>
-            <span className="pl-pse" id="SPAN_15">{'}'}</span>
-        <span className="pl-e" id="SPAN_16">rowHeight</span>
-        <span className="pl-k" id="SPAN_17">=</span>
-        <span className="pl-pse" id="SPAN_18">{'{'}</span>
-            <span className="pl-s1" id="SPAN_19">
-            <span className="pl-c1" id="SPAN_20">50</span>
-            </span>
-            <span className="pl-pse" id="SPAN_21">{'}'}</span>
-        /&gt;
-	</pre>
-        </div>
- */

@@ -3,7 +3,6 @@ import { themeClass } from '../themes';
 import { result } from '../util';
 import RowActions from './RowActions';
 
-const tc = themeClass({ displayName: 'Row' });
 
 export default class Row extends PureComponent {
     static displayName = 'Row';
@@ -17,7 +16,8 @@ export default class Row extends PureComponent {
     render() {
         const {
                   children,
-                  rowHeight, onToggle,
+                  rowHeight,
+                  onToggle,
                   isExpanded,
                   className,
                   rowExpandedContentClass,
@@ -27,9 +27,14 @@ export default class Row extends PureComponent {
                   rowActions,
                   data,
                   onRowAction,
+                  ...rest
               } = this.props;
 
-        const rowStyle = {minHeight:rowHeight, maxHeight:rowHeight, margin:0};
+        const rowStyle = {
+            minHeight: rowHeight,
+            maxHeight: rowHeight,
+            margin   : 0
+        };
         if (isExpanded) {
             return <div style={rowStyle}
                         className={tc(rowExpandedClass)}>
@@ -58,3 +63,4 @@ export default class Row extends PureComponent {
     }
 }
 
+const tc = themeClass(Row);

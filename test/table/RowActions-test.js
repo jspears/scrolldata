@@ -3,7 +3,6 @@ import expect from "expect";
 import RowActions from '../../src/table/RowActions';
 import { into } from '../support';
 import { themeClass } from '../../src';
-import appTc from '../../public/tc';
 
 const cell = themeClass({ displayName: 'Cell' });
 const row  = themeClass({ displayName: 'Row' });
@@ -37,7 +36,7 @@ describe('RowActions', function () {
     }
     ];
 
-    it('should render', function () {
+    it.only('should render', function () {
 
 
         const menu = into(

@@ -68,7 +68,6 @@ describe("ExpandableScroller", function () {
         const app = into(<ExpandableScroller expandedHeight={100}
                                              rowHeight={20}
                                              rowData={rowData}
-                                             scrollDelay={0}
                                              renderItem={renderItem}
                                              rowCount={20}
                                              height={200}
@@ -82,7 +81,6 @@ describe("ExpandableScroller", function () {
                                              expanded={[0]}
                                              rowHeight={20}
                                              rowData={rowData}
-                                             scrollDelay={0}
                                              renderItem={renderItem}
                                              rowCount={20}
                                              height={200}
@@ -96,7 +94,6 @@ describe("ExpandableScroller", function () {
                                              expanded={[11, 20]}
                                              rowHeight={20}
                                              rowData={rowData}
-                                             scrollDelay={0}
                                              renderItem={renderItem}
                                              rowCount={20}
                                              height={200}
@@ -111,7 +108,6 @@ describe("ExpandableScroller", function () {
                                              expanded={[11, 20]}
                                              rowHeight={20}
                                              rowData={rowData}
-                                             scrollDelay={0}
                                              renderItem={renderItem}
                                              rowCount={20}
                                              height={200}

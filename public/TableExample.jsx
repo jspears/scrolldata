@@ -231,7 +231,6 @@ export default class TableExample extends Component {
                 <div className="btn-group">{this.renderExpandedNumber()}</div>
             </div>
             <TableScroller {...props}
-                           className={tc('container')}
                            rowData={this.rowData}
                            onMenuItemClick={this.handleMenuClick}
                            onSort={this.handleSort}

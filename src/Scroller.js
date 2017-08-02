@@ -10,16 +10,8 @@ import {
 } from './util';
 import Container from './Container';
 import position from './position';
+import './themes/default/scroller';
 
-const debounce     = function (fn, timeout) {
-    let ti;
-
-    return (...args) => {
-        const to = Math.max(result(timeout || 100, ...args));
-        clearTimeout(ti);
-        ti = setTimeout(fn, to, ...args);
-    }
-};
 const propTypes    = {
     //What to render item
     renderItem: func.isRequired,
