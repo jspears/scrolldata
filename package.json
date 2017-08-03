@@ -30,6 +30,6 @@
     "demo": "subschema-webpack --demo ./docs ",
     "gh-pages": "git subtree push --prefix docs origin gh-pages",
     "prepublish": "subschema-webpack  --devtool source-map --no-style-loader",
-    "preversion": "npm run dist && npm run test"
+    "preversion": "npm run prepublish && npm run test"
   }
 }
