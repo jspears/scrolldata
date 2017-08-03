@@ -1,2 +1,2 @@
-import './scroller';
-import './table';
+export scroller from './scroller';
+export table from './table';

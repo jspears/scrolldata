@@ -1,7 +1,11 @@
 import React, { PureComponent } from 'react'
 import { themeClass } from '../themes';
-import { arrayOf, number, string, func, shape, any } from 'prop-types'
-import { stop, fire, execLoop as removeListener, listen, } from '../util';
+import {
+    arrayOf, number, string, func, shape, any, oneOfType
+} from 'prop-types'
+import {
+    stop, fire, execLoop as removeListener, listen, result,
+} from '../util';
 
 export default class RowActions extends PureComponent {
 
@@ -10,11 +14,11 @@ export default class RowActions extends PureComponent {
     static propTypes    = {
         onRowAction   : func,
         rowData       : any,
-        actions       : arrayOf(shape({
+        actions       : oneOfType([func, arrayOf(shape({
             action: string.isRequired,
             label : string,
             icon  : string,
-        })),
+        }))]),
         height        : number,
         maxRowActions : number,
         containerWidth: number
@@ -74,14 +78,18 @@ export default class RowActions extends PureComponent {
         const rect = this.rowRef.getBoundingClientRect();
         const top  = rect.top;
 //        const left = this.rowRef.offsetLeft;
-        return <ul className={tc('action-menu')} style={{ right:0, top }}>
+        return <ul className={tc('action-menu')} style={{ right: 0, top }}>
             {menuActionList.map(this.renderAction, this)}
         </ul>;
     }
 
     renderActions() {
 
-        const { props: { actions, maxRowActions }, state: { active } } = this;
+        const {
+                  props: { maxRowActions, rowData },
+                  state: { active }
+              }       = this;
+        const actions = result(this.props.actions, rowData);
 
         const actionList = actions.slice(0,
             Math.min(actions.length, maxRowActions));
