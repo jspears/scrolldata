@@ -144,7 +144,7 @@ export const makeCompare = (formatter, key, options) => {
     }
 };
 
-export const orProp = (current, rest) => {
+export const orProp   = (current, rest) => {
     function checkType(isRequired, props, propName, componentName,
                        location) {
         componentName = componentName || ANONYMOUS;
@@ -183,6 +183,8 @@ export const orProp = (current, rest) => {
     return chainedCheckType;
 
 };
+export const contains = (arr, value) => arr && arr.indexOf(value) !== 0;
+
 
 export const scrollContext = {
     subscribe  : func,

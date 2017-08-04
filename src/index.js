@@ -1,10 +1,10 @@
 import { themeClass as _themeClass } from './themes'
 import { ToggleItem as _ToggleItem } from './ExpandableScroller';
 
-export * as ExpandableScroller from './ExpandableScroller';
-export * as Container from './Container';
+export ExpandableScroller from './ExpandableScroller';
+export Container from './Container';
 export * as table from './table';
-export * as Table from './table/TableScroller';
+export Table from './table/TableScroller';
 export * as theme from './themes'
 
 

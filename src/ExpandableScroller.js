@@ -3,7 +3,7 @@ import { oneOfType, func, bool, node, arrayOf, number } from 'prop-types';
 import Scroller from './Scroller';
 import {
     EMPTY_ARRAY, toggle, numberOrFunc, result, fire, indexOf,
-    stringOrFunc
+    contains
 } from './util';
 
 export const expanded = oneOfType([arrayOf(number), func]);
@@ -18,6 +18,7 @@ export class ToggleItem extends PureComponent {
     static displayName = 'ToggleItem';
 
     static propTypes = {
+        /** toggles the row by rowIndex, if a second argument is given either true or false it will be forced open if (true) and closed if false. **/
         onToggle  : func.isRequired,
         rowIndex  : number,
         render    : func.isRequired,
@@ -60,21 +61,6 @@ export default class ExpandableScroller extends PureComponent {
         hash    : ''
     };
 
-    render() {
-        const {
-                  expanded, onExpandToggle, renderItem, hash,
-                  expandedHeight, renderBlank, rowHeight, ...props
-              }       = this.props;
-
-        const newHash = `${hash}-${this.state.expanded.join(' ')} ${typeof this.props.rowHeight
-                    === 'number'
-            ? this.props.rowHeight : ''}`;
-        return <Scroller {...props}
-                         hash={newHash}
-                         rowHeight={this.rowHeight}
-                         renderItem={this.renderItem}
-                         renderBlank={this.renderBlank}/>
-    }
 
     state = {
         expanded: result(this.props.expanded) || EMPTY_ARRAY,
@@ -121,12 +107,32 @@ export default class ExpandableScroller extends PureComponent {
 
     isExpanded = (rowIndex) => indexOf(this.state.expanded, rowIndex) > -1;
 
-    handleToggleExpand = (rowIndex) => {
+    handleToggleExpand = (rowIndex, expand) => {
+        if (expand != null && (contains(this.state.expanded, rowIndex) === expand)) {
+            return;
+        }
         const expanded = toggle(this.state.expanded, rowIndex);
         if (fire(this.props.onExpandToggle, expanded, rowIndex)) {
             this.setState({ expanded });
         }
     };
+
+    render() {
+        const {
+                  expanded, onExpandToggle, renderItem, hash,
+                  expandedHeight, renderBlank, rowHeight, ...props
+              } = this.props;
+
+        const newHash = `${hash}-${this.state.expanded.join(
+            ' ')} ${typeof this.props.rowHeight
+                    === 'number'
+            ? this.props.rowHeight : ''}`;
+        return <Scroller {...props}
+                         hash={newHash}
+                         rowHeight={this.rowHeight}
+                         renderItem={this.renderItem}
+                         renderBlank={this.renderBlank}/>
+    }
 
 
 }
