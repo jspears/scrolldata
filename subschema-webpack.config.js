@@ -1,8 +1,8 @@
 'use strict';
-const path          = require('path');
-const project       = path.resolve.bind(path, __dirname);
-const getLocalIdent = require('./getLocalIdent');
-module.exports      = function (options, webpack) {
+const path     = require('path');
+const project  = path.resolve.bind(path, __dirname);
+module.exports = function (options, webpack) {
+
     webpack.module.rules.push({
         test: /\.stylm$/,
         use : options.useStyle(
@@ -12,9 +12,8 @@ module.exports      = function (options, webpack) {
                     sourceMap     : true,
                     modules       : true,
                     camelCase     : false,
-                    localIdentName: '[name]',
-                    context       : 'src',
-                    getLocalIdent,
+                    localIdentName: '[path]_[name]__[local]',
+                    context       : 'src'
                 }
 
             }, {

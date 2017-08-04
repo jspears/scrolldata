@@ -1,8 +1,9 @@
-:hover ~ .row-actions , .row-actions:hover
+:hover ~ .row-actions,:hover > .row-actions, .row-actions:hover
     display flex
 
 .row-actions
     display none
+    height 100%
 
 .actions
     display flex
@@ -20,7 +21,7 @@
     position absolute
     right: 0
     padding-right 5px
-    transform: translateX(-100%);
+    height 100%
 
 //Label is here just for aria and for convience.
 .label

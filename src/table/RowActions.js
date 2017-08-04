@@ -83,13 +83,12 @@ export default class RowActions extends PureComponent {
         </ul>;
     }
 
-    renderActions() {
+    renderActions(actions) {
 
         const {
                   props: { maxRowActions, rowData },
                   state: { active }
               }       = this;
-        const actions = result(this.props.actions, rowData);
 
         const actionList = actions.slice(0,
             Math.min(actions.length, maxRowActions));
@@ -118,19 +117,17 @@ export default class RowActions extends PureComponent {
     };
 
     render() {
-        const { offsetLeft, actions, height, maxRowActions } = this.props;
+        const { offsetLeft, rowData, maxRowActions } = this.props;
         let style                                            = {};
 
         if (offsetLeft) {
             style.left = offsetLeft;
         }
-        if (height) {
-            style.height = height;
-        }
+        const actions = result(this.props.actions, rowData);
         const menuActionList = actions.slice(maxRowActions);
         return <div className={tc('row-actions')} ref={this._rowRef}>
             <ul className={tc('actions')} style={style}>
-                {this.renderActions()}
+                {this.renderActions(actions)}
             </ul>
             {menuActionList.length && this.state.active && this.renderMenu(
                 menuActionList, offsetLeft)}

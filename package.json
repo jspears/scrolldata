@@ -5,11 +5,11 @@
   "main": "lib/index",
   "source": "src/index",
   "dependencies": {
-    "emeth": "^1.0.0"
   },
   "author": "Justin Spears <speajus@gmail.com>",
   "license": "BSD",
   "devDependencies": {
+    "emeth": "^1.0.0",
     "nib": "^1.1.2",
     "stylus-loader": "^3.0.1",
     "prop-types": "^15.5.10",

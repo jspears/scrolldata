@@ -8,7 +8,7 @@ import Blank from './Blank.stylm';
 import RowActions from './RowActions.stylm'
 import theme from '../../index';
 
-theme({
+export default theme({
     Blank,
     Cell,
     Column,
