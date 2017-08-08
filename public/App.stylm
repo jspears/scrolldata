@@ -135,3 +135,6 @@ i:global(.glyphicon):active ~ :global(.dropdown) :global(.dropdown-menu)
         color: #262626;
         text-decoration: none;
         background-color: #f5f5f5;
+
+.example-container
+    padding: 20px

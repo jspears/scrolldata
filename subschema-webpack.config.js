@@ -35,5 +35,8 @@ module.exports = function (options, webpack) {
     if (options.useHot) {
         webpack.plugins.unshift(new options.webpack.NamedModulesPlugin())
     }
+    if (options.isDevServer){
+        options.devtool = 'inline-source-map';
+    }
     return webpack;
 }

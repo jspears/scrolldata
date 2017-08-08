@@ -7,6 +7,7 @@ import example from './exampleDataset.json';
 import { fake } from './helper'
 import 'subschema-css-bootstrap/lib/style.css';
 import Sample from './Sample';
+import tc from './tc';
 
 example.forEach(function (v, i) {
     v.rowIndex  = i;
@@ -86,9 +87,11 @@ export default class App extends PureComponent {
             </p>
             <Sample {...conf} value={props}
                     onChange={this.handleState}/>
-            <Example onSetState={this.handleState}
-                     rowData={this.rowData}
-                     onScrollToChanged={this.handleScrollTo} {...props}/>
+            <div className={tc('example-container')}>
+                <Example onSetState={this.handleState}
+                         rowData={this.rowData}
+                         onScrollToChanged={this.handleScrollTo} {...props}/>
+            </div>
         </div>
     }
 }
