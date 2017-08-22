@@ -44,12 +44,18 @@ export default class Sample extends PureComponent {
             name: 'width',
             help: 'Width of table',
             type: 'number'
+        }, {
+            name        : 'isVirtualized',
+            help        : 'Use Virtualization',
+            type        : 'bool',
+            defaultValue: true
         }
 
         ],
         value     : {}
     };
-           state        = {};
+
+    state = {};
 
     renderProp      = (ret = [], prop) => {
         ret.push(' ', ...this[`_${prop.type}`](prop));
@@ -57,6 +63,9 @@ export default class Sample extends PureComponent {
     };
     handleNumber    = ({ target: { name, value } }) => {
         this.props.onChange({ [name]: parseInt(value, 10) });
+    };
+    handleBool      = ({ currentTarget: { name, value } }) => {
+        this.props.onChange({ [name]: value !== 'on' })
     };
     handleJsonArray = ({ target: { name, value } }) => {
         try {
@@ -74,7 +83,8 @@ export default class Sample extends PureComponent {
         } catch (e) {
             this.setState({ [name]: value });
         }
-    }
+    };
+
 
     _json({ type, name, help, defaultValue }) {
         const value = this.state[name] || (this.props.value[name]
@@ -164,6 +174,36 @@ export default class Sample extends PureComponent {
                 <TinySlider name={name} max={max}
                             value={value}
                             onChange={this.handleNumber}/>
+            </span>,
+            <span key={`prop-name-rc-${name}`}
+                  className={tc('right-curly')}>{RC}</span>]
+    }
+
+    _bool({ type, name, help }) {
+        const value = this.props.value[name];
+
+        return [<span key={`prop-name-name-${name}`}>
+                          <span
+                              className={tc('prop-name')}>{name}</span>
+            {help && <p className={tc('help')}>{help}</p>}
+                        </span>,
+            <span key={`prop-name-eq-${name}`}
+                  className={tc('eq')}>=</span>,
+            <span key={`prop-name-lc-${name}`}
+                  className={tc('left-curly')}>{LC}</span>,
+            <span key={`prop-name-value-${name}`}
+                  className={tc('value-container')}>
+                  <input type='checkbox'
+                         style={{ visibility: 'hidden' }}
+                         id={`${name}-check`}
+                         name={name}
+                         checked={!!value}
+                         onChange={this.handleBool}/>
+                <label htmlFor={`${name}-check`}
+                       className={tc('value-value', 'checkbox')}>
+
+                    {value ? 'true' : 'false'}
+                </label>
             </span>,
             <span key={`prop-name-rc-${name}`}
                   className={tc('right-curly')}>{RC}</span>]

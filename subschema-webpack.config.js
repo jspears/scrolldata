@@ -22,7 +22,7 @@ module.exports = function (options, webpack) {
                     use               : [require('nib')()],
                     import            : ['~nib/lib/nib/index.styl'],
                     preferPathResolver: 'webpack',
-                    souceMap          : true,
+                    sourceMap          : true,
                     paths             : [
                         project('node_modules')
                     ],

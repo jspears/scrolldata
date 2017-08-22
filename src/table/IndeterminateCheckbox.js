@@ -29,22 +29,23 @@ export default class IndeterminateCheckbox extends PureComponent {
 
     render() {
         let state;
-    //    const data = this.props.columnKey ? this.props.data[this.props.columnKey] : this.props.data;
+        //    const data = this.props.columnKey ?
+        // this.props.data[this.props.columnKey] : this.props.data;
         switch (String(this.props.state).toLowerCase()) {
             case 'true':
             case 'checked':
             case 'all':
-                state = 'checked';
+                state = 'check_box';
                 break;
             case 'false':
             case 'none':
             case 'unchecked':
-                state = 'unchecked';
+                state = 'check_box_outline_blank';
                 break;
             case 'null':
             case 'undefined':
             case 'indeterminate':
-                state = 'indeterminate';
+                state = 'indeterminate_check_box';
                 break;
 
         }
@@ -52,9 +53,9 @@ export default class IndeterminateCheckbox extends PureComponent {
         return <i onClick={this.handleClick}
                   style={this.props.style}
                   data-data={this.props.data}
-                  className={classes(tc('icon', state),
-                      this.props.className)}
-        />
+                  className={tc('icon',
+                      state === 'check_box' ? 'checked' : 'unchecked',
+                      this.props.className)}>{state}</i>
 
     }
 }

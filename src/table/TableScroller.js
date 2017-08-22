@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
-    arrayOf, string, oneOf, any, func, shape, object,
+    arrayOf, string, oneOf, any, func, shape, object, bool,
 } from 'prop-types';
 
 import {
@@ -29,18 +29,22 @@ export const tablePropTypes = {
     //If all all are selected, other wise an array of selected
     selected            : arrayOf(any),
     selectedState       : oneOf(['ALL', 'INDETERMINATE']),
-    onColumnConfigChange: func
+    onColumnConfigChange: func,
+    isVirtualized       : bool
 };
 
 const ignore = ignoreKeys(tablePropTypes);
 
 
 const Selectable       = ({ rowIndex, width, state, data, onSelect, className }) => {
-    return <IndeterminateCheckbox rowIndex={rowIndex}
-                                  state={state}
-                                  style={{ minWidth: width, maxWidth: width }}
-                                  data={data}
-                                  onSelect={onSelect}/>
+    return (<div className={tc('select')}
+                 style={{ minWidth: width, maxWidth: width }}>
+        <IndeterminateCheckbox rowIndex={rowIndex}
+                               state={state}
+
+                               data={data}
+                               onSelect={onSelect}/>
+    </div>);
 
 };
 Selectable.displayName = 'Selectable';
@@ -78,7 +82,7 @@ export default class TableScroller extends PureComponent {
         this.handleMenuOffset();
     }
 
-    componentWillReceiveProps({ columns, selected, selectedState, expanded, expandedContent }) {
+    componentWillReceiveProps({ columns, hash, selected, selectedState, expanded, expandedContent }) {
         const state = {};
         if (this.props.columns !== columns) {
             state.columns = columns;
@@ -101,6 +105,9 @@ export default class TableScroller extends PureComponent {
         }
         if (this.props.expanded != expanded) {
             state.expanded = expanded;
+        }
+        if (this.props.hash !== hash) {
+            state.hash = hash;
         }
         this.setState(state);
     }
@@ -142,7 +149,7 @@ export default class TableScroller extends PureComponent {
                 break;
         }
         if (fire(this.props.onRowSelect, selectedState)) {
-            this.setState({ selectedState, selected: [] })
+            this.setState({ selectedState, selected: [], hash: Date.now() })
         }
 
     };
@@ -177,7 +184,8 @@ export default class TableScroller extends PureComponent {
         if (fire(this.props.onRowSelect, selectedState, selected)) {
             this.setState({
                 selected,
-                selectedState
+                selectedState,
+                hash: Date.now()
             })
         }
 
@@ -324,7 +332,7 @@ export default class TableScroller extends PureComponent {
 
     handleExpandToggle = (expanded) => {
         if (fire(this.props.onExpandToggle, expanded)) {
-            this.setState({ expanded });
+            this.setState({ expanded, hash: Date.now() });
             return true;
         }
         return false;
@@ -336,10 +344,8 @@ export default class TableScroller extends PureComponent {
                   isContainerExpandable,
                   hoverRowData,
                   hoverOffset,
-              }           = this.state;
-        const UseScroller = isContainerExpandable
-            ? ExpandableScroller
-            : Scroller;
+              } = this.state;
+
 
         const { headerRender, height } = this.props;
         const Column                   = headerRender;
@@ -383,16 +389,19 @@ export default class TableScroller extends PureComponent {
                                 onColumnConfigChange={this.handleColumnConfigChange}/>
         }
 
-        const props = ignore(this.props);
+        const props     = ignore(this.props);
+        let UseScroller = Scroller;
         if (isContainerExpandable) {
             props.onExpandToggle = this.handleExpandToggle;
             props.expanded       = this.state.expanded;
+            UseScroller          = ExpandableScroller;
         }
 
         return <div className={tc('container')} ref={this.refContainer}
                     onScroll={this.handleScroll}>
-            <UseScroller hash={this.state.hash}
-                         {...props}
+            <UseScroller {...props}
+                         isVirtualized={this.props.isVirtualized}
+                         hash={this.state.hash}
                          width={rowWidth}
                          height={this.props.height}
                          className={tc('scroll-rows')}

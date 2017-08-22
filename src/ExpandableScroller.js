@@ -67,19 +67,47 @@ export default class ExpandableScroller extends PureComponent {
 
     };
 
-    constructor(props, ...rest) {
-        super(props, ...rest);
-        this.setup(props);
+    componentWillMount() {
+        this.setup(this.props);
     }
 
 
     componentWillReceiveProps(props) {
+        let newState;
         if (props.expanded !== this.props.expanded) {
-            this.setState({ expanded: result(props.expanded) || EMPTY_ARRAY })
+            if (!newState) {
+                newState = {};
+            }
+            newState.hash     = Date.now();
+            newState.expanded = result(props.expanded) || EMPTY_ARRAY;
         }
-        if (props.renderItem !== this.props.renderItem
-            || props.renderBlank !== this.props.renderBlank) {
+        if (props.renderItem !== this.props.renderItem || props.renderBlank
+                                                          !== this.props.renderBlank) {
             this.setup(props);
+            if (!newState) {
+                newState = {};
+            }
+            newState.hash = Date.now();
+        }
+
+        if (props.hash !== this.props.hash) {
+            if (!newState) {
+                newState = {};
+            }
+            newState.hash = props.hash;
+        }
+        if (props.rowHeight !== this.props.rowHeight) {
+            if (!newState) {
+                newState = {};
+            }
+            newState.hash = Date.now();
+        }
+
+        if (newState) {
+            if (!newState.hash) {
+                newState.hash = Date.now();
+            }
+            this.setState(newState);
         }
     }
 
@@ -105,30 +133,30 @@ export default class ExpandableScroller extends PureComponent {
         this.props.expandedHeight, rowIndex) : this.props.rowHeight;
 
 
-    isExpanded = (rowIndex) => indexOf(this.state.expanded, rowIndex) > -1;
+    isExpanded = (rowIndex) => {
+        return indexOf(this.state.expanded, rowIndex) > -1;
+    };
 
     handleToggleExpand = (rowIndex, expand) => {
-        if (expand != null && (contains(this.state.expanded, rowIndex) === expand)) {
+        if (expand != null && (contains(this.state.expanded, rowIndex)
+                               === expand)) {
             return;
         }
         const expanded = toggle(this.state.expanded, rowIndex);
         if (fire(this.props.onExpandToggle, expanded, rowIndex)) {
-            this.setState({ expanded });
+            this.setState({ expanded, hash: Date.now() });
         }
     };
 
     render() {
         const {
-                  expanded, onExpandToggle, renderItem, hash,
+                  expanded, onExpandToggle, renderItem,
                   expandedHeight, renderBlank, rowHeight, ...props
               } = this.props;
 
-        const newHash = `${hash}-${this.state.expanded.join(
-            ' ')} ${typeof this.props.rowHeight
-                    === 'number'
-            ? this.props.rowHeight : ''}`;
+
         return <Scroller {...props}
-                         hash={newHash}
+                         hash={this.state.hash}
                          rowHeight={this.rowHeight}
                          renderItem={this.renderItem}
                          renderBlank={this.renderBlank}/>

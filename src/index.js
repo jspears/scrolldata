@@ -11,4 +11,4 @@ export * as theme from './themes'
 export const themeClass = _themeClass;
 export const ToggleItem = _ToggleItem;
 
-export default from './Scroller'
+export default from './VirtualizedScroller'

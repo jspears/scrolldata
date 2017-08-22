@@ -11,3 +11,8 @@
 
 .blank-row
     @extend .row
+
+.select
+    flex 1
+    justify-content center
+    align-self center

@@ -165,6 +165,11 @@
     outline rgb(36, 41, 46) none 0
     display inline-block
 
+.checkbox
+    >input
+        visibility: hidden
+    cursor pointer
+
 .tiny
     input
         -webkit-appearance: none

@@ -1,17 +1,22 @@
 @import '../../../table/IndeterminateCheckbox.styl'
+@import '../material.styl'
 
-.svg
-    content ' '
-    background-size contain
-    background-repeat no-repeat
-    -webkit-mask-size: contain
-    -webkit-mask-repeat: no-repeat
-    mask-repeat: no-repeat
-    mask-size: contain
-    transform background-color .3s ease
-    will-change background-color
-    background-color transparent
-    background-color: rgba(0, 0, 0, 0)
+.icon
+    @extend .material-icons
+
+.checked
+    color rgba(33, 150, 243, 1)
+
+.checked:hover
+    color rgba(33, 150, 243, .5)
+
+.unchecked
+    color rgba(0, 0, 0, 0.50)
+
+.unchecked:hover
+    color rgba(0, 0, 0, 0.75)
+
+/*
 
 .checked:active::after, .unchecked:active::after, .indeterminate:active::after
     transform: translateY(-50%) translateX(1px) translateY(1px)
@@ -45,4 +50,5 @@
     background-color rgba(0, 0, 0, 0.50)
     &:hover
         background-color rgba(0, 0, 0, 0.80)
+*/
 

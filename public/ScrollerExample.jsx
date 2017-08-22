@@ -1,5 +1,5 @@
 import React, { Component, PureComponent } from 'react';
-import Scroller from '../src/Scroller';
+import Scroller from '../src/VirtualizedScroller';
 import Configure from './Configure';
 import tc from './tc';
 

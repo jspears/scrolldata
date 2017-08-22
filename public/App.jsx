@@ -31,17 +31,18 @@ const Routes = {
 export default class App extends PureComponent {
 
     state = {
-        route      : '',
-        scrollTo   : 0,
-        rowHeight  : 50,
-        height     : 600,
-        width      : 900,
-        fakeFetch  : 0,
-        bufferSize : 0,
-        rowsVisible: 0,
-        rowCount   : example.length,
-        maxData    : example.length,
-        scrollDelay: 2
+        route        : '',
+        scrollTo     : 0,
+        rowHeight    : 50,
+        height       : 600,
+        width        : 900,
+        fakeFetch    : 0,
+        bufferSize   : 0,
+        rowsVisible  : 0,
+        rowCount     : example.length,
+        maxData      : example.length,
+        scrollDelay  : 2,
+        isVirtualized: true
     };
 
     handleState = (state) => this.setState(state);
