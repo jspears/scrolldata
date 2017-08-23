@@ -98,7 +98,8 @@ export default class UnvirtualizedScroller extends PureComponent {
             this._refresh();
         }
     }
-    _refresh(){
+
+    _refresh() {
         const ret = this._fetchPage();
         if (ret instanceof Promise) {
             ret.then(this.handleFetch)
@@ -106,7 +107,8 @@ export default class UnvirtualizedScroller extends PureComponent {
             this.handleFetch(ret);
         }
     }
-    componentWillMount(){
+
+    componentWillMount() {
         this._refresh();
     }
 
@@ -154,6 +156,8 @@ export default class UnvirtualizedScroller extends PureComponent {
     render() {
         const {
                   props: {
+                      viewportClassName,
+                      viewPortStyle,
                       children,
                       className,
                       style = {},
@@ -163,7 +167,10 @@ export default class UnvirtualizedScroller extends PureComponent {
         return (<div className={classes(tc('container'), className)}
                      style={{ ...style }}>
             {children}
-            {this.renderItems()}
+            <div className={classes(tc('unvirtualized', 'viewport'), viewportClassName)}
+                 style={viewPortStyle}>
+                {this.renderItems()}
+            </div>
         </div>);
     }
 }
