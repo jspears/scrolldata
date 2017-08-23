@@ -252,6 +252,7 @@ export default class TableScroller extends PureComponent {
             cells[c++] = <RenderCell data={data}
                                      {...config}
                                      key={`cell-${c}`}
+                                     hash={this.state.hash}
                                      columnKey={columnKey}
                                      rowIndex={rowIndex}
                                      colIndex={i}
@@ -271,6 +272,7 @@ export default class TableScroller extends PureComponent {
             cfg.className = 'row';
         }
         return <RowRender  {...cfg}
+                           hash={this.state.hash}
                            data={row.data}
                            offsetLeft={this.state.menuOffset}
                            onRowAction={this.props.onRowAction}

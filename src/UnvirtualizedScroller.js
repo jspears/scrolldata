@@ -85,13 +85,7 @@ export default class UnvirtualizedScroller extends PureComponent {
         data: [],
     };
 
-    constructor(...rest) {
-        super(...rest);
-
-        const { propTypes, defaultProps } = this.constructor;
-        this.shouldComponentUpdate        =
-            createShouldComponentUpdate(propTypes, defaultProps);
-    }
+   
 
     componentWillReceiveProps({ hash }) {
         if (this.props.hash != hash) {
@@ -148,6 +142,7 @@ export default class UnvirtualizedScroller extends PureComponent {
             ret[i] = <Renderer
                 key={`no-scroller-row-index-${i}`} {...ignore(props)}
                 rowIndex={i}
+                hash={props.hash}
                 data={data[i]}/>
         }
         return ret;
