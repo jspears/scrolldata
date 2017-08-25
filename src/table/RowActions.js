@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react'
 import { themeClass } from '../themes';
 import {
-    arrayOf, number, string, func, shape, any, oneOfType
+    arrayOf, number, string, func, shape, bool, any, oneOfType
 } from 'prop-types'
 import {
     stop, fire, execLoop as removeListener, listen, result,
 } from '../util';
+import { findDOMNode } from 'react-dom';
 
 export default class RowActions extends PureComponent {
 
@@ -14,17 +15,21 @@ export default class RowActions extends PureComponent {
     static propTypes    = {
         onRowAction   : func,
         rowData       : any,
+        moreIcon      : string,
         actions       : oneOfType([func, arrayOf(shape({
-            action: string.isRequired,
-            label : string,
-            icon  : string,
+            action  : string.isRequired,
+            label   : string,
+            icon    : string,
+            disabled: bool
         }))]),
         height        : number,
         maxRowActions : number,
-        containerWidth: number
+        containerWidth: number,
+        display       : bool
     };
     static defaultProps = {
-        maxRowActions: 3
+        maxRowActions: 3,
+        moreIcon     : 'more_vert',
     };
 
     state = {};
@@ -41,16 +46,22 @@ export default class RowActions extends PureComponent {
     }
 
     handleAction = stop((e) => {
-        if (fire(this.props.onRowAction, e, e.currentTarget.dataset.action,
+        const {dataset:{action}, disabled} = e.currentTarget;
+        if (!disabled && fire(this.props.onRowAction, e, action,
                 this.props.rowData)) {
             this.setState({ active: false });
         }
     });
 
     handleMenu    = stop(() => {
-        this.setState({ active: true });
-        this.listeners(listen(document, 'click', this.handleMenuOut),
-            listen(document, 'keyup', this.handleKeyUp));
+        const { active } = this.state;
+        if (active) {
+            this.handleMenuOut();
+        } else {
+            this.setState({ active: true });
+            this.listeners(listen(document, 'click', this.handleMenuOut),
+                listen(document, 'keyup', this.handleKeyUp));
+        }
     });
     handleMenuOut = stop(() => {
         this.setState({ active: false });
@@ -64,46 +75,48 @@ export default class RowActions extends PureComponent {
     };
 
 
-    renderAction({ action, label, icon }) {
+    renderAction({ action, label, icon, disabled }) {
         return <li key={`action-${action}`}
-                   className={tc('action')}
+                   className={tc('action', disabled ? 'disabled' : 'enabled')}
                    data-action={action}
+                   disabled={disabled === true}
                    onClick={this.handleAction}>
-            {icon && <i className={tc('icon', icon)}/>}
+            {icon && <i
+                className={tc('icon')}>{icon}</i>}
             <span className={tc('label')}>{label || action}</span>
         </li>
     };
 
     renderMenu(menuActionList) {
+        if (!menuActionList.length) {
+            return;
+        }
         const rect = this.rowRef.getBoundingClientRect();
         const top  = rect.top;
-//        const left = this.rowRef.offsetLeft;
         return <ul className={tc('action-menu')} style={{ right: 0, top }}>
             {menuActionList.map(this.renderAction, this)}
         </ul>;
     }
 
-    renderActions(actions) {
+    renderActions(actionList, hasMenu) {
 
         const {
                   props: { maxRowActions, rowData },
                   state: { active }
-              }       = this;
+              } = this;
 
-        const actionList = actions.slice(0,
-            Math.min(actions.length, maxRowActions));
 
         const ret = [];
 
         for (let i = 0, l = actionList.length; i < l; i++) {
             ret[i] = this.renderAction(actionList[i])
         }
-        if (actions.length > maxRowActions) {
-            ret[actionList.length] =
+        if (hasMenu) {
+            ret[ret.length] =
                 (<li key='action-menu'
                      className={tc('menu-item', active && 'active')}
                      onClick={this.handleMenu}>
-                    <i className={tc('icon', 'icon-vertical')}/>
+                    <i className={tc('icon')}>{this.props.moreIcon}</i>
 
                 </li>);
 
@@ -113,24 +126,38 @@ export default class RowActions extends PureComponent {
     }
 
     _rowRef = (node) => {
-        this.rowRef = node;
+        this.rowRef = findDOMNode(node);
     };
 
     render() {
-        const { offsetLeft, rowData, maxRowActions } = this.props;
-        let style                                            = {};
+        const { offsetLeft, rowData, maxRowActions, height, display } = this.props;
+
+        let style = { maxHeight: height };
 
         if (offsetLeft) {
-            style.left = offsetLeft;
+            //        style.left =offsetLeft;
+
         }
-        const actions = result(this.props.actions, rowData);
-        const menuActionList = actions.slice(maxRowActions);
-        return <div className={tc('row-actions')} ref={this._rowRef}>
+        const hasIcons = [], menuActions = [];
+        result(this.props.actions, rowData).forEach((action) => {
+            if (action.icon) {
+                hasIcons.push(action);
+            } else {
+                menuActions.push(action);
+            }
+        });
+        const hasMenu = !(hasIcons.length <= maxRowActions + 2
+                          && menuActions.length === 0);
+        if (hasMenu) {
+            menuActions.unshift(...hasIcons.splice(maxRowActions));
+        }
+        return <div className={tc('row-actions', display && 'display')}
+                    ref={this._rowRef}>
             <ul className={tc('actions')} style={style}>
-                {this.renderActions(actions)}
+                {this.renderActions(hasIcons, hasMenu)}
             </ul>
-            {menuActionList.length && this.state.active && this.renderMenu(
-                menuActionList, offsetLeft)}
+            {this.state.active && this.renderMenu(
+                menuActions, offsetLeft)}
         </div>
 
     }

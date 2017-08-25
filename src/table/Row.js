@@ -13,6 +13,7 @@ export default class Row extends PureComponent {
 
     };
 
+
     render() {
         const {
                   children,
@@ -39,7 +40,9 @@ export default class Row extends PureComponent {
             return <div style={rowStyle}
                         className={tc(rowExpandedClass)}>
                 <div className={tc(className)}
-                     onClick={onToggle}>{children}{rowActions && <RowActions
+                     onClick={onToggle}
+
+                >{children}{rowActions && <RowActions
                     actions={rowActions}
                     offsetLeft={offsetLeft}
                     onRowAction={onRowAction}
@@ -53,13 +56,15 @@ export default class Row extends PureComponent {
 
         return <div style={rowStyle}
                     className={tc(className)}
-                    onClick={onToggle}>{children}{rowActions && <RowActions
-            height={rowHeight}
-            actions={rowActions}
-            offsetLeft={offsetLeft}
-            onRowAction={onRowAction}
-            rowData={data}
-        />}</div>;
+                    onClick={onToggle}>{children}{rowActions &&
+                                                  <RowActions
+                                                      height={rowHeight}
+                                                      actions={rowActions}
+                                                      offsetLeft={offsetLeft}
+                                                      onRowAction={onRowAction}
+                                                      rowData={data}
+
+                                                  />}</div>;
     }
 }
 

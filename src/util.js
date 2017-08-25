@@ -1,4 +1,6 @@
-import { oneOfType, number, func, string, checkPropTypes } from 'prop-types';
+import {
+    oneOfType, number, bool, func, string, checkPropTypes
+} from 'prop-types';
 import { Component } from 'react';
 
 export const isComponent = (val) => val && val.prototype instanceof Component;
@@ -14,6 +16,7 @@ export const result = (val, ...args) => {
 
 export const stringOrFunc = oneOfType([string, func]);
 export const numberOrFunc = oneOfType([number, func]);
+export const boolOrFunc   = oneOfType([bool, func]);
 export const EMPTY_ARRAY  = Object.freeze([]);
 export const indexOf      = Function.call.bind(Array.prototype.indexOf);
 

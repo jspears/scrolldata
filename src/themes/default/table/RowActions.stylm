@@ -1,15 +1,29 @@
-@import '../../../table/RowActions.styl';
+@import '../../../table/RowActions.styl'
+@import '../material.styl'
 
+.actions
+    background #fff
+    position absolute
+    align-self flex-start
 
-.icon:hover
-    opacity .99
+.enabled.action:hover
+    .icon
+        opacity .99
+        color #000
 
+.action
+    margin 1px 0
 .icon
-    opacity .80
+    @extend .material-icon
     font-size 1.5em
-    padding 0 10px
-
-.icon:active:before, .active > .icon:before
-    background #ddd
+    padding 5px
 
 
+.disabled.action
+    .icon, .label
+        opacity .7
+    cursor normal
+
+.action-menu
+    .enabled:hover
+        background-color rgba(0,0,0,.15)

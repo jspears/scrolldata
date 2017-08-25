@@ -3,6 +3,7 @@ import expect from "expect";
 import RowActions from '../../src/table/RowActions';
 import { into } from '../support';
 import { themeClass } from '../../src';
+import actions from '../../public/rowActions.json';
 
 const cell = themeClass({ displayName: 'Cell' });
 const row  = themeClass({ displayName: 'Row' });
@@ -10,33 +11,9 @@ const col  = themeClass({ displayName: 'Column' })
 
 describe('RowActions', function () {
     this.timeout(50000);
-    const actions = [{
-        action: 'asterisk',
-        label : 'More Info',
-        icon  : 'glyphicon glyphicon-asterisk',
-    }, {
-        action: 'video',
-        label : 'Watch Video',
-        icon  : 'glyphicon glyphicon-facetime-video',
 
-    }, {
-        action: 'download',
-        label : 'Download',
-        icon  : 'glyphicon glyphicon-cloud-download',
-    }, {
-        action: 'Do something',
-        label : 'Action',
-    }, {
-        action: "movee",
-        label : "Move"
-    }, {
-        icon  : 'glyphicon glyphicon-remove',
-        action: "delete",
-        label : "Delete..."
-    }
-    ];
 
-    it.only('should render', function () {
+    it('should render', function () {
 
 
         const menu = into(
@@ -47,6 +24,80 @@ describe('RowActions', function () {
                 height    : 50
             }}><RowActions actions={actions}/>
             </div>, true);
+
+        expect(menu).toExist();
+
+    });
+    it('should render icons only', function () {
+
+
+        const menu = into(<RowActions display={true} maxRowActions={2}
+                                      actions={[
+                                          {
+                                              "action": "asterisk",
+                                              "label" : "More Info",
+                                              "icon"  : "insert_comment"
+                                          },
+                                          {
+                                              "action": "video",
+                                              "label" : "Watch Video",
+                                              "icon"  : "live_tv"
+                                          },
+                                          {
+                                              "action"  : "do something",
+                                              "label"   : "Disabled Action",
+                                              "icon"    : "explore",
+                                              "disabled": true
+                                          }]}/>, true);
+
+        expect(menu).toExist();
+
+    });
+    it('should render only menu', function () {
+
+
+        const menu = into(<RowActions display={true} maxRowActions={2}
+                                      actions={[
+                                          {
+                                              "action": "asterisk",
+                                              "label" : "More Info",
+                                          },
+                                          {
+                                              "action": "video",
+                                              "label" : "Watch Video",
+                                          },
+                                          {
+                                              "action"  : "do something",
+                                              "label"   : "Disabled Action",
+                                              "disabled": true
+                                          }]}/>, true);
+
+        expect(menu).toExist();
+
+    });
+    it.only('should render smart if icons only menu', function () {
+
+
+        const menu = into(<RowActions display={true} maxRowActions={2}
+                                      actions={[
+                                          {
+                                              "action": "asterisk",
+                                              "label" : "More Info",
+                                          },
+                                          {
+                                              "action": "explore",
+                                              "label" : "No Icon"
+                                          },
+                                          {
+                                              "action": "video",
+                                              "label" : "Watch Video",
+                                          },
+                                          {
+                                              "action"  : "do something",
+                                              "label"   : "Disabled Action",
+                                              "icon"  : "insert_comment",
+                                              "disabled": true
+                                          }]}/>, true);
 
         expect(menu).toExist();
 

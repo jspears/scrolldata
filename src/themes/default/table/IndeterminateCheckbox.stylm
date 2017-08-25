@@ -2,7 +2,7 @@
 @import '../material.styl'
 
 .icon
-    @extend .material-icons
+   material-icons()
 
 .checked
     color rgba(33, 150, 243, 1)

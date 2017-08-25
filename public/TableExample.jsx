@@ -7,6 +7,7 @@ import tc from './tc';
 import { makeCompare } from '../src/util'
 import { fake } from './helper'
 import Sample from './Sample';
+import rowActions from './rowActions.json';
 
 const reverse = (fn) => (...args) => fn(...args) * -1;
 
@@ -88,30 +89,6 @@ const columns = [
         "width"    : 200
     }];
 
-const rowActions = [{
-    action: 'asterisk',
-    label : 'More Info',
-    icon  : 'glyphicon glyphicon-asterisk',
-}, {
-    action: 'video',
-    label : 'Watch Video',
-    icon  : 'glyphicon glyphicon-facetime-video',
-
-}, {
-    action: 'download',
-    label : 'Download',
-    icon  : 'glyphicon glyphicon-cloud-download',
-}, {
-    action: 'do something',
-    label : 'Action',
-}, {
-    action: "move-to",
-    label : 'Move to...'
-}, {
-    icon  : 'glyphicon glyphicon-remove',
-    label : 'Delete',
-    action: "Delete"
-}];
 export default class TableExample extends Component {
     static configureSample = {
         component : 'Table',
@@ -135,14 +112,14 @@ export default class TableExample extends Component {
             }
         ]),
 
-    }
+    };
 
     static defaultProps = {
         columns       : columns.slice(0, 7),
         expanded      : [],
         expandedContent,
         expandedHeight: 300,
-        columnCount   : 7
+        columnCount   : 7,
     };
 
     handleState     = (state) => this.props.onSetState(state);
@@ -168,8 +145,8 @@ export default class TableExample extends Component {
         }
         return fake(this.props.fakeFetch, ret);
     };
-    handleMenuClick = ({ target: { dataset: { action, rowIndex } } }) => alert(
-        `'${action}' was clicked on row: '${rowIndex}'`);
+    handleMenuClick = (e, action, data) => alert(
+        `'${action}' was clicked on row: '${data}'`);
 
     handleColumnCount = ({ target: { name, value } }) => {
         value            = parseInt(value, 10);
@@ -232,7 +209,7 @@ export default class TableExample extends Component {
             </div>
             <TableScroller {...props}
                            rowData={this.rowData}
-                           onMenuItemClick={this.handleMenuClick}
+                           onRowAction={this.handleMenuClick}
                            onSort={this.handleSort}
                            onExpandToggle={this.handleToggle}
                            rowActions={rowActions}

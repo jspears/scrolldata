@@ -63,11 +63,7 @@ const defaultProps = {
     bufferSize: 0,
     className : '',
     hash      : '',
-    page      : {
-        count   : 0,
-        rowIndex: 0,
-        data    : EMPTY_ARRAY
-    }
+    data      : []
 };
 
 
@@ -80,12 +76,10 @@ export default class UnvirtualizedScroller extends PureComponent {
     static contextTypes = scrollContext;
 
     state = {
-        page: { data: [], rowIndex: 0 },
+        data: []
         //data for the currently showing items
-        data: [],
     };
 
-   
 
     componentWillReceiveProps({ hash }) {
         if (this.props.hash != hash) {
@@ -94,25 +88,28 @@ export default class UnvirtualizedScroller extends PureComponent {
     }
 
     _refresh() {
-        const ret = this._fetchPage();
+        const ret = this.props.rowData(0, this.props.rowCount);
         if (ret instanceof Promise) {
-            ret.then(this.handleFetch)
-        } else {
-            this.handleFetch(ret);
+            return ret.then(this.handleData);
         }
+        this.handleData(ret);
     }
+
+    handleData = (data) => {
+        this.setState({ data });
+    };
 
     componentWillMount() {
         this._refresh();
     }
 
-    handleFetch = ({ page }) => {
-        this.setState(page);
-    };
+    /*  handleFetch = (data) => {
+          this.setState({data});
+      };*/
 
-    _fetchPage() {
+    /*_fetchPage() {
 
-        const data = this.props.rowData(0, this.props.rowCount);
+        const data = this.props.rowData(0, this.props.rowCount, {columnConfig});
         if (Array.isArray(data)) {
             return {
                 page: {
@@ -126,24 +123,26 @@ export default class UnvirtualizedScroller extends PureComponent {
                               data: resp
                           }
                       }));
-    };
+    };*/
 
 
     renderItems() {
         const {
-                  state: { data },
+                  //  state: { data },
                   props
-              } = this;
+              }    = this;
+        const data = this.state.data;
 
-        const ret      = Array(data.length);
-        const Renderer = props.renderItem;
-
-        for (let i = 0, l = data.length; i < l; i++) {
-            ret[i] = <Renderer
-                key={`no-scroller-row-index-${i}`} {...ignore(props)}
-                rowIndex={i}
-                hash={props.hash}
-                data={data[i]}/>
+        const ret = Array(data.length);
+        for (let rowIndex = 0, l = data.length; rowIndex < l; rowIndex++) {
+            const rowData = data[rowIndex];
+            ret[rowIndex] = props.renderItem({
+                ...ignore(props),
+                key : `unvirtualized-row-${rowData[props.primaryKey]}`,
+                rowIndex,
+                hash: props.hash,
+                data: rowData
+            })
         }
         return ret;
     }
@@ -154,17 +153,26 @@ export default class UnvirtualizedScroller extends PureComponent {
                       viewportClassName,
                       viewPortStyle,
                       children,
+                      scrollerClassName,
                       className,
                       style = {},
+                      width,
+
                   },
               } = this;
 
-        return (<div className={classes(tc('container'), className)}
-                     style={{ ...style }}>
+        return (<div
+            className={classes(tc('unvirtualized-container', 'container'),
+                className)}
+            style={{ ...style }}>
             {children}
-            <div className={classes(tc('unvirtualized', 'viewport'), viewportClassName)}
-                 style={viewPortStyle}>
-                {this.renderItems()}
+            <div className={classes(tc('scroller', scrollerClassName))}
+                 style={{ minWidth: width + 16 }}>
+                <div className={classes(tc('unvirtualized', 'viewport'),
+                    viewportClassName)}
+                     style={viewPortStyle}>
+                    {this.renderItems()}
+                </div>
             </div>
         </div>);
     }

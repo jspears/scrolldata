@@ -31,12 +31,12 @@ export class ToggleItem extends PureComponent {
 
     render() {
         const { render, isExpanded, ...props }
-                   = this.props;
-        const Item = render;
-        return <Item {...props}
-                     isExpanded={isExpanded(props.rowIndex)}
-                     onToggle={this.handleToggle}
-        />
+                  = this.props;
+        return render({
+            ...props,
+            isExpanded: isExpanded(props.rowIndex),
+            onToggle  : this.handleToggle
+        });
     }
 }
 

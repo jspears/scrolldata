@@ -5,7 +5,7 @@ export ExpandableScroller from './ExpandableScroller';
 export Container from './Container';
 export * as table from './table';
 export Table from './table/TableScroller';
-export * as theme from './themes'
+export * as theme from './themes/default'
 
 
 export const themeClass = _themeClass;

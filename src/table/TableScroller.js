@@ -4,8 +4,9 @@ import {
 } from 'prop-types';
 
 import {
-    classes, result, numberOrFunc, ignoreKeys, listen,
-    execLoop as removeListener, toggle, fire
+    result,
+    boolOrFunc,
+    numberOrFunc, ignoreKeys, toggle, fire
 } from '../util';
 import { themeClass } from '../themes'
 
@@ -30,7 +31,8 @@ export const tablePropTypes = {
     selected            : arrayOf(any),
     selectedState       : oneOf(['ALL', 'INDETERMINATE']),
     onColumnConfigChange: func,
-    isVirtualized       : bool
+    isVirtualized       : bool,
+    primaryKey          : string,
 };
 
 const ignore = ignoreKeys(tablePropTypes);
@@ -55,7 +57,7 @@ export default class TableScroller extends PureComponent {
     static propTypes = {
         ...tablePropTypes,
         expandedHeight : numberOrFunc,
-        expandedContent: func,
+        expandedContent: boolOrFunc,
         renderItem     : func,
     };
 
@@ -67,7 +69,8 @@ export default class TableScroller extends PureComponent {
         renderSelectable: Selectable,
         renderBlankCell : Blank,
         selectedState   : 'INDETERMINATE',
-        selected        : []
+        selected        : [],
+        isVirtualized   : true
     };
 
     state = {
@@ -227,6 +230,7 @@ export default class TableScroller extends PureComponent {
                   renderCell,
                   expandedContent,
                   rowRender,
+                  primaryKey,
               }     = this.props;
 
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
@@ -251,7 +255,7 @@ export default class TableScroller extends PureComponent {
 
             cells[c++] = <RenderCell data={data}
                                      {...config}
-                                     key={`cell-${c}`}
+                                     key={`cell-${columnKey}-${i}`}
                                      hash={this.state.hash}
                                      columnKey={columnKey}
                                      rowIndex={rowIndex}
@@ -271,7 +275,13 @@ export default class TableScroller extends PureComponent {
         } else {
             cfg.className = 'row';
         }
+        if (primaryKey) {
+            cfg.key = `row-${primaryKey}-${row.data[primaryKey]}`
+        } else {
+            cfg.key = `row-${rowIndex}`
+        }
         return <RowRender  {...cfg}
+                           primaryKey={primaryKey}
                            hash={this.state.hash}
                            data={row.data}
                            offsetLeft={this.state.menuOffset}
@@ -346,13 +356,14 @@ export default class TableScroller extends PureComponent {
                   isContainerExpandable,
                   hoverRowData,
                   hoverOffset,
+
               } = this.state;
 
 
-        const { headerRender, height } = this.props;
-        const Column                   = headerRender;
-        const cols                     = [];
-        let rowWidth                   = 0;
+        const { headerRender, height, isVirtualized } = this.props;
+        const Column                                  = headerRender;
+        const cols                                    = [];
+        let rowWidth                                  = 0;
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
             let col = columns[i];
             if (col.hidden === true) {
@@ -402,17 +413,21 @@ export default class TableScroller extends PureComponent {
         return <div className={tc('container')} ref={this.refContainer}
                     onScroll={this.handleScroll}>
             <UseScroller {...props}
+                         primaryKey={this.props.primaryKey}
                          isVirtualized={this.props.isVirtualized}
                          hash={this.state.hash}
                          width={rowWidth}
                          height={this.props.height}
                          className={tc('scroll-rows')}
-                         scrollerClassName={tc('scroll-list')}
+                         scrollerClassName={tc(isVirtualized ? 'scroll-list'
+                             : 'unvirtualized-scroll-list')}
                          rowData={this.rowData}
                          renderItem={this.renderItem}
                          renderBlank={this.renderBlank}>
+
                 <div key='header-container'
                      className={tc('cell-headers')}>
+                    {this.props.children}
                     {cols}
                 </div>
             </UseScroller>

@@ -1,0 +1,31 @@
+[
+  {
+    "action": "asterisk",
+    "label": "More Info",
+    "icon": "insert_comment"
+  },
+  {
+    "action": "video",
+    "label": "Watch Video",
+    "icon": "live_tv"
+  },
+  {
+    "action": "do something",
+    "label": "Disabled Action",
+    "disabled": true
+  },
+  {
+    "action": "download",
+    "label": "Download",
+    "icon": "file_download"
+  },
+  {
+    "label": "Move to...",
+    "action": "move"
+  },
+  {
+    "icon": "delete",
+    "label": "Delete",
+    "action": "Delete"
+  }
+]
