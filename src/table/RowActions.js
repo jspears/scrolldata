@@ -46,7 +46,7 @@ export default class RowActions extends PureComponent {
     }
 
     handleAction = stop((e) => {
-        const {dataset:{action}, disabled} = e.currentTarget;
+        const { dataset: { action }, disabled } = e.currentTarget;
         if (!disabled && fire(this.props.onRowAction, e, action,
                 this.props.rowData)) {
             this.setState({ active: false });
@@ -135,7 +135,7 @@ export default class RowActions extends PureComponent {
         let style = { maxHeight: height };
 
         if (offsetLeft) {
-            //        style.left =offsetLeft;
+            style.left = offsetLeft;
 
         }
         const hasIcons = [], menuActions = [];
