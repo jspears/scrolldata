@@ -19,6 +19,9 @@ export default class IndeterminateCheckbox extends PureComponent {
         style: object
     };
 
+    shouldComponentUpdate(nextProps) {
+        return nextProps.state !== this.props.state;
+    }
 
     handleClick = stop(() => {
         this.props.onSelect(

@@ -25,6 +25,7 @@ export const tablePropTypes = {
     rowRender           : func,
     headerRender        : func,
     className           : string,
+    headersClassName    : string,
     renderSelectable    : func,
     onRowSelect         : func,
     //If all all are selected, other wise an array of selected
@@ -70,7 +71,8 @@ export default class TableScroller extends PureComponent {
         renderBlankCell : Blank,
         selectedState   : 'INDETERMINATE',
         selected        : [],
-        isVirtualized   : true
+        isVirtualized   : true,
+        headersClassName: ''
     };
 
     state = {
@@ -426,7 +428,8 @@ export default class TableScroller extends PureComponent {
                          renderBlank={this.renderBlank}>
 
                 <div key='header-container'
-                     className={tc('cell-headers')}>
+                     className={`${tc(
+                         'cell-headers')} ${this.props.headersClassName}`}>
                     {this.props.children}
                     {cols}
                 </div>
