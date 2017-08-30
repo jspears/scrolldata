@@ -8,6 +8,7 @@ import {
 } from '../util';
 import { findDOMNode } from 'react-dom';
 
+const disableEvent = stop();
 export default class RowActions extends PureComponent {
 
     static displayName = 'RowActions';
@@ -46,8 +47,8 @@ export default class RowActions extends PureComponent {
     }
 
     handleAction = stop((e) => {
-        const { dataset: { action }, disabled } = e.currentTarget;
-        if (!disabled && fire(this.props.onRowAction, e, action,
+        const { dataset: { action } } = e.currentTarget;
+        if (fire(this.props.onRowAction, e, action,
                 this.props.rowData)) {
             this.setState({ active: false });
         }
@@ -80,7 +81,7 @@ export default class RowActions extends PureComponent {
                    className={tc('action', disabled ? 'disabled' : 'enabled')}
                    data-action={action}
                    disabled={disabled === true}
-                   onClick={!disabled && this.handleAction}>
+                   onClick={disabled ? disableEvent :  this.handleAction}>
             {icon && <i
                 title={label || action}
                 className={tc('icon')}>{icon}</i>}
