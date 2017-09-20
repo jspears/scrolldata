@@ -64,7 +64,7 @@ export default class TableScroller extends PureComponent {
 
     static defaultProps = {
         columns         : [],
-        rowRender       : Row,
+        rowRender       : props => <Row {...props}/>,
         renderCell      : Cell,
         headerRender    : ColumnDefault,
         renderSelectable: Selectable,
@@ -221,19 +221,19 @@ export default class TableScroller extends PureComponent {
                   rowIndex,
                   height,
                   data,
-              }     = row;
-        const cells = [];
+              }        = row;
+        const children = [];
         const {
                   columns,
                   containerWidth
-              }     = this.state;
+              }        = this.state;
         const {
                   renderSelectable,
                   renderCell,
                   expandedContent,
                   rowRender,
                   primaryKey,
-              }     = this.props;
+              }        = this.props;
 
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
             let { columnKey, cellRender, ...config } = columns[i];
@@ -255,20 +255,19 @@ export default class TableScroller extends PureComponent {
 
             const RenderCell = config.renderCell || renderCell;
 
-            cells[c++] = <RenderCell data={data}
-                                     {...config}
-                                     key={`cell-${columnKey}-${i}`}
-                                     hash={this.state.hash}
-                                     columnKey={columnKey}
-                                     rowIndex={rowIndex}
-                                     colIndex={i}
-                                     height={height}
-                                     className={config.className}
+            children[c++] = <RenderCell data={data}
+                                        {...config}
+                                        key={`cell-${columnKey}-${i}`}
+                                        hash={this.state.hash}
+                                        columnKey={columnKey}
+                                        rowIndex={rowIndex}
+                                        colIndex={i}
+                                        height={height}
+                                        className={config.className}
             />
         }
 
-        const RowRender = rowRender;
-        const cfg       = {};
+        const cfg = {};
         if (this.state.isContainerExpandable) {
             cfg.isExpanded      = row.isExpanded;
             cfg.expandedContent = expandedContent;
@@ -282,16 +281,19 @@ export default class TableScroller extends PureComponent {
         } else {
             cfg.key = `row-${rowIndex}`
         }
-        return <RowRender  {...cfg}
-                           primaryKey={primaryKey}
-                           hash={this.state.hash}
-                           data={row.data}
-                           offsetLeft={this.state.menuOffset}
-                           onRowAction={this.props.onRowAction}
-                           rowActions={this.props.rowActions}
-                           rowHeight={row.rowHeight}
-                           containerWidth={containerWidth}
-                           rowIndex={row.rowIndex}>{cells}</RowRender>
+        return rowRender({
+            ...cfg,
+            primaryKey,
+            containerWidth,
+            children,
+            data       : row.data,
+            rowHeight  : row.rowHeight,
+            rowIndex   : row.rowIndex,
+            hash       : this.state.hash,
+            offsetLeft : this.state.menuOffset,
+            onRowAction: this.props.onRowAction,
+            rowActions : this.props.rowActions,
+        });
 
     };
 

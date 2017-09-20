@@ -229,15 +229,17 @@ export default class VirtualizedScroller extends PureComponent {
             const _rowData  = rowOd !== -1
                 ? rowsData[rowOd++] : null;
 
-            const Renderer = _rowData == null && props.renderBlank
+            const renderer = _rowData == null && props.renderBlank
                 ? props.renderBlank
                 : props.renderItem;
 
-            ret[r] = <Renderer
-                key={`scroller-row-index-${r}-${rowIndex}`} {...ignore(props)}
-                rowIndex={rowIndex}
-                data={_rowData}
-                rowHeight={rowHeight}/>
+            ret[r] = renderer({
+                ...ignore(props),
+                key : `scroller-row-index-${r}-${rowIndex}`,
+                rowIndex,
+                data: _rowData,
+                rowHeight
+            });
         }
         return ret;
     }
@@ -277,4 +279,4 @@ export default class VirtualizedScroller extends PureComponent {
     }
 }
 
-const tc = themeClass({displayName:'Scroller'});
+const tc = themeClass({ displayName: 'Scroller' });

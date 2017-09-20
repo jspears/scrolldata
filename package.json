@@ -4,7 +4,8 @@
   "description": "",
   "main": "lib/index",
   "source": "src/index",
-  "dependencies": {},
+  "dependencies": {
+  },
   "author": "Justin Spears <speajus@gmail.com>",
   "license": "BSD",
   "devDependencies": {

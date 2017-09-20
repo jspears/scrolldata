@@ -103,29 +103,6 @@ export default class UnvirtualizedScroller extends PureComponent {
         this._refresh();
     }
 
-    /*  handleFetch = (data) => {
-          this.setState({data});
-      };*/
-
-    /*_fetchPage() {
-
-        const data = this.props.rowData(0, this.props.rowCount, {columnConfig});
-        if (Array.isArray(data)) {
-            return {
-                page: {
-                    data,
-                }
-            }
-        }
-        return Promise.resolve(data)
-                      .then(resp => ({
-                          page: {
-                              data: resp
-                          }
-                      }));
-    };*/
-
-
     renderItems() {
         const {
                   //  state: { data },
@@ -135,14 +112,14 @@ export default class UnvirtualizedScroller extends PureComponent {
 
         const ret = Array(data.length);
         for (let rowIndex = 0, l = data.length; rowIndex < l; rowIndex++) {
-            const rowData = data[rowIndex];
+            const rowData = data[rowIndex], id = rowData[props.primaryKey];
             ret[rowIndex] = props.renderItem({
                 ...ignore(props),
-                key : `unvirtualized-row-${rowData[props.primaryKey]}`,
-                rowIndex,
-                hash: props.hash,
-                data: rowData
-            })
+                hash    : null,
+                key     : `unvirtualized-row-${id}`,
+                rowIndex: id,
+                data    : rowData
+            });
         }
         return ret;
     }

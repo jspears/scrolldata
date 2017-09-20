@@ -167,6 +167,7 @@ export default class Sample extends PureComponent {
                 <span className={tc('value-value')}>
                     <input className={tc('input')}
                            type='text'
+
                            size={String(value).length + 1}
                            name={name}
                            value={value}

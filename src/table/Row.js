@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { themeClass } from '../themes';
-import { result } from '../util';
+import { result, fire } from '../util';
 import RowActions from './RowActions';
 
 
@@ -13,12 +13,14 @@ export default class Row extends PureComponent {
 
     };
 
+    handleToggle = () => {
+        fire(this.props.onToggle, this.props.rowIndex);
+    };
 
     render() {
         const {
                   children,
                   rowHeight,
-                  onToggle,
                   isExpanded,
                   className,
                   rowExpandedContentClass,
@@ -28,7 +30,6 @@ export default class Row extends PureComponent {
                   rowActions,
                   data,
                   onRowAction,
-                  ...rest
               } = this.props;
 
         const rowStyle = {
@@ -40,7 +41,7 @@ export default class Row extends PureComponent {
             return <div style={rowStyle}
                         className={tc(rowExpandedClass)}>
                 <div className={tc(className)}
-                     onClick={onToggle}
+                     onClick={this.handleToggle}
 
                 >{children}{rowActions && <RowActions
                     actions={rowActions}
@@ -56,15 +57,15 @@ export default class Row extends PureComponent {
 
         return <div style={rowStyle}
                     className={tc(className)}
-                    onClick={onToggle}>{children}{rowActions &&
-                                                  <RowActions
-                                                      height={rowHeight}
-                                                      actions={rowActions}
-                                                      offsetLeft={offsetLeft}
-                                                      onRowAction={onRowAction}
-                                                      rowData={data}
+                    onClick={this.handleToggle}>{children}{rowActions &&
+                                                           <RowActions
+                                                               height={rowHeight}
+                                                               actions={rowActions}
+                                                               offsetLeft={offsetLeft}
+                                                               onRowAction={onRowAction}
+                                                               rowData={data}
 
-                                                  />}</div>;
+                                                           />}</div>;
     }
 }
 

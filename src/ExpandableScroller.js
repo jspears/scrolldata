@@ -112,20 +112,17 @@ export default class ExpandableScroller extends PureComponent {
     }
 
     setup({ renderBlank, renderItem, }) {
-        const { isExpanded, handleToggleExpand, } = this;
+        const { isExpanded, handleToggleExpand: onToggle, } = this;
 
-        this.renderItem = (props) => (
-            <ToggleItem {...props}
-                        isExpanded={isExpanded}
-                        onToggle={handleToggleExpand}
-                        render={renderItem}/>);
+        this.renderItem =
+            props => renderItem(
+                { ...props, isExpanded: isExpanded(props.rowIndex), onToggle })
+
 
         if (renderBlank) {
-            this.renderBlank = (props) => (
-                <ToggleItem {...props}
-                            isExpanded={isExpanded}
-                            onToggle={handleToggleExpand}
-                            render={renderBlank}/>);
+            this.renderBlank =
+                props => renderBlank(
+                    { ...props, isExpanded: isExpanded(props.rowIndex), onToggle })
         }
     }
 
