@@ -1,11 +1,10 @@
 {
   "name": "scrolldata",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "",
   "main": "lib/index",
   "source": "src/index",
-  "dependencies": {
-  },
+  "dependencies": {},
   "author": "Justin Spears <speajus@gmail.com>",
   "license": "BSD",
   "devDependencies": {
