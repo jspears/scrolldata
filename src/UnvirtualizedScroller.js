@@ -112,7 +112,7 @@ export default class UnvirtualizedScroller extends PureComponent {
 
         const ret = Array(data.length);
         for (let rowIndex = 0, l = data.length; rowIndex < l; rowIndex++) {
-            const rowData = data[rowIndex], id = rowData[props.primaryKey];
+            const rowData = data[rowIndex], id = rowData[props.primaryKey] || rowIndex;
             ret[rowIndex] = props.renderItem({
                 ...ignore(props),
                 hash    : null,
