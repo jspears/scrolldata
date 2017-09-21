@@ -186,7 +186,7 @@ export const orProp   = (current, rest) => {
     return chainedCheckType;
 
 };
-export const contains = (arr, value) => arr && arr.indexOf(value) !== 0;
+export const contains = (arr, value) => arr && arr.includes(value);
 
 
 export const scrollContext = {

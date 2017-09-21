@@ -8,39 +8,6 @@ import {
 
 export const expanded = oneOfType([arrayOf(number), func]);
 
-/**
- * A simple wrapper class so that components do
- * not need to think to hard about toggling.
- *
- */
-export class ToggleItem extends PureComponent {
-
-    static displayName = 'ToggleItem';
-
-    static propTypes = {
-        /** toggles the row by rowIndex, if a second argument is given either true or false it will be forced open if (true) and closed if false. **/
-        onToggle  : func.isRequired,
-        rowIndex  : number,
-        render    : func.isRequired,
-        isExpanded: func,
-    };
-
-    handleToggle = () => {
-        this.props.onToggle(this.props.rowIndex)
-    };
-
-    render() {
-        const { render, isExpanded, ...props }
-                  = this.props;
-        return render({
-            ...props,
-            isExpanded: isExpanded(props.rowIndex),
-            onToggle  : this.handleToggle
-        });
-    }
-}
-
-
 export default class ExpandableScroller extends PureComponent {
     static displayName = 'ExpandableScroller';
 
@@ -116,13 +83,21 @@ export default class ExpandableScroller extends PureComponent {
 
         this.renderItem =
             props => renderItem(
-                { ...props, isExpanded: isExpanded(props.rowIndex), onToggle })
+                {
+                    ...props,
+                    isExpanded: isExpanded(props.rowIndex),
+                    onToggle
+                });
 
 
         if (renderBlank) {
             this.renderBlank =
                 props => renderBlank(
-                    { ...props, isExpanded: isExpanded(props.rowIndex), onToggle })
+                    {
+                        ...props,
+                        isExpanded: isExpanded(props.rowIndex),
+                        onToggle
+                    });
         }
     }
 
@@ -135,9 +110,11 @@ export default class ExpandableScroller extends PureComponent {
     };
 
     handleToggleExpand = (rowIndex, expand) => {
-        if (expand != null && (contains(this.state.expanded, rowIndex)
-                               === expand)) {
-            return;
+        if (expand != null) {
+            //already expanded or contracted...
+            if (this.state.expanded.includes(rowIndex) === expand) {
+                return;
+            }
         }
         const expanded = toggle(this.state.expanded, rowIndex);
         if (fire(this.props.onExpandToggle, expanded, rowIndex)) {
