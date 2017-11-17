@@ -4,7 +4,7 @@ import Configure from './Configure';
 import tc from './tc';
 
 const Render = ({
-                    rowIndex, rowHeight,
+                    rowIndex, rowHeight, key,
                     data: {
                         requestId,
                         contentPartnerId,
@@ -13,7 +13,7 @@ const Render = ({
                     },
                 }) => {
     const cellClassName = tc('cell');
-    return <div className={tc('row')} style={{ height: rowHeight }}>
+    return <div className={tc('row')} style={{ height: rowHeight }} key={key}>
         <div className={tc('cell', 'index')}>{rowIndex}</div>
         <div className={cellClassName}>{requestId}</div>
         <div className={cellClassName}>{contentPartnerId}</div>
@@ -24,12 +24,13 @@ const Render = ({
 
 const Blank = ({
                    rowHeight,
-
+                   key,
                }) => {
     const rowClassName        = tc('row'),
           blankClassName      = tc('blank'),
           blankIndexClassName = tc('blank', 'index');
-    return <div className={rowClassName} style={{ height: rowHeight }}>
+    return <div className={rowClassName} style={{ height: rowHeight }}
+                key={key}>
         <div className={blankIndexClassName}>&nbsp;</div>
         <div className={blankClassName}>&nbsp;</div>
         <div className={blankClassName}>&nbsp;</div>
@@ -45,7 +46,7 @@ export default class ScrollerExample extends Component {
         component: 'Scroller'
     };
 
-    defaultProps = {};
+    static defaultProps = {};
 
 
     render() {

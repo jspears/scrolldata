@@ -1,12 +1,12 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { themeClass } from './themes';
 //import { viewport, scroller, container, sizer } from './Scroller.stylm';
 import {
-    any, number, func, string, oneOfType, array, object, oneOf,
+    any, array, func, number, object, oneOf, oneOfType, string,
 } from 'prop-types';
 import {
-    numberOrFunc, result, ignoreKeys, EMPTY_ARRAY, classes, orProp,
-    createShouldComponentUpdate, fire, scrollContext
+    classes, createShouldComponentUpdate, EMPTY_ARRAY, fire, ignoreKeys,
+    numberOrFunc, orProp, result, scrollContext
 } from './util';
 import Container from './Container';
 import position from './position';
@@ -87,7 +87,7 @@ const defaultProps = {
 
 const ignore = ignoreKeys(propTypes, defaultProps);
 
-export default class VirtualizedScroller extends PureComponent {
+export default class VirtualizedScroller extends Component {
     static displayName  = 'VirtualizedScroller';
     static propTypes    = propTypes;
     static defaultProps = defaultProps;

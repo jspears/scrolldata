@@ -10,6 +10,7 @@ const Render = ({
                     hoverMenuClassName = tc('hover-menu'),
                     rowClassName = tc('row'),
                     cellIndexClassName = tc('cell', 'index'),
+                    key,
                     data: {
                         requestId,
                         contentPartnerId,
@@ -17,7 +18,7 @@ const Render = ({
                         movieId
                     }
                 }) => (
-    <div className={rowClassName} style={{ minHeight: rowHeight }}>
+    <div className={rowClassName} style={{ minHeight: rowHeight }} key={key}>
         <div className={cellIndexClassName}>{rowIndex}</div>
         <div className={cellClassName}>{requestId}</div>
         <div className={cellClassName}>{contentPartnerId}</div>
@@ -56,11 +57,12 @@ const Render = ({
 
 const Blank = ({
                    rowHeight,
+                   key,
                    className = tc('blank'),
                    rowClassName = tc('row'),
                    indexClassName = tc('blank', 'index')
                }) => (
-    <div className={rowClassName} style={{ minHeight: rowHeight }}>
+    <div className={rowClassName} style={{ minHeight: rowHeight }} key={key}>
         <div className={indexClassName}>&nbsp;</div>
         <div className={className}>&nbsp;</div>
         <div className={className}>&nbsp;</div>
@@ -70,6 +72,8 @@ const Blank = ({
 
 
 export default class ScrollerExample extends Component {
+
+    static displayName = 'ScrollerExample';
 
     handleMenuClick = ({ target: { dataset: { action, rowIndex } } }) => alert(
         `'${action}' was clicked on row: '${rowIndex}'`);

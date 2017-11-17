@@ -13,9 +13,10 @@ const Render = ({
                     cellClassName = tc('cell'),
                     cellIndexClassName = tc('cell', 'index'),
                     data: { requestId, contentPartnerId, fulfillmentPartner, movieId },
+                    key,
                 }) => {
 
-    return <div style={{ height: rowHeight }}
+    return <div key={key} style={{ height: rowHeight }}
 
                 className={expandableContainerClassName}>
         <div key={`expandable-row-${rowIndex}`}
@@ -37,11 +38,13 @@ const Render = ({
 
 const Blank = ({
                    rowHeight,
+                   key,
                    rowClassName = tc('row'),
                    blankClassName = tc('blank'),
                    blankIndexClassName = tc('blank', 'index')
                }) => {
-    return <div className={rowClassName} style={{ height: rowHeight }}>
+    return <div key={key} className={rowClassName}
+                style={{ height: rowHeight }}>
         <div className={blankIndexClassName}>&nbsp;</div>
         <div className={blankClassName}>&nbsp;</div>
         <div className={blankClassName}>&nbsp;</div>

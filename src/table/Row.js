@@ -39,6 +39,7 @@ export default class Row extends PureComponent {
         };
         if (isExpanded) {
             return <div style={rowStyle}
+
                         className={tc(rowExpandedClass)}>
                 <div className={tc(className)}
                      onClick={this.handleToggle}

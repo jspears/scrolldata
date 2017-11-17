@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import {
-    string, bool, func, oneOfType, oneOf, number, shape, any,
+    any, bool, func, number, oneOf, oneOfType, shape, string,
 } from 'prop-types';
 
 import {
-    result, clamp, stop, execLoop as removeListener, listen, classes, fire
+    clamp, classes, execLoop as removeListener, fire, listen, result, stop
 } from '../util';
 
 import { theme, themeClass } from '../themes'
@@ -200,7 +200,7 @@ export default class Column extends PureComponent {
         return (
             <div ref={this.refColumn}
                  className={classes(tc('cell-header'), className)}
-                 onClick={sortable && this.handleSort}
+                 onClick={sortable ? this.handleSort : void(0)}
                  style={{
                      ...style,
                      minWidth: state.width,
