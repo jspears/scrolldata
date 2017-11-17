@@ -10,11 +10,12 @@
   "devDependencies": {
     "emeth": "^1.0.0",
     "nib": "^1.1.2",
+    "stylus":"^0.54.5",
     "prop-types": "^15.6.0",
     "react": "^16.1.1",
     "react-dom": "^16.1.1",
     "stylus-loader": "^3.0.1",
-    "subschema-dev-support": "^3.0.0-b10"
+    "subschema-dev-support": "^3.0.0-b11"
   },
   "peerDependencies": {
     "emeth": "*",
