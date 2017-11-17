@@ -1,5 +1,4 @@
 import React from 'react';
-import expect from "expect";
 import TableScroller from '../../src/table/TableScroller';
 import { into } from '../support';
 

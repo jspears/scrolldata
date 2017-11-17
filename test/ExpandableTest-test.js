@@ -1,5 +1,5 @@
 import React from 'react';
-import expect from "expect";
+import {expect} from "chai";
 import ExpandableScroller from '../src/ExpandableScroller';
 import { into } from './support';
 
@@ -43,7 +43,7 @@ describe("ExpandableScroller", function () {
                                                  <div {...props}/>}
                                              rowCount={0} height={500}
                                              width={500}/>, true);
-        expect(app).toExist();
+        expect(app).to.be.ok;
     });
     it('should render one rowCount 1', function () {
         const app = into(<ExpandableScroller expandedHeight={100}
@@ -52,7 +52,7 @@ describe("ExpandableScroller", function () {
                                              renderItem={renderItem}
                                              rowCount={1} height={500}
                                              width={500}/>, true);
-        expect(app).toExist();
+        expect(app).to.be.ok;
     });
     it('should render 2 rowCount 2', function () {
         const app = into(<ExpandableScroller expandedHeight={100}
@@ -61,7 +61,7 @@ describe("ExpandableScroller", function () {
                                              renderItem={renderItem}
                                              rowCount={2} height={500}
                                              width={500}/>, true);
-        expect(app).toExist();
+        expect(app).to.be.ok;
     });
 
     it('should rowCount 20 scrollTo 10', function () {
@@ -74,7 +74,7 @@ describe("ExpandableScroller", function () {
                                              width={500}
                                              scrollTo={11}
         />, true);
-        expect(app).toExist();
+        expect(app).to.be.ok;
     });
     it('should rowCount 20 scrollTo 0 expanded 0', function () {
         const app = into(<ExpandableScroller expandedHeight={100}
@@ -87,7 +87,7 @@ describe("ExpandableScroller", function () {
                                              width={500}
                                              scrollTo={0}
         />, true);
-        expect(app).toExist();
+        expect(app).to.be.ok;
     });
     it('should rowCount 20 scrollTo 10 expanded 11,20', function () {
         const app = into(<ExpandableScroller expandedHeight={100}
@@ -100,7 +100,7 @@ describe("ExpandableScroller", function () {
                                              width={500}
                                              scrollTo={10}
         />, true);
-        expect(app).toExist();
+        expect(app).to.be.ok;
     });
 
     it('should rowCount 20 scrollTo 20 expanded 11,20', function () {
@@ -114,6 +114,6 @@ describe("ExpandableScroller", function () {
                                              width={500}
                                              scrollTo={19}
         />, true);
-        expect(app).toExist();
+        expect(app).to.be.ok;
     });
 });

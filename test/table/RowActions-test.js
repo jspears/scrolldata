@@ -1,9 +1,9 @@
 import React from 'react';
-import expect from "expect";
 import RowActions from '../../src/table/RowActions';
 import { into } from '../support';
 import { themeClass } from '../../src';
 import actions from '../../public/rowActions.json';
+import { expect } from 'chai';
 
 const cell = themeClass({ displayName: 'Cell' });
 const row  = themeClass({ displayName: 'Row' });
@@ -25,7 +25,7 @@ describe('RowActions', function () {
             }}><RowActions actions={actions}/>
             </div>, true);
 
-        expect(menu).toExist();
+        expect(menu).to.be.ok;
 
     });
     it('should render icons only', function () {
@@ -50,7 +50,7 @@ describe('RowActions', function () {
                                               "disabled": true
                                           }]}/>, true);
 
-        expect(menu).toExist();
+        expect(menu).to.be.ok;
 
     });
     it('should render only menu', function () {
@@ -72,10 +72,10 @@ describe('RowActions', function () {
                                               "disabled": true
                                           }]}/>, true);
 
-        expect(menu).toExist();
+        expect(menu).to.be.ok;
 
     });
-    it.only('should render smart if icons only menu', function () {
+    it('should render smart if icons only menu', function () {
 
 
         const menu = into(<RowActions display={true} maxRowActions={2}
@@ -95,11 +95,11 @@ describe('RowActions', function () {
                                           {
                                               "action"  : "do something",
                                               "label"   : "Disabled Action",
-                                              "icon"  : "insert_comment",
+                                              "icon"    : "insert_comment",
                                               "disabled": true
                                           }]}/>, true);
 
-        expect(menu).toExist();
+        expect(menu).to.be.ok;
 
     });
     it('should render in a scroller', function () {
@@ -131,7 +131,6 @@ describe('RowActions', function () {
                 </div>
             </div>, true);
 
-        expect(menu).toExist();
-
+        expect(menu).to.be.ok;
     });
 });

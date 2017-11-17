@@ -1,5 +1,4 @@
 import React from 'react';
-import expect from "expect";
 import IndeterminateCheckbox from '../../src/table/IndeterminateCheckbox';
 import { into } from '../support';
 
