@@ -1,7 +1,7 @@
 {
   "name": "scrolldata",
   "version": "3.0.6",
-  "description": "",
+  "description": "Table and virtualization help for tabular data",
   "main": "lib/index",
   "source": "src/index",
   "dependencies": {},
@@ -11,9 +11,9 @@
     "emeth": "^1.0.0",
     "nib": "^1.1.2",
     "stylus-loader": "^3.0.1",
-    "prop-types": "^15.5.10",
-    "react": "^15.5.4",
-    "react-dom": "^15.5.4",
+    "prop-types": "^15.6.0",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1",
     "subschema-dev-support": "^2.2.9"
   },
   "peerDependencies": {

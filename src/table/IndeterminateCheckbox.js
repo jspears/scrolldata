@@ -1,14 +1,14 @@
-import React, { PureComponent } from 'react';
-import { oneOf, any, object } from 'prop-types';
+import React, { Component } from 'react';
+import { any, object, oneOf } from 'prop-types';
 import { themeClass } from '../themes';
-import { stop, classes } from '../util';
+import { stop } from '../util';
 
 /**
  * This is an indeterminate checkbox.  It allows for the third Boolean, null;
  *
  */
 
-export default class IndeterminateCheckbox extends PureComponent {
+export default class IndeterminateCheckbox extends Component {
 
     static displayName = 'IndeterminateCheckbox';
 
