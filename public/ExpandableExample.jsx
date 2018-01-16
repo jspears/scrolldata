@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import Expandable from '../src/ExpandableScroller';
 import Slider from './Slider';
 import Configure from './Configure';
-import tc from './tc';
 import Sample from './Sample';
+import tc from './tc';
 
 const Render = ({
                     rowIndex, isExpanded, onToggle, rowHeight,
@@ -12,26 +12,26 @@ const Render = ({
                     expandedContentClassName = tc('expanded-content'),
                     cellClassName = tc('cell'),
                     cellIndexClassName = tc('cell', 'index'),
-                    data: { requestId, contentPartnerId, fulfillmentPartner, movieId },
+                    data: { name, _id, description, category_code, overview: __html = 'No Overview' },
                     key,
                 }) => {
 
+    const onClick = (e)=>onToggle(rowIndex, !isExpanded);
     return <div key={key} style={{ height: rowHeight }}
 
                 className={expandableContainerClassName}>
         <div key={`expandable-row-${rowIndex}`}
              className={expandableRowClassName}
-             onClick={onToggle}>
+             onClick={onClick}>
             <div className={cellIndexClassName}>{rowIndex}</div>
-            <div className={cellClassName}>{requestId}</div>
-            <div className={cellClassName}>{contentPartnerId}</div>
-            <div className={cellClassName}>{fulfillmentPartner}</div>
-            <div className={cellClassName}>{movieId}</div>
+            <div className={cellClassName}>{name}</div>
+            <div className={cellClassName}>{description}</div>
+            <div className={cellClassName}>{category_code}</div>
         </div>
         {isExpanded && <div key='expanded-content'
                             className={expandedContentClassName}>
-            <span className={tc('centerable')}>This is expanded
-                content</span>
+            <span className={tc('centerable')}
+                  dangerouslySetInnerHTML={{ __html }}/>
         </div>}
     </div>
 };
@@ -70,7 +70,8 @@ export default class ExpandableExample extends Component {
     }
     static defaultProps    = {
         expandedHeight: 200,
-        expanded      : []
+        expanded      : [],
+        primaryKey    : '_id'
     };
 
     handleToggle = (expanded) => {

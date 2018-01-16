@@ -6,19 +6,19 @@ import tc from './tc';
 const Render = ({
                     rowIndex, rowHeight, key,
                     data: {
-                        requestId,
-                        contentPartnerId,
-                        fulfillmentPartner,
-                        movieId
+                        _id,
+                        name,
+                        description,
+                        total_money_raised
                     },
                 }) => {
     const cellClassName = tc('cell');
     return <div className={tc('row')} style={{ height: rowHeight }} key={key}>
         <div className={tc('cell', 'index')}>{rowIndex}</div>
-        <div className={cellClassName}>{requestId}</div>
-        <div className={cellClassName}>{contentPartnerId}</div>
-        <div className={cellClassName}>{fulfillmentPartner}</div>
-        <div className={cellClassName}>{movieId}</div>
+        <div className={cellClassName}>{_id}</div>
+        <div className={cellClassName}>{name}</div>
+        <div className={cellClassName}>{description}</div>
+        <div className={cellClassName}>{total_money_raised}</div>
     </div>
 };
 

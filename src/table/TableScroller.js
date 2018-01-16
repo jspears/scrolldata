@@ -58,11 +58,15 @@ export default class TableScroller extends PureComponent {
         expandedHeight : numberOrFunc,
         expandedContent: boolOrFunc,
         renderItem     : func,
+        renderRowAsText: func,
     };
 
     static defaultProps = {
         columns         : [],
         rowRender       : props => <Row  {...props}/>,
+        renderRowAsText(data, key, config) {
+            return data[key] == null ? '' : data[key];
+        },
         renderCell      : Cell,
         headerRender    : ColumnDefault,
         renderSelectable: Selectable,
@@ -235,7 +239,7 @@ export default class TableScroller extends PureComponent {
                   expandedContent,
                   rowRender,
                   primaryKey,
-
+                  renderRowAsText,
               } = this.props;
 
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
@@ -270,7 +274,7 @@ export default class TableScroller extends PureComponent {
                                             className={config.className}
                 />
             } else {
-                children[c++] = data[columnKey];
+                children[c++] = renderRowAsText(data, columnKey, config);
             }
         }
 

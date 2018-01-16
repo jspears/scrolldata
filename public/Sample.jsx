@@ -47,7 +47,7 @@ export default class Sample extends PureComponent {
             name        : 'virtualization',
             help        : 'Type of virtualization',
             type        : 'select',
-            options     : ['Virtualized', 'Intersection', 'None'],
+            options     : ['Intersection', 'Virtualized',  'None'],
             defaultValue: 'Intersection'
         }
 
@@ -172,7 +172,7 @@ export default class Sample extends PureComponent {
                             name={name}
                             onChange={this.handleString}
                             value={value}>
-                        {options.map(v=>(<option>{v}</option>))}
+                        {options.map(v=>(<option key={v} value={v}>{v}</option>))}
                     </select>
                 </span>
             </span>,

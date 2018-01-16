@@ -3,12 +3,11 @@ import Scroller from './ScrollerExample';
 import Expandable from './ExpandableExample';
 import Slideout from './SlideoutExample';
 import Table from './TableExample';
-import example from './exampleDataset.json';
+import example from './companies.clean.json';
 import { fake } from './helper'
 import 'subschema-css-bootstrap/lib/style.css';
 import Sample from './Sample';
 import tc from './tc';
-import Intersection from './IntersectionExample';
 
 example.forEach(function (v, i) {
     v.rowIndex  = i;
@@ -27,7 +26,7 @@ const Routes = {
     Expandable,
     Slideout,
     Table,
-    Intersection
+
 };
 
 export default class App extends PureComponent {
@@ -86,7 +85,7 @@ export default class App extends PureComponent {
             <h2>Scrolldata</h2>
             <p>This is a little example to show how it would work&nbsp;
                 {routeKeys.map(
-                    (key, idx) => [key !== route ? <a href={`#${key}`}>{key}</a>
+                    (key, idx) => [key !== route ? <a key={key} href={`#${key}`}>{key}</a>
                         : key, idx != routeKeys.length - 1 ? ' | ' : ''])}
 
             </p>

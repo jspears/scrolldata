@@ -1,21 +1,24 @@
 import React, { Component, PureComponent } from 'react';
 import TableScroller from '../src/table/TableScroller';
-import example from './exampleDataset.json';
+import example from './companies.clean.json';
 import Configure, { numberChange } from './Configure';
 import Slider from './Slider'
-import tc from './tc';
 import { makeCompare } from '../src/util'
 import { fake } from './helper'
 import Sample from './Sample';
 import rowActions from './rowActions.json';
 import columns from './columns.json';
+import tc from './tc';
 
 const reverse = (fn) => (...args) => fn(...args) * -1;
 
-const expandedContent = () => (<div key='expanded-content'
-                                    className={tc('expanded-content')}>
-    <span className={tc('centerable')}>This is expanded content</span>
-</div>);
+const expandedContent = ({ data: { overview: __html  } }) => (
+    <div key='expanded-content'
+         className={tc(
+             'expanded-content')}>
+        <span className={tc('centerable')}
+              dangerouslySetInnerHTML={{ __html:__html || 'No Overview' }}/>
+    </div>);
 
 
 export default class TableExample extends Component {
@@ -27,11 +30,6 @@ export default class TableExample extends Component {
                 help        : 'The size to expand to when clicked',
                 type        : 'number',
                 defaultValue: 300
-            }, {
-                name        : 'isVirtualized',
-                help        : 'Use Virtualization',
-                type        : 'bool',
-                defaultValue: true
             },
             {
                 name: 'expanded',
@@ -54,6 +52,7 @@ export default class TableExample extends Component {
         expandedContent,
         expandedHeight: 300,
         columnCount   : 7,
+        virtualization: 'Intersection'
     };
 
     handleState     = (state) => this.props.onSetState(state);
@@ -84,7 +83,7 @@ export default class TableExample extends Component {
 
     handleColumnCount = ({ target: { name, value } }) => {
         value            = parseInt(value, 10);
-        const newColumns = columns.slice(0, value)
+        const newColumns = columns.slice(0, value);
         this.props.onSetState({ columns: newColumns, columnCount: value });
     };
 

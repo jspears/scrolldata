@@ -7,7 +7,7 @@ I looked at
  * reactvirtualized - did not have resizable columns, or expandable content
  * fixed-data-tables - expandable content did not work, and a million extra nodes.
  * smarttable - some internal thing that works ok, but totally featureless.
- * a couple of others, but they all had fatal flaws (table based layout,
+ * a couple of others, but they all had fatal flaws (table based layout, too many nodes, not configuration driven, etc...)
 
 
 * Very few additonal dom nodes.
