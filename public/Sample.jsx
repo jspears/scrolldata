@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
 import SampleStyle from './Sample.stylm';
 import theme, { themeClass } from '../src/themes';
 
@@ -45,10 +44,11 @@ export default class Sample extends PureComponent {
             help: 'Width of table',
             type: 'number'
         }, {
-            name        : 'isVirtualized',
-            help        : 'Use Virtualization',
-            type        : 'bool',
-            defaultValue: true
+            name        : 'virtualization',
+            help        : 'Type of virtualization',
+            type        : 'select',
+            options     : ['Virtualized', 'Intersection', 'None'],
+            defaultValue: 'Intersection'
         }
 
         ],
@@ -57,15 +57,20 @@ export default class Sample extends PureComponent {
 
     state = {};
 
-    renderProp      = (ret = [], prop) => {
+    renderProp   = (ret = [], prop) => {
         ret.push(' ', ...this[`_${prop.type}`](prop));
         return ret;
     };
-    handleNumber    = ({ target: { name, value } }) => {
+    handleNumber = ({ target: { name, value } }) => {
         this.props.onChange({ [name]: parseInt(value, 10) });
     };
-    handleBool      = ({ currentTarget: { name, value } }) => {
-        this.props.onChange({ [name]: value !== 'on' })
+
+    handleString = ({ target: { name, value } }) => {
+        this.props.onChange({ [name]: value });
+    };
+
+    handleBool      = ({ currentTarget: { name, checked } }) => {
+        this.props.onChange({ [name]: checked })
     };
     handleJsonArray = ({ target: { name, value } }) => {
         try {
@@ -144,6 +149,33 @@ export default class Sample extends PureComponent {
                 </span>
             </span>,
             ']',
+            <span key={`prop-name-rc-${name}`}
+                  className={tc('right-curly')}>{RC}</span>]
+    }
+
+    _select({ type, name, help, options, defaultValue }) {
+        const value = this.props.value[name] || defaultValue;
+        return [<span key={`prop-name-name-${name}`}>
+                          <span
+                              className={tc('prop-name')}>{name}</span>
+            {help && <p className={tc('help')}>{help}</p>}
+                        </span>,
+            <span key={`prop-name-eq-${name}`}
+                  className={tc('eq')}>=</span>,
+            <span key={`prop-name-lc-${name}`}
+                  className={tc('left-curly')}>{LC}</span>,
+            <span key={`prop-name-value-${name}`}
+                  className={tc('value-container')}>
+
+                <span className={tc('value-value')}>
+                    <select className={tc('select')}
+                            name={name}
+                            onChange={this.handleString}
+                            value={value}>
+                        {options.map(v=>(<option>{v}</option>))}
+                    </select>
+                </span>
+            </span>,
             <span key={`prop-name-rc-${name}`}
                   className={tc('right-curly')}>{RC}</span>]
     }

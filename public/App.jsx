@@ -8,6 +8,7 @@ import { fake } from './helper'
 import 'subschema-css-bootstrap/lib/style.css';
 import Sample from './Sample';
 import tc from './tc';
+import Intersection from './IntersectionExample';
 
 example.forEach(function (v, i) {
     v.rowIndex  = i;
@@ -25,25 +26,26 @@ const Routes = {
     Scroller,
     Expandable,
     Slideout,
-    Table
+    Table,
+    Intersection
 };
 
 export default class App extends PureComponent {
 
     state = {
-        route        : '',
-        scrollTo     : 0,
-        rowHeight    : 50,
-        height       : 600,
-        width        : 900,
-        fakeFetch    : 0,
-        bufferSize   : 0,
-        rowsVisible  : 0,
+        route      : '',
+        scrollTo   : 0,
+        rowHeight  : 50,
+        height     : 600,
+        width      : 900,
+        fakeFetch  : 0,
+        bufferSize : 0,
+        rowsVisible: 0,
         //TODO change back
 //        rowCount     : example.length,
-        rowCount     : 50,
-        maxData      : example.length,
-        scrollDelay  : 2,
+        rowCount   : 50,
+        maxData    : example.length,
+        scrollDelay: 2,
 //        isVirtualized: false //TODO change back.
     };
 
@@ -73,20 +75,20 @@ export default class App extends PureComponent {
     render() {
         const { route, ...props } = this.state;
         const Example             = Routes[route] || Scroller;
-
+        const routeKeys           = Object.keys(Routes);
         const {
                   component  = Example.displayName,
                   properties = Sample.defaultProps.properties
-              } = Example.configureSample || {};
+              }                   = Example.configureSample || {};
 
         const conf = { component, properties };
         return <div>
             <h2>Scrolldata</h2>
             <p>This is a little example to show how it would work&nbsp;
-                <a href='#Scroller'>Scroller</a>
-                | <a href='#Expandable'>Expandable</a> |
-                <a href='#Slideout'>Slideout</a> |
-                <a href='#Table'>Table</a>
+                {routeKeys.map(
+                    (key, idx) => [key !== route ? <a href={`#${key}`}>{key}</a>
+                        : key, idx != routeKeys.length - 1 ? ' | ' : ''])}
+
             </p>
             <Sample {...conf} value={props}
                     onChange={this.handleState}/>

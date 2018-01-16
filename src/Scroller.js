@@ -1,21 +1,32 @@
 import React, { Component } from 'react';
-import { bool } from 'prop-types';
-import VirtualizedScroller from './VirtualizedScroller';
-import UnvirtualizedScroller from './UnvirtualizedScroller';
+import { oneOf } from 'prop-types';
+import Virtualized from './VirtualizedScroller';
+import Intersection from './IntersectionScroller';
+import None from './UnvirtualizedScroller';
 
+const Scrollers = {
+    Virtualized,
+    None,
+    Intersection
+
+};
 export default class Scroller extends Component {
     static propTypes = {
-        isVirtualized: bool
+        virtualization: oneOf(['Intersection', 'Virtualized', 'None'])
     };
 
     static defaultProps = {
-        isVirtualized: true
+        virtualization: 'None'
     };
 
     render() {
-        const { isVirtualized, ...props } = this.props;
-        return isVirtualized ? <VirtualizedScroller {...props}/>
-            : <UnvirtualizedScroller {...props}/>
+        const {
+                  virtualization,
+                  ...props
+              }        = this.props;
+        const Scroller = Scrollers[virtualization];
+        return <Scroller {...props}/>
+
     }
 
 }

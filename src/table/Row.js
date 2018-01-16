@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { themeClass } from '../themes';
-import { result, fire } from '../util';
+import { fire, result } from '../util';
 import RowActions from './RowActions';
 
 
@@ -29,17 +29,25 @@ export default class Row extends PureComponent {
                   offsetLeft,
                   rowActions,
                   data,
+                  onRef,
                   onRowAction,
+                  isIntersecting,
               } = this.props;
 
         const rowStyle = {
             minHeight: rowHeight,
             maxHeight: rowHeight,
-            margin   : 0
+            height   : rowHeight,
         };
+        if (!isIntersecting) {
+            return <div style={rowStyle} ref={onRef}
+                        className={`${isExpanded ? tc(rowExpandedClass) : tc(
+                            className)} ${tc(
+                            'notIntersecting')}`}>{children}</div>
+        }
         if (isExpanded) {
             return <div style={rowStyle}
-
+                        ref={onRef}
                         className={tc(rowExpandedClass)}>
                 <div className={tc(className)}
                      onClick={this.handleToggle}
@@ -57,6 +65,7 @@ export default class Row extends PureComponent {
         }
 
         return <div style={rowStyle}
+                    ref={onRef}
                     className={tc(className)}
                     onClick={this.handleToggle}>{children}{rowActions &&
                                                            <RowActions

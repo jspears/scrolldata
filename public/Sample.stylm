@@ -164,6 +164,15 @@
     font normal normal normal normal 11.9px / 17.255px SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace
     outline rgb(36, 41, 46) none 0
     display inline-block
+    input[type="checkbox"]
+        position absolute
+        visibility hidden
+        + label
+            padding 0 .5rem
+    select
+        -webkit-appearance: none;
+        border: none;
+        text-align-last: center;
 
 .checkbox
     >input

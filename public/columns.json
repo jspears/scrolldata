@@ -1,0 +1,151 @@
+[
+    {
+        "columnKey": "requestId",
+        "selectable": true
+    },
+    {
+        "columnKey": "rowIndex",
+        "width": 100,
+        "label": "#"
+    },
+    {
+        "columnKey": "requestId",
+        "width": 200
+    },
+    {
+        "columnKey": "packageId",
+        "width": 200
+    },
+    {
+        "columnKey": "contentPartnerId",
+        "width": 200
+    },
+    {
+        "columnKey": "contentPartner",
+        "width": 200
+    },
+    {
+        "columnKey": "fulfillmentPartnerId",
+        "width": 200
+    },
+    {
+        "columnKey": "fulfillmentPartner",
+        "width": 200
+    },
+    {
+        "columnKey": "movieId",
+        "width": 200
+    },
+    {
+        "columnKey": "movieType",
+        "width": 200
+    },
+    {
+        "columnKey": "movieTitle",
+        "width": 200
+    },
+    {
+        "columnKey": "releaseYear",
+        "width": 200
+    },
+    {
+        "columnKey": "showName",
+        "width": 200
+    },
+    {
+        "columnKey": "seasonName",
+        "width": 200
+    },
+    {
+        "columnKey": "episodeName",
+        "width": 200
+    },
+    {
+        "columnKey": "original",
+        "width": 200
+    },
+    {
+        "columnKey": "originalLanguage",
+        "width": 200
+    },
+    {
+        "columnKey": "countries",
+        "width": 200
+    },
+    {
+        "columnKey": "deliveredOn",
+        "width": 200
+    },
+    {
+        "columnKey": "lastUpdated",
+        "width": 200
+    },
+    {
+        "columnKey": "priority",
+        "width": 200
+    },
+    {
+        "columnKey": "requestType",
+        "width": 200
+    },
+    {
+        "columnKey": "requestStatus",
+        "width": 200
+    },
+    {
+        "columnKey": "sourceType",
+        "width": 200
+    },
+    {
+        "columnKey": "materialStatus",
+        "width": 200
+    },
+    {
+        "columnKey": "sourceLanguage",
+        "width": 200
+    },
+    {
+        "columnKey": "packageTags",
+        "width": 200
+    },
+    {
+        "columnKey": "billing",
+        "width": 200
+    },
+    {
+        "columnKey": "deliveryScope",
+        "width": 200
+    },
+    {
+        "columnKey": "avs",
+        "width": 200
+    },
+    {
+        "columnKey": "contractId",
+        "width": 200
+    },
+    {
+        "columnKey": "windowStartDate",
+        "width": 200
+    },
+    {
+        "columnKey": "transferId",
+        "width": 200
+    },
+    {
+        "columnKey": "qcStatus",
+        "width": 200
+    },
+    {
+        "columnKey": "qcDueDate",
+        "width": 200
+    },
+    {
+        "columnKey": "bucketData",
+        "width": 200
+    },
+    {
+        "columnKey": "issues",
+        "width": 200
+    }
+]

@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react';
 import {
-    arrayOf, string, oneOf, any, func, shape, object, bool,
+    any, arrayOf, bool, func, object, oneOf, shape, string,
 } from 'prop-types';
 
 import {
-    result,
-    boolOrFunc,
-    numberOrFunc, ignoreKeys, toggle, fire
+    boolOrFunc, fire, ignoreKeys, numberOrFunc, result, toggle
 } from '../util';
 import { themeClass } from '../themes'
 
@@ -64,7 +62,7 @@ export default class TableScroller extends PureComponent {
 
     static defaultProps = {
         columns         : [],
-        rowRender       : props => <Row {...props}/>,
+        rowRender       : props => <Row  {...props}/>,
         renderCell      : Cell,
         headerRender    : ColumnDefault,
         renderSelectable: Selectable,
@@ -221,50 +219,59 @@ export default class TableScroller extends PureComponent {
                   rowIndex,
                   height,
                   data,
+                  onRef,
+                  isIntersecting = true,
+
               }        = row;
         const children = [];
         const {
                   columns,
                   containerWidth
               }        = this.state;
+
         const {
                   renderSelectable,
                   renderCell,
                   expandedContent,
                   rowRender,
                   primaryKey,
-              }        = this.props;
+
+              } = this.props;
 
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
             let { columnKey, cellRender, ...config } = columns[i];
             if (config.hidden) {
                 continue;
             }
-            if (config.selectable) {
-                const selectData = data && data[columnKey];
-                config           = {
-                    width     : 30,
-                    ...config,
-                    renderCell: renderSelectable,
-                    data      : selectData,
-                    onSelect  : this.handleRowSelection,
-                    state     : this.isSelected(selectData)
+            if (isIntersecting) {
+                if (config.selectable) {
+                    const selectData = data && data[columnKey];
+                    config           = {
+                        width     : 30,
+                        ...config,
+                        renderCell: renderSelectable,
+                        data      : selectData,
+                        onSelect  : this.handleRowSelection,
+                        state     : this.isSelected(selectData)
+                    }
+
                 }
 
+                const RenderCell = config.renderCell || renderCell;
+
+                children[c++] = <RenderCell data={data}
+                                            {...config}
+                                            key={`cell-${columnKey}-${i}`}
+                                            hash={this.state.hash}
+                                            columnKey={columnKey}
+                                            rowIndex={rowIndex}
+                                            colIndex={i}
+                                            height={height}
+                                            className={config.className}
+                />
+            } else {
+                children[c++] = data[columnKey];
             }
-
-            const RenderCell = config.renderCell || renderCell;
-
-            children[c++] = <RenderCell data={data}
-                                        {...config}
-                                        key={`cell-${columnKey}-${i}`}
-                                        hash={this.state.hash}
-                                        columnKey={columnKey}
-                                        rowIndex={rowIndex}
-                                        colIndex={i}
-                                        height={height}
-                                        className={config.className}
-            />
         }
 
         const cfg = {};
@@ -283,9 +290,11 @@ export default class TableScroller extends PureComponent {
         }
         return rowRender({
             ...cfg,
+            onRef,
+            isIntersecting,
             primaryKey,
             containerWidth,
-            children,
+            children   : isIntersecting ? children : [children.join(' ')],
             data       : row.data,
             rowHeight  : row.rowHeight,
             rowIndex   : row.rowIndex,
@@ -364,10 +373,11 @@ export default class TableScroller extends PureComponent {
               } = this.state;
 
 
-        const { headerRender, height, isVirtualized } = this.props;
-        const Column                                  = headerRender;
-        const cols                                    = [];
-        let rowWidth                                  = 0;
+        const { headerRender, height } = this.props;
+        const Column                   = headerRender;
+        const cols                     = [];
+        let rowWidth                   = 0;
+
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
             let col = columns[i];
             if (col.hidden === true) {
@@ -404,6 +414,7 @@ export default class TableScroller extends PureComponent {
                                 onSort={this.handleSort}
                                 containerHeight={this.props.height}
                                 onColumnConfigChange={this.handleColumnConfigChange}/>
+
         }
 
         const props     = ignore(this.props);
@@ -418,13 +429,15 @@ export default class TableScroller extends PureComponent {
                     onScroll={this.handleScroll}>
             <UseScroller {...props}
                          primaryKey={this.props.primaryKey}
-                         isVirtualized={this.props.isVirtualized}
+                         virtualization={this.props.virtualization}
                          hash={this.state.hash}
                          width={rowWidth}
                          height={this.props.height}
                          className={tc('scroll-rows')}
-                         scrollerClassName={tc(isVirtualized ? 'scroll-list'
-                             : 'unvirtualized-scroll-list')}
+                         scrollerClassName={tc(
+                             this.props.virtualization === 'Virtualized'
+                                 ? 'scroll-list'
+                                 : 'unvirtualized-scroll-list')}
                          rowData={this.rowData}
                          renderItem={this.renderItem}
                          renderBlank={this.renderBlank}>
@@ -439,6 +452,5 @@ export default class TableScroller extends PureComponent {
         </div>
     }
 }
-
 
 const tc = themeClass(TableScroller);

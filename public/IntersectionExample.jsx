@@ -27,11 +27,6 @@ export default class TableExample extends Component {
                 help        : 'The size to expand to when clicked',
                 type        : 'number',
                 defaultValue: 300
-            }, {
-                name        : 'isVirtualized',
-                help        : 'Use Virtualization',
-                type        : 'bool',
-                defaultValue: true
             },
             {
                 name: 'expanded',
@@ -54,6 +49,7 @@ export default class TableExample extends Component {
         expandedContent,
         expandedHeight: 300,
         columnCount   : 7,
+        virtualization: 'Intersection'
     };
 
     handleState     = (state) => this.props.onSetState(state);
@@ -137,7 +133,10 @@ export default class TableExample extends Component {
                         onChange={this.handleNumChange}
                         max={600}/>
             </Configure>
-            <h3>Virtualized Table</h3>
+            <h3>Intersection Table</h3>
+            <p>Only fully renderes visible rows, otherwise renders
+                placeholder</p>
+
             <div>
                 <div className="btn-group">{this.renderExpandedNumber()}</div>
             </div>
