@@ -2,18 +2,16 @@
   "name": "scrolldata",
   "version": "3.0.8",
   "description": "Table and virtualization help for tabular data",
-  "main": "lib/index",
-  "source": "src/index",
+  "main": "lib",
+  "source": "src",
   "dependencies": {},
   "author": "Justin Spears <speajus@gmail.com>",
   "license": "BSD",
   "devDependencies": {
     "chai": "^4.1.2",
     "emeth": "^1.0.0",
-    "nib": "^1.1.2",
-    "stylus": "^0.54.5",
-    "stylus-loader": "^3.0.1",
-    "subschema-dev-support": "^3.0.0-b11"
+    "mrbuilder": "^0.4.0",
+    "mrbuilder-plugin-stylus": "^0.4.0"
   },
   "peerDependencies": {
     "emeth": "*",
@@ -22,12 +20,18 @@
     "react-dom": "*"
   },
   "scripts": {
-    "karma": "subschema-karma",
-    "test": "subschema-karma --single-run --browsers Firefox",
-    "start": "subschema-webpack-dev-server --hot --devtool inline-source-map",
-    "demo": "subschema-webpack --demo ./docs ",
+    "karma": "mrbuilder-karma",
+    "test": "mrbuilder-karma",
+    "start": "mrbuilder-webpack-dev-server --entry index=public/index",
+    "demo": "mrbuilder-webpack --demo ./docs ",
     "gh-pages": "git subtree push --prefix docs origin gh-pages",
-    "build": "subschema-webpack  --devtool source-map --no-style-loader",
-    "preversion": "npm run build && npm run test"
+    "build": "mrbuilder-webpack",
+    "preversion": "$npm_execpath run build && $npm_execpath run test"
+  },
+  "mrbuilder": {
+    "plugins": [
+      "mrbuilder-plugin-css",
+      "mrbuilder-plugin-stylus"
+    ]
   }
 }

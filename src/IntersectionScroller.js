@@ -5,7 +5,7 @@ import {
     any, array, bool, func, number, object, oneOf, oneOfType, shape, string,
 } from 'prop-types';
 import { classes, ignoreKeys, numberOrFunc, scrollContext } from './util';
-import  createIntersectionRegistry  from './intersectionRegistry';
+import createIntersectionRegistry from './intersectionRegistry';
 import './themes/default/scroller';
 
 const propTypes = {
@@ -68,24 +68,23 @@ const defaultProps = {
     intersectionRegistry: createIntersectionRegistry()
 };
 
-const style = {
-    borderTop: '1px solid #ccc',
-    height   : 50
-};
-
 const ignore = ignoreKeys(propTypes, defaultProps);
+
+const debounce = (fn, to, ti) => arg => {
+    clearTimeout(ti);
+    ti = setTimeout(fn, to, arg);
+};
 
 class IntersectionComponent extends Component {
     state = {
         isIntersecting: false
     };
 
-    onObserve = ({ isIntersecting }) => {
-
+    onObserve = debounce(({ isIntersecting }) => {
         if (this.state.isIntersecting !== isIntersecting) {
-           this.setState({ isIntersecting });
+            this.setState({ isIntersecting });
         }
-    };
+    }, 300);
 
     onRef = (domNode) => {
         this.domNode = domNode;

@@ -1,5 +1,4 @@
 @import '../../../table/TableScroller.styl'
-@import url('https://fonts.googleapis.com/css?family=Roboto');
 @import './Row.stylm';
 
 .container

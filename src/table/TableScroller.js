@@ -85,10 +85,6 @@ export default class TableScroller extends PureComponent {
         isContainerExpandable: this.props.expandedContent != null,
     };
 
-    componentDidMount() {
-        this.handleMenuOffset();
-    }
-
     componentWillReceiveProps({ columns, hash, selected, selectedState, expanded, expandedContent }) {
         const state = {};
         if (this.props.columns !== columns) {
@@ -345,19 +341,6 @@ export default class TableScroller extends PureComponent {
             sortDirection: this.state.sortDirection
         });
 
-    refContainer = (node) => {
-        this._refContainer = node;
-        this.handleMenuOffset(node);
-    };
-
-    handleScroll = ({ target }) => this.handleMenuOffset(target);
-
-    handleMenuOffset(refContainer) {
-
-        const { offsetWidth, scrollLeft } = refContainer || this._refContainer
-                                            || {};
-        this.setState({ menuOffset: offsetWidth + scrollLeft });
-    };
 
     handleExpandToggle = (expanded) => {
         if (fire(this.props.onExpandToggle, expanded)) {
@@ -429,8 +412,7 @@ export default class TableScroller extends PureComponent {
             UseScroller          = ExpandableScroller;
         }
 
-        return <div className={tc('container')} ref={this.refContainer}
-                    onScroll={this.handleScroll}>
+        return <div className={tc('container')} ref={this.refContainer}>
             <UseScroller {...props}
                          primaryKey={this.props.primaryKey}
                          virtualization={this.props.virtualization}
