@@ -40,12 +40,9 @@ export default class App extends PureComponent {
         fakeFetch  : 0,
         bufferSize : 0,
         rowsVisible: 0,
-        //TODO change back
-//        rowCount     : example.length,
-        rowCount   : 50,
+        rowCount   : example.length,
         maxData    : example.length,
         scrollDelay: 2,
-//        isVirtualized: false //TODO change back.
     };
 
     handleState = (state) => this.setState(state);
