@@ -32,7 +32,7 @@ const Routes = {
 export default class App extends PureComponent {
 
     state = {
-        route      : '',
+        route      : 'Table',
         scrollTo   : 0,
         rowHeight  : 50,
         height     : 600,
@@ -43,6 +43,7 @@ export default class App extends PureComponent {
         rowCount   : example.length,
         maxData    : example.length,
         scrollDelay: 2,
+
     };
 
     handleState = (state) => this.setState(state);
@@ -69,7 +70,8 @@ export default class App extends PureComponent {
     }
 
     render() {
-        const { route, ...props } = this.state;
+        let { route, ...props } = this.state;
+        route = route || 'Table';
         const Example             = Routes[route] || Scroller;
         const routeKeys           = Object.keys(Routes);
         const {
