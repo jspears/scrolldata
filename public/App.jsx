@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import Scroller from './ScrollerExample';
 import Expandable from './ExpandableExample';
-import Slideout from './SlideoutExample';
 import Table from './TableExample';
 import example from './companies.clean.json';
 import { fake } from './helper'
@@ -22,10 +21,11 @@ function between(min, max) {
 
 
 const Routes = {
+    Table,
     Scroller,
     Expandable,
-    Slideout,
-    Table,
+    //  Slideout,
+
 
 };
 
@@ -85,7 +85,8 @@ export default class App extends PureComponent {
             <h2>Scrolldata</h2>
             <p>This is a little example to show how it would work&nbsp;
                 {routeKeys.map(
-                    (key, idx) => [key !== route ? <a key={key} href={`#${key}`}>{key}</a>
+                    (key, idx) => [key !== route ?
+                                   <a key={key} href={`#${key}`}>{key}</a>
                         : key, idx != routeKeys.length - 1 ? ' | ' : ''])}
 
             </p>

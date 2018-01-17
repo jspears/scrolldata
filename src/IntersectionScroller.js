@@ -75,6 +75,11 @@ const debounce = (fn, to, ti) => arg => {
     ti = setTimeout(fn, to, arg);
 };
 
+//Exposing for easier override.
+export const settings = {
+    debounce: 100
+};
+
 class IntersectionComponent extends Component {
     state = {
         isIntersecting: false
@@ -84,7 +89,7 @@ class IntersectionComponent extends Component {
         if (this.state.isIntersecting !== isIntersecting) {
             this.setState({ isIntersecting });
         }
-    }, 300);
+    }, settings.debounce);
 
     onRef = (domNode) => {
         this.domNode = domNode;
