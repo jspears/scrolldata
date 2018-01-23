@@ -1,6 +1,6 @@
 {
   "name": "scrolldata",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Table and virtualization help for tabular data",
   "main": "lib",
   "source": "src",
@@ -35,6 +35,6 @@
     ]
   },
   "publishConfig": {
-    "registry":"https://registry.npmjs.org"
+    "registry": "https://registry.npmjs.org"
   }
 }
