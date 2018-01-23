@@ -177,7 +177,7 @@ export default class IntersectionScroller extends PureComponent {
                     intersectionRegistry={props.intersectionRegistry}
                     renderItem={props.renderItem}
                     rowIndex={id}
-                    key={`intersecting-row-${rowIndex}`}
+                    key={`intersecting-row-${id}`}
                     data={rowData}/>);
         }
         return ret;
