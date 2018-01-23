@@ -110,7 +110,6 @@ class IntersectionComponent extends Component {
         const { rowIndex, data } = this.props;
         return this.props.renderItem({
             ...ignore(this.props),
-            key           : `intersecting-row-${rowIndex}`,
             isIntersecting: this.state.isIntersecting,
             onRef         : this.onRef,
             rowIndex,
@@ -176,7 +175,9 @@ export default class IntersectionScroller extends PureComponent {
             ret[rowIndex] =
                 (<IntersectionComponent
                     intersectionRegistry={props.intersectionRegistry}
-                    renderItem={props.renderItem} rowIndex={id}
+                    renderItem={props.renderItem}
+                    rowIndex={id}
+                    key={`intersecting-row-${rowIndex}`}
                     data={rowData}/>);
         }
         return ret;
