@@ -33,5 +33,8 @@
       "mrbuilder-plugin-css",
       "mrbuilder-plugin-stylus"
     ]
+  },
+  "publishConfig": {
+    "registry":"https://registry.npmjs.org"
   }
 }
