@@ -24,7 +24,7 @@
     "karma": "mrbuilder-karma",
     "test": "mrbuilder-karma",
     "start": "mrbuilder-webpack-dev-server --entry index=public/index",
-    "demo": "mrbuilder-webpack --demo ./docs  --entry index=public/index",
+    "demo": "mrbuilder-clean docs && mrbuilder-webpack --demo ./docs  --entry index=public/index && git add docs",
     "gh-pages": "git subtree push --prefix docs origin gh-pages",
     "build": "mrbuilder-webpack",
     "preversion": "$npm_execpath run build && $npm_execpath run test"
