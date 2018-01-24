@@ -10,8 +10,9 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "emeth": "^1.0.0",
-    "mrbuilder": "^0.4.0",
-    "mrbuilder-plugin-stylus": "^0.4.0"
+    "hint.css": "^2.5.0",
+    "mrbuilder": "^0.5.0",
+    "mrbuilder-plugin-stylus": "^0.5.0"
   },
   "peerDependencies": {
     "emeth": "*",
@@ -32,7 +33,20 @@
     "plugins": [
       "mrbuilder-plugin-css",
       "mrbuilder-plugin-stylus"
-    ]
+    ],
+    "env": {
+      "test": {
+        "plugins": [
+          [
+            "mrbuilder-plugin-css",
+            {
+              "isUseStyleLoader": true
+            }
+          ],
+          "mrbuilder-plugin-stylus"
+        ]
+      }
+    }
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org"

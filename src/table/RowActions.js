@@ -1,12 +1,48 @@
 import React, { PureComponent } from 'react'
 import { themeClass } from '../themes';
 import {
-    arrayOf, number, string, func, shape, bool, any, oneOfType
+    any, arrayOf, bool, func, number, oneOfType, shape, string
 } from 'prop-types'
 import {
-    stop, fire, execLoop as removeListener, listen, result,
+    execLoop as removeListener, fire, listen, result, stop,
 } from '../util';
 import { findDOMNode } from 'react-dom';
+import intersectionRegistry from '../intersectionRegistry';
+
+class Menu extends PureComponent {
+    static defaultProps = {
+        intersectionRegistry: intersectionRegistry()
+    };
+
+
+    componentDidMount() {
+        this.props.intersectionRegistry.register(this.menuNode, this.onObserve);
+
+    }
+
+    componentWillUnmount() {
+        this.props.intersectionRegistry.unregister(this.menuNode);
+    }
+
+    _menu = (node) => this.menuNode = node;
+
+    onObserve = (e) => {
+        const { intersectionRect, boundingClientRect } = e;
+        const marginTop = (intersectionRect.height - boundingClientRect.height);
+
+        if (marginTop < -1) {
+            this.setState({ marginTop });
+        }
+    };
+
+    render() {
+        const { intersectionRegistry, ...props } = this.props;
+        return <ul style={{ ...this.state, ...this.props.style }}
+                   ref={this._menu} {...props}>
+            {this.props.children}
+        </ul>
+    }
+}
 
 export default class RowActions extends PureComponent {
 
@@ -17,26 +53,37 @@ export default class RowActions extends PureComponent {
         rowData       : any,
         moreIcon      : string,
         actions       : oneOfType([func, arrayOf(shape({
-            action  : string.isRequired,
-            label   : string,
-            icon    : string,
-            disabled: bool
+            action   : string.isRequired,
+            label    : string,
+            icon     : string,
+            className: string,
+            disabled : bool,
+
         }))]),
         height        : number,
         maxRowActions : number,
         containerWidth: number,
-        display       : bool
+        display       : bool,
+        moreClassName : string,
+        moreHint      : string,
     };
     static defaultProps = {
         maxRowActions: 3,
         moreIcon     : 'more_vert',
+        moreHint     : 'More Actions',
+
     };
 
     state = {};
 
+
     componentWillUnmount() {
         this.listeners();
     }
+
+    onObserve = (e) => {
+        const { boundingClientRect: bottom, top, width, left, right, x, y } = e;
+    };
 
     listeners(...listeners) {
         if (this._listeners) {
@@ -75,28 +122,30 @@ export default class RowActions extends PureComponent {
     };
 
 
-    renderAction({ action, label, icon, disabled }) {
+    renderAction({ action, label, icon, disabled, className }) {
         return <li key={`action-${action}`}
-                   className={tc('action', disabled ? 'disabled' : 'enabled')}
+                   className={tc('action',
+                       disabled ? 'disabled' : 'enabled')}
                    data-action={action}
+                   role='menuitem'
                    disabled={disabled === true}
                    onClick={!disabled ? this.handleAction : void(0)}>
             {icon && <i
-                title={label || action}
-                className={tc('icon')}>{icon}</i>}
+                aria-label={label || action}
+                className={`${className} ${tc('icon')}`}>{icon}</i>}
             <span className={tc('label')}>{label || action}</span>
         </li>
     };
+
 
     renderMenu(menuActionList) {
         if (!menuActionList.length) {
             return;
         }
-        const rect = this.rowRef.getBoundingClientRect();
-        const top  = rect.top;
-        return <ul className={tc('action-menu')} style={{ right: 0, top }}>
+
+        return <Menu className={tc('action-menu')}>
             {menuActionList.map(this.renderAction, this)}
-        </ul>;
+        </Menu>;
     }
 
     renderActions(actionList, hasMenu) {
@@ -115,9 +164,12 @@ export default class RowActions extends PureComponent {
         if (hasMenu) {
             ret[ret.length] =
                 (<li key='action-menu'
+                     role="group"
                      className={tc('menu-item', active && 'active')}
                      onClick={this.handleMenu}>
-                    <i className={tc('icon')}>{this.props.moreIcon}</i>
+                    <i className={`${tc('icon')} ${this.props.moreClassName}`}
+                       aria-label={this.props.moreHint}
+                    >{this.props.moreIcon}</i>
 
                 </li>);
 
@@ -131,14 +183,8 @@ export default class RowActions extends PureComponent {
     };
 
     render() {
-        const { offsetLeft, rowData, maxRowActions, height, display } = this.props;
+        const { offsetLeft, rowData, maxRowActions, display } = this.props;
 
-        let style = { maxHeight: height };
-
-        if (offsetLeft) {
-            style.left = offsetLeft;
-
-        }
         const hasIcons = [], menuActions = [];
         result(this.props.actions, rowData).forEach((action) => {
             if (action.icon) {
@@ -149,12 +195,13 @@ export default class RowActions extends PureComponent {
         });
         const hasMenu = !(hasIcons.length <= maxRowActions + 2
                           && menuActions.length === 0);
+
         if (hasMenu) {
             menuActions.unshift(...hasIcons.splice(maxRowActions));
         }
         return <div className={tc('row-actions', display && 'display')}
                     ref={this._rowRef}>
-            <ul className={tc('actions')} style={style}>
+            <ul role='menu' className={tc('actions')}>
                 {this.renderActions(hasIcons, hasMenu)}
             </ul>
             {this.state.active && this.renderMenu(

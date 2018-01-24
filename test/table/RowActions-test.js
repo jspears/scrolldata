@@ -1,13 +1,11 @@
 import React from 'react';
 import RowActions from '../../src/table/RowActions';
 import { into } from '../support';
-import { themeClass } from '../../src';
 import actions from '../../public/rowActions.json';
 import { expect } from 'chai';
+import '../../src/themes';
+import 'hint.css/hint.css';
 
-const cell = themeClass({ displayName: 'Cell' });
-const row  = themeClass({ displayName: 'Row' });
-const col  = themeClass({ displayName: 'Column' })
 
 describe('RowActions', function () {
     this.timeout(50000);
@@ -83,6 +81,7 @@ describe('RowActions', function () {
                                           {
                                               "action": "asterisk",
                                               "label" : "More Info",
+                                              "icon"  : "phone"
                                           },
                                           {
                                               "action": "explore",
@@ -102,6 +101,54 @@ describe('RowActions', function () {
         expect(menu).to.be.ok;
 
     });
+    it('should render smart if icons only menu and keep in view',
+        function () {
+
+
+            const menu = into(
+                <div style={{
+                    position     : 'absolute',
+                    bottom       : 0,
+                    display      : 'flex',
+                    flexDirection: 'column',
+                    width        : '100%',
+                    height       : 300,
+                    border       : '1px solid gray',
+                    overflow     : 'hidden'
+                }}>
+                    {['one', 'two', 'three', 'four', 'five'].map(key => (
+                        <RowActions key={key} display={true} maxRowActions={2}
+                                    moreClassName={'hint--top'}
+                                    actions={[
+                                        {
+                                            "action"   : "asterisk",
+                                            "label"    : "More Info",
+                                            "icon"     : "phone",
+                                            "className": "hint--top"
+                                        },
+                                        {
+                                            "action": "explore",
+                                            "label" : "No Icon"
+                                        },
+                                        {
+                                            "action": "video",
+                                            "label" : "Watch Video",
+                                        },
+                                        {
+                                            "action"   : "do something",
+                                            "label"    : "Disabled Action",
+                                            "icon"     : "insert_comment",
+                                            "className": "hint--top",
+                                            "disabled" : true
+                                        }]}/>))}
+                </div>
+
+                , true);
+
+
+            expect(menu).to.be.ok;
+
+        });
     it('should render in a scroller', function () {
 
 

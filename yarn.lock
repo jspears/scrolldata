@@ -3374,6 +3374,10 @@ he@1.1.1, he@1.1.x:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
 
+hint.css@^2.5.0:
+  version "2.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/hint.css/-/hint.css-2.5.0.tgz#38cae3667e42d91dfddbe503100ab34932f6fd65"
+
 hmac-drbg@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/hmac-drbg/-/hmac-drbg-1.0.1.tgz#d2745701025a6c775a6c545793ed502fc0c649a1"
@@ -4598,21 +4602,21 @@ move-concurrently@^1.0.1:
     rimraf "^2.5.4"
     run-queue "^1.0.3"
 
-mrbuilder-optionsmanager@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-optionsmanager/-/mrbuilder-optionsmanager-0.4.0.tgz#5cf49250623dad07fb4d19755a8f638b70f31e21"
+mrbuilder-optionsmanager@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-optionsmanager/-/mrbuilder-optionsmanager-0.5.0.tgz#0e7915b58c28c88192c87bf06acf80136aa50ed9"
   dependencies:
-    mrbuilder-utils "^0.4.0"
+    mrbuilder-utils "^0.5.0"
 
-mrbuilder-plugin-analyze@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-analyze/-/mrbuilder-plugin-analyze-0.4.0.tgz#241ca3c141ce06e001e9fc880108ac2c3cd09f4b"
+mrbuilder-plugin-analyze@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-analyze/-/mrbuilder-plugin-analyze-0.5.0.tgz#96035da00a3ce1d14940a7c41d9fc75d67f6cab5"
   dependencies:
     webpack-bundle-analyzer "^2.9.1"
 
-mrbuilder-plugin-babel@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-babel/-/mrbuilder-plugin-babel-0.4.0.tgz#c1fc24f2108361002c84e21eca708810acc6e671"
+mrbuilder-plugin-babel@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-babel/-/mrbuilder-plugin-babel-0.5.0.tgz#c9e8224e057b455b9532dd7467dfce71883c6717"
   dependencies:
     babel-cli "^6.26.0"
     babel-core "^6.26.0"
@@ -4627,19 +4631,19 @@ mrbuilder-plugin-babel@^0.4.0:
     babel-preset-react "^6.24.1"
     babel-preset-stage-2 "^6.24.1"
     babel-runtime "^6.26.0"
-    mrbuilder-optionsmanager "^0.4.0"
-    mrbuilder-plugin-browserslist "^0.4.0"
+    mrbuilder-optionsmanager "^0.5.0"
+    mrbuilder-plugin-browserslist "^0.5.0"
     rimraf "^2.6.2"
 
-mrbuilder-plugin-browserslist@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-browserslist/-/mrbuilder-plugin-browserslist-0.4.0.tgz#e257003866f02328f3f1a3c7a5e2793f9a52535a"
+mrbuilder-plugin-browserslist@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-browserslist/-/mrbuilder-plugin-browserslist-0.5.0.tgz#03554b64bc567a76f0682d75b7b2a5c59d880d39"
   dependencies:
-    mrbuilder-utils "^0.4.0"
+    mrbuilder-utils "^0.5.0"
 
-mrbuilder-plugin-css@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-css/-/mrbuilder-plugin-css-0.4.0.tgz#f7d2798859d3eb4ea3c2e7c1b6f3a4296d0b005d"
+mrbuilder-plugin-css@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-css/-/mrbuilder-plugin-css-0.5.0.tgz#61563205c52de525d6fb93e2a4f89deff7286553"
   dependencies:
     autoprefixer "^7.1.6"
     css-loader "^0.28.4"
@@ -4647,45 +4651,45 @@ mrbuilder-plugin-css@^0.4.0:
     postcss-loader "^2.0.9"
     style-loader "^0.19.0"
 
-mrbuilder-plugin-enzyme@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-enzyme/-/mrbuilder-plugin-enzyme-0.4.0.tgz#ae92b791003f880ac8216dcbfb75c19299e55e63"
+mrbuilder-plugin-enzyme@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-enzyme/-/mrbuilder-plugin-enzyme-0.5.0.tgz#bc994eafb3a7849f2e6eb8d19ac4effdad7857d8"
   dependencies:
     enzyme "^3.2.0"
     enzyme-adapter-react-16 "^1.1.0"
 
-mrbuilder-plugin-filetypes@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-filetypes/-/mrbuilder-plugin-filetypes-0.4.0.tgz#c7ccafdacd8ce4f4a1a26243d5c121f2e671e10c"
+mrbuilder-plugin-filetypes@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-filetypes/-/mrbuilder-plugin-filetypes-0.5.0.tgz#a19d2ca367d3928189eec8f0f9caeff8a7caa1be"
   dependencies:
     file-loader "^1.1.5"
     url-loader "^0.6.2"
 
-mrbuilder-plugin-fonts@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-fonts/-/mrbuilder-plugin-fonts-0.4.0.tgz#a04717dc1a30b278c132086d4a3c0f0a2403c08f"
+mrbuilder-plugin-fonts@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-fonts/-/mrbuilder-plugin-fonts-0.5.0.tgz#554127936a42b18cc508450791d424c25c678ae2"
   dependencies:
     file-loader "^1.1.5"
     url-loader "^0.6.2"
 
-mrbuilder-plugin-hot@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-hot/-/mrbuilder-plugin-hot-0.4.0.tgz#c554abab60b8a7d5ffdd95b00d634d9f1cc70c3f"
+mrbuilder-plugin-hot@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-hot/-/mrbuilder-plugin-hot-0.5.0.tgz#ac222ac1c4251b0719e6bfb446c77d379bdac578"
   dependencies:
     react-hot-loader "^3.1.2"
 
-mrbuilder-plugin-html@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-html/-/mrbuilder-plugin-html-0.4.0.tgz#4fe09ac69b2e0616ae25cada95adc2b078882635"
+mrbuilder-plugin-html@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-html/-/mrbuilder-plugin-html-0.5.0.tgz#5953a9b7f3d9a16ae2cbc9f1f1d33ad38073d140"
   dependencies:
     html-webpack-plugin "^2.30.1"
     html-webpack-template "^6.0.2"
-    mrbuilder-plugin-babel "^0.4.0"
-    mrbuilder-utils "^0.4.0"
+    mrbuilder-plugin-babel "^0.5.0"
+    mrbuilder-utils "^0.5.0"
 
-mrbuilder-plugin-karma@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-karma/-/mrbuilder-plugin-karma-0.4.0.tgz#3904e1fdb31a06999742e779c36fa8be1171a702"
+mrbuilder-plugin-karma@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-karma/-/mrbuilder-plugin-karma-0.5.0.tgz#d29d92da8ffcb6e143245bdb891558443e093ae6"
   dependencies:
     karma "^1.7.1"
     karma-chrome-launcher "^2.2.0"
@@ -4696,91 +4700,91 @@ mrbuilder-plugin-karma@^0.4.0:
     karma-sourcemap-loader "^0.3.7"
     karma-spec-reporter "^0.0.31"
     karma-webpack "^2.0.5"
-    mrbuilder-optionsmanager "^0.4.0"
-    mrbuilder-plugin-enzyme "^0.4.0"
-    mrbuilder-plugin-mocha "^0.4.0"
-    mrbuilder-plugin-webpack "^0.4.0"
+    mrbuilder-optionsmanager "^0.5.0"
+    mrbuilder-plugin-enzyme "^0.5.0"
+    mrbuilder-plugin-mocha "^0.5.0"
+    mrbuilder-plugin-webpack "^0.5.0"
 
-mrbuilder-plugin-less@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-less/-/mrbuilder-plugin-less-0.4.0.tgz#fc61dfe66c4477194e0df611d52f798e882fd415"
+mrbuilder-plugin-less@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-less/-/mrbuilder-plugin-less-0.5.0.tgz#dbd8188d8542aad7cf6cd323e92386e7a9c3fad9"
   dependencies:
     less "^2.7.3"
     less-loader "^4.0.5"
-    mrbuilder-plugin-css "^0.4.0"
+    mrbuilder-plugin-css "^0.5.0"
 
-mrbuilder-plugin-mocha@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-mocha/-/mrbuilder-plugin-mocha-0.4.0.tgz#ffe457378745d60777156b05552c14cb98713a5e"
+mrbuilder-plugin-mocha@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-mocha/-/mrbuilder-plugin-mocha-0.5.0.tgz#119115027ea29ce962026eb0f563902f00083843"
   dependencies:
     chai "^4.1.2"
     jsdom "^11.5.1"
     mocha "^4.0.1"
-    mrbuilder-optionsmanager "^0.4.0"
-    mrbuilder-plugin-babel "^0.4.0"
+    mrbuilder-optionsmanager "^0.5.0"
+    mrbuilder-plugin-babel "^0.5.0"
 
-mrbuilder-plugin-stylus@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-stylus/-/mrbuilder-plugin-stylus-0.4.0.tgz#6e764e4ff4f3e93cdeb6efe102f34c3a9d2dbccb"
+mrbuilder-plugin-stylus@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-stylus/-/mrbuilder-plugin-stylus-0.5.0.tgz#9312509795b9711711d88c5381f6aec642d606aa"
   dependencies:
     loader-utils "^1.1.0"
-    mrbuilder-plugin-css "^0.4.0"
+    mrbuilder-plugin-css "^0.5.0"
     nib "^1.1.2"
     stylus "^0.54.5"
     stylus-loader "^3.0.1"
 
-mrbuilder-plugin-uglify@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-uglify/-/mrbuilder-plugin-uglify-0.4.0.tgz#959f8c23388966825c9a6b3161678dc52973a52a"
+mrbuilder-plugin-uglify@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-uglify/-/mrbuilder-plugin-uglify-0.5.0.tgz#9687e766047a1959a94ad3a8dde019ffb213d629"
   dependencies:
     uglifyjs-webpack-plugin "^1.1.1"
 
-mrbuilder-plugin-webpack-dev-server@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-webpack-dev-server/-/mrbuilder-plugin-webpack-dev-server-0.4.0.tgz#2bf984ac46d2af59b1676a74b928b68d6646a975"
+mrbuilder-plugin-webpack-dev-server@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-webpack-dev-server/-/mrbuilder-plugin-webpack-dev-server-0.5.0.tgz#20349c3d20dc1c077fc0ae0fb4b8693a0c57eb1e"
   dependencies:
     loglevel "^1.6.0"
-    mrbuilder-optionsmanager "^0.4.0"
-    mrbuilder-plugin-webpack "^0.4.0"
-    mrbuilder-utils "^0.4.0"
+    mrbuilder-optionsmanager "^0.5.0"
+    mrbuilder-plugin-webpack "^0.5.0"
+    mrbuilder-utils "^0.5.0"
     webpack-dev-server "^2.9.7"
 
-mrbuilder-plugin-webpack@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-plugin-webpack/-/mrbuilder-plugin-webpack-0.4.0.tgz#671f858860d8c9bc17d051036c784f901123f879"
+mrbuilder-plugin-webpack@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-plugin-webpack/-/mrbuilder-plugin-webpack-0.5.0.tgz#8dfba8cc6fd1a177c81b211d53e042f6722c9e21"
   dependencies:
     json-loader "^0.5.7"
-    mrbuilder-optionsmanager "^0.4.0"
-    mrbuilder-plugin-browserslist "^0.4.0"
-    mrbuilder-utils "^0.4.0"
+    mrbuilder-optionsmanager "^0.5.0"
+    mrbuilder-plugin-browserslist "^0.5.0"
+    mrbuilder-utils "^0.5.0"
     prop-types "^15.6.0"
     raw-loader "^0.5.1"
     val-loader "^1.0.2"
     webpack "^3.8.1"
 
-mrbuilder-utils@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder-utils/-/mrbuilder-utils-0.4.0.tgz#fa606f9e1e5a9a3b1c2c0172c99adf71a9671117"
+mrbuilder-utils@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder-utils/-/mrbuilder-utils-0.5.0.tgz#0ea5ec0c69e4713f42cfa46a42d027b3d26d41e8"
 
-mrbuilder@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/mrbuilder/-/mrbuilder-0.4.0.tgz#7c05f881badce4fb22f70a66970fbf706ac0b3e8"
+mrbuilder@^0.5.0:
+  version "0.5.0"
+  resolved "https://artifacts.netflix.com/api/npm/npm-netflix/mrbuilder/-/mrbuilder-0.5.0.tgz#1da882a2558c5b133d382fb293d7f2a28e58bf00"
   dependencies:
-    mrbuilder-plugin-analyze "^0.4.0"
-    mrbuilder-plugin-babel "^0.4.0"
-    mrbuilder-plugin-browserslist "^0.4.0"
-    mrbuilder-plugin-css "^0.4.0"
-    mrbuilder-plugin-enzyme "^0.4.0"
-    mrbuilder-plugin-filetypes "^0.4.0"
-    mrbuilder-plugin-fonts "^0.4.0"
-    mrbuilder-plugin-hot "^0.4.0"
-    mrbuilder-plugin-html "^0.4.0"
-    mrbuilder-plugin-karma "^0.4.0"
-    mrbuilder-plugin-less "^0.4.0"
-    mrbuilder-plugin-mocha "^0.4.0"
-    mrbuilder-plugin-uglify "^0.4.0"
-    mrbuilder-plugin-webpack "^0.4.0"
-    mrbuilder-plugin-webpack-dev-server "^0.4.0"
+    mrbuilder-plugin-analyze "^0.5.0"
+    mrbuilder-plugin-babel "^0.5.0"
+    mrbuilder-plugin-browserslist "^0.5.0"
+    mrbuilder-plugin-css "^0.5.0"
+    mrbuilder-plugin-enzyme "^0.5.0"
+    mrbuilder-plugin-filetypes "^0.5.0"
+    mrbuilder-plugin-fonts "^0.5.0"
+    mrbuilder-plugin-hot "^0.5.0"
+    mrbuilder-plugin-html "^0.5.0"
+    mrbuilder-plugin-karma "^0.5.0"
+    mrbuilder-plugin-less "^0.5.0"
+    mrbuilder-plugin-mocha "^0.5.0"
+    mrbuilder-plugin-uglify "^0.5.0"
+    mrbuilder-plugin-webpack "^0.5.0"
+    mrbuilder-plugin-webpack-dev-server "^0.5.0"
     react "^16.1.1"
     react-dom "^16.1.1"
 
