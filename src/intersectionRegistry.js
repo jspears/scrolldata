@@ -1,4 +1,3 @@
-import { Component, createElement } from 'react'
 
 const isIntersectionObserverSupported = typeof global.IntersectionObserver
                                         === 'function';

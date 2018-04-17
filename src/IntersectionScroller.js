@@ -1,10 +1,12 @@
+//eslint-disable react/no-multi-comp
 import React, { Component, PureComponent } from 'react';
 import { themeClass } from './themes';
-//import { viewport, scroller, container, sizer } from './Scroller.stylm';
 import {
-    any, array, bool, func, number, object, oneOf, oneOfType, shape, string,
+    any, bool, func, number, object, oneOf, shape, string,
 } from 'prop-types';
-import { classes, ignoreKeys, numberOrFunc, scrollContext } from './util';
+import {
+    classes, ignoreKeys, numberOrFunc, orProp, result, scrollContext
+} from './util';
 import createIntersectionRegistry from './intersectionRegistry';
 import './themes/default/scroller';
 
@@ -19,13 +21,13 @@ const propTypes = {
     rowHeight : numberOrFunc.isRequired,
 
     //height of container
-    height   : numberOrFunc,
+    height              : numberOrFunc,
     //either rowsVisible or height, not both
     //style to be applied to root component
-    style    : object,
+    style               : object,
     //className to be applied to root component
-    className: string,
-
+    className           : string,
+    rowsVisible         : orProp([numberOrFunc, 'height']),
     //Where to initialize table at
     scrollTo            : numberOrFunc,
     //If defined when scrolling these blanks will be used
@@ -57,6 +59,7 @@ const propTypes = {
     intersectionRegistry: shape({ register: func, unregister: func }),
     //When not visible render content as text so it is searchable.
     renderAsText        : bool,
+    selected            : bool,
 };
 
 const defaultProps = {
@@ -65,6 +68,7 @@ const defaultProps = {
     className           : '',
     hash                : '',
     data                : [],
+    rowHeight           : 50,
     intersectionRegistry: createIntersectionRegistry()
 };
 
@@ -95,6 +99,14 @@ class IntersectionComponent extends Component {
         this.domNode = domNode;
     };
 
+
+    shouldComponentUpdate(props, nextState) {
+        if (!this.state.isIntersecting && !nextState.isIntersecting) {
+            return false;
+        }
+        return true;
+    }
+
     componentDidMount() {
 
         this.props.intersectionRegistry.register(this.domNode,
@@ -107,11 +119,13 @@ class IntersectionComponent extends Component {
     }
 
     render() {
-        const { rowIndex, data } = this.props;
+        const { rowIndex, data, rowHeight, expandedHeight } = this.props;
         return this.props.renderItem({
             ...ignore(this.props),
             isIntersecting: this.state.isIntersecting,
             onRef         : this.onRef,
+            expandedHeight,
+            rowHeight,
             rowIndex,
             data,
         });
@@ -134,18 +148,34 @@ export default class IntersectionScroller extends PureComponent {
 
     }
 
-    componentWillReceiveProps({ hash, intersectionRegistry }) {
-        if (intersectionRegistry !== this.props.intersectionRegistry) {
+    componentWillReceiveProps(newProps) {
+        if (newProps.intersectionRegistry !== this.props.intersectionRegistry) {
             console.warn(
                 'does not support changing intersection registry after construction');
         }
-        if (this.props.hash != hash) {
-            this._refresh();
+        if (this.props.hash !== newProps.hash || this.props.rowCount
+            !== newProps.rowCount) {
+            this._refresh(newProps);
         }
     }
 
-    _refresh() {
-        const ret = this.props.rowData(0, this.props.rowCount);
+    calcHeight() {
+        if (this.props.height) {
+            return result(this.props.height, this.props.rowCount);
+        }
+        if (this.props.rowsVisible) {
+            if (typeof this.props.rowsVisible === 'function') {
+                return result(this.props.rowsVisible, this.props.rowCount);
+            }
+            return Math.min(this.props.rowsVisible, this.props.rowCount)
+                   * result(this.props.rowHeight, this.props.rowCount, this.props.rowIndex);
+        }
+        //fit container.
+        return;
+    }
+
+    _refresh({ rowData, rowCount }) {
+        const ret = rowData(0, rowCount);
         if (ret instanceof Promise) {
             return ret.then(this.handleData);
         }
@@ -157,7 +187,7 @@ export default class IntersectionScroller extends PureComponent {
     };
 
     componentWillMount() {
-        this._refresh();
+        this._refresh(this.props);
     }
 
     renderItems() {
@@ -177,6 +207,8 @@ export default class IntersectionScroller extends PureComponent {
                     intersectionRegistry={props.intersectionRegistry}
                     renderItem={props.renderItem}
                     rowIndex={id}
+                    expandedHeight={props.expandedHeight}
+                    rowHeight={props.rowHeight}
                     key={`intersecting-row-${id}`}
                     data={rowData}/>);
         }
@@ -197,13 +229,15 @@ export default class IntersectionScroller extends PureComponent {
                   },
               } = this;
 
+        const height = this.calcHeight();
+
         return (<div
             className={classes(tc('unvirtualized-container', 'container'),
                 className)}
-            style={{ ...style }}>
+            style={style}>
             {children}
             <div className={classes(tc('scroller', scrollerClassName))}
-                 style={{ minWidth: width + 16 }}>
+                 style={{ minWidth: width + 16, height }}>
                 <div className={classes(tc('unvirtualized', 'viewport'),
                     viewportClassName)}
                      style={viewPortStyle}>

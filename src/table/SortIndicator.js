@@ -1,5 +1,5 @@
 import React from 'react';
-import { theme, themeClass } from '../themes';
+import { themeClass } from '../themes';
 
 
 const SortIndicator = (props) => (

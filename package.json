@@ -9,10 +9,15 @@
   "license": "BSD",
   "devDependencies": {
     "chai": "^4.1.2",
-    "emeth": "^1.0.0",
     "hint.css": "^2.5.0",
-    "mrbuilder": "^0.5.0",
-    "mrbuilder-plugin-stylus": "^0.5.0"
+    "mrbuilder": "^2.0.3",
+    "mrbuilder-plugin-clean": "^2.0.3",
+    "mrbuilder-plugin-css": "^2.0.3",
+    "mrbuilder-plugin-emeth": "^2.0.3",
+    "mrbuilder-plugin-html": "^2.0.3",
+    "mrbuilder-plugin-stylus": "^2.0.3",
+    "mrbuilder-preset-lib": "^2.0.3",
+    "mrbuilder-preset-test": "^2.0.3"
   },
   "peerDependencies": {
     "emeth": "*",
@@ -21,27 +26,48 @@
     "react-dom": "*"
   },
   "scripts": {
-    "karma": "mrbuilder-karma",
-    "test": "mrbuilder-karma",
-    "start": "mrbuilder-webpack-dev-server --entry index=public/index",
-    "demo": "mrbuilder-clean docs && mrbuilder-webpack --demo ./docs  --entry index=public/index && git add docs",
+    "karma": "mrbuilder",
+    "test": "mrbuilder",
+    "start": "mrbuilder",
+    "demo": "mrbuilder-webpack --demo ./docs && git add docs",
     "gh-pages": "git subtree push --prefix docs origin gh-pages",
-    "build": "mrbuilder-webpack",
+    "build": "mrbuilder",
     "preversion": "$npm_execpath run build && $npm_execpath run test"
   },
   "mrbuilder": {
     "plugins": [
-      "mrbuilder-plugin-css",
-      "mrbuilder-plugin-stylus"
+      [
+        "mrbuilder-plugin-css",
+        {
+          "useNameHash": "style.css"
+        }
+      ],
+      "mrbuilder-plugin-emeth",
+      "mrbuilder-plugin-stylus",
+      "mrbuilder-plugin-clean"
     ],
     "env": {
+      "development": {
+        "plugins": [
+          [
+            "mrbuilder-plugin-html",
+            {
+              "exported": true
+            }
+          ]
+        ]
+      },
       "test": {
         "plugins": [
           [
             "mrbuilder-plugin-css",
             {
-              "isUseStyleLoader": true
+              "useStyleLoader": true
             }
+          ],
+          [
+            "mrbuilder-plugin-hot",
+            false
           ],
           "mrbuilder-plugin-stylus"
         ]

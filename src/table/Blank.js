@@ -1,14 +1,13 @@
 import React, { PureComponent } from 'react';
 import { themeClass } from '../themes/index'
-import { createShouldComponentUpdate } from '../util'
-import { string, number } from 'prop-types';
+import { string, number, oneOfType } from 'prop-types';
 
 export default class Blank extends PureComponent {
 
     static displayName = 'Blank';
     static propTypes   = {
-        width    : number,
-        height   : number
+        width    : oneOfType([number,string]),
+        height   : oneOfType([number,string]),
     };
 
     static defaultProps = {};

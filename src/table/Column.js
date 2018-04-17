@@ -7,16 +7,16 @@ import {
     clamp, classes, execLoop as removeListener, fire, listen, result, stop
 } from '../util';
 
-import { theme, themeClass } from '../themes'
+import { themeClass } from '../themes'
 import SortIndicator from './SortIndicator';
 
+/* eslint-disable-next-line no-unused-vars */
 const drag              = (columnKey, data, type) => {
 
 };
-const stringOrFunc      = oneOfType([string, func]);
 const stringFuncOrFalse = oneOfType([string, func, oneOf([false])]);
 const numberOrFunc      = oneOfType([number, func]);
-const sortDirection     = oneOf(['ASC', 'DESC']);
+const sortDirectionType = oneOf(['ASC', 'DESC']);
 const filter            = oneOfType([string, shape({
     columnKey  : string,
     columnIndex: number,
@@ -30,7 +30,7 @@ export const columnPropTypes = {
     sortable            : bool,
     resizable           : bool,
     filterable          : bool,
-    sortDirection,
+    sortDirection       : sortDirectionType,
     sorted              : bool,
     columnKey           : string,
     columnIndex         : number,
@@ -76,14 +76,14 @@ export default class Column extends PureComponent {
 
     componentWillReceiveProps({ maxWidth, minWidth, width }) {
         const updateState = {};
-        if (this.props.maxWidth != maxWidth) {
+        if (this.props.maxWidth !== maxWidth) {
             updateState.maxWidth =
                 maxWidth == null ? Number.MAX_SAFE_INTEGER : 0;
         }
-        if (this.props.minWidth != minWidth) {
+        if (this.props.minWidth !== minWidth) {
             updateState.minWidth = minWidth == null ? 0 : minWidth;
         }
-        if (this.props.width != width) {
+        if (this.props.width !== width) {
             updateState.width = width;
         }
         this.setState(updateState);
@@ -174,27 +174,14 @@ export default class Column extends PureComponent {
                   props: {
                       style = {},
                       columnKey,
-                      columnIndex,
                       className,
-                      onDragStart,
-                      onDrageEnd,
-                      onSort,
-                      onColumnConfigChange,
                       sortDirection,
                       handle,
-                      parent,
                       label,
                       resizable,
                       sortable,
-                      hidden,
-                      width,
-                      minWidth,
-                      maxWidth,
-                      height,
-                      selectable,
-                      ...props
+
                   },
-                  handleMouseDown,
               }          = this;
         const isSortable = sortable !== false;
         return (

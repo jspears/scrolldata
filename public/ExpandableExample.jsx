@@ -17,7 +17,7 @@ const Render = ({
                 }) => {
 
     const onClick = (e)=>onToggle(rowIndex, !isExpanded);
-    return <div key={key} style={{ height: rowHeight }}
+    return <div key={key} style={{ height: rowHeight() }}
 
                 className={expandableContainerClassName}>
         <div key={`expandable-row-${rowIndex}`}
@@ -79,10 +79,10 @@ export default class ExpandableExample extends Component {
     };
 
     renderExpandedNumberNum(rowIndex, idx) {
-        return <btn className="btn btn-default" role="group"
+        return <button className="btn btn-default" role="group"
                     key={`expanded-row-${rowIndex}`}
                     onClick={this.handleScrollToClick}
-                    data-row-index={rowIndex}>{rowIndex}</btn>
+                    data-row-index={rowIndex}>{rowIndex}</button>
     };
 
     renderExpandedNumber() {

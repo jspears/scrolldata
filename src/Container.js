@@ -52,19 +52,19 @@ export default class Container extends PureComponent {
     };
 
     componentWillReceiveProps({ offsetHeight }) {
-        if (offsetHeight != this.props.offsetHeight) {
+        if (offsetHeight !== this.props.offsetHeight) {
             this.setState({ offsetHeight }, this._updateScrollTop);
         }
     }
 
     _updateScrollTop = () => {
-        if (this.node.scrollTop != this.props.offsetHeight) {
+        if (this.node.scrollTop !== this.props.offsetHeight) {
             this.node.scrollTop = this.props.offsetHeight;
         }
     };
 
     subscribe = handler => {
-        if (this.subscribers.indexOf(handler) == -1) {
+        if (this.subscribers.indexOf(handler) === -1) {
             this.subscribers = this.subscribers.concat(handler);
         }
     };
@@ -99,7 +99,10 @@ export default class Container extends PureComponent {
     getParent = () => this.node;
 
     render() {
-        const { onMovement, offsetHeight, onTouchStart, onTouchMove, onTouchEnd, children, ...props } = this.props;
+        const {
+                  /* eslint-disable-next-line no-unused-vars*/
+                  onMovement, offsetHeight, onTouchStart, onTouchMove, onTouchEnd,
+                  children, ...props } = this.props;
 
         return (
             <div {...props}

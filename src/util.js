@@ -1,5 +1,5 @@
 import {
-    oneOfType, number, bool, func, string, checkPropTypes
+    bool, checkPropTypes, func, number, oneOfType, string
 } from 'prop-types';
 import { Component } from 'react';
 
@@ -11,7 +11,7 @@ export const result = (val, ...args) => {
     }
     return typeof val === 'function' ? val(
         ...args)
-        : val;
+                                     : val;
 };
 
 export const stringOrFunc = oneOfType([string, func]);
@@ -56,14 +56,14 @@ export const execLoop = (c) => typeof c === 'function' && c();
 export const classes = (...args) => args.filter(Boolean).join(' ');
 
 export const ignoreKeys = (...args) => {
-    const ignoreKeys = uniqueKeys(args);
+    const ignoredKeys = uniqueKeys(args);
 
     return (obj) => {
         if (!obj) {
             return obj;
         }
         return Object.keys(obj).reduce(function (ret, key) {
-            if (indexOf(ignoreKeys, key) == -1) {
+            if (indexOf(ignoredKeys, key) === -1) {
                 ret[key] = obj[key];
             }
             return ret;
@@ -116,14 +116,14 @@ export const createShouldComponentUpdate = (...args) => {
 export const toString = (val) => val == null ? '' : String(val);
 
 export const fire = (fn, ...args) => (fn ? fn(...args) !== false
-    : true);
+                                         : true);
 
 export const makeCompare = (formatter, key, options) => {
     if (typeof formatter !== 'function') {
         formatter = (data) => data[key];
     }
     return (a, b) => {
-        if (a === b || !(a || b )) {
+        if (a === b || !(a || b)) {
             return 0;
         }
         if (!b) {
@@ -147,10 +147,11 @@ export const makeCompare = (formatter, key, options) => {
     }
 };
 
-export const orProp   = (current, rest) => {
+export const orProp   = (which = []) => {
+    const [current, ...rest] = which;
+
     function checkType(isRequired, props, propName, componentName,
                        location) {
-        componentName = componentName || ANONYMOUS;
         if (props[propName] == null) {
             let multi = 0;
             for (let i = 0, l = rest.length; i < l; i++) {
@@ -159,7 +160,7 @@ export const orProp   = (current, rest) => {
                 }
             }
 
-            if (multi > 1 || isRequired && multi == 0) {
+            if (multi > 1 || isRequired && multi === 0) {
                 return new Error(
                     `Required either "${propName}" or one of "${rest.join(
                         ',')}" where not specified in ${componentName}`);

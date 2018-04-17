@@ -1,15 +1,12 @@
 import React, { PureComponent } from 'react';
 import { themeClass } from './themes';
-//import { viewport, scroller, container, sizer } from './Scroller.stylm';
 import {
-    any, number, func, string, oneOfType, array, object, oneOf,
+    any, number, func, string,  object, oneOf,
 } from 'prop-types';
 import {
-    numberOrFunc, result, ignoreKeys, EMPTY_ARRAY, classes, orProp,
-    createShouldComponentUpdate, fire, scrollContext
+    numberOrFunc,  ignoreKeys,  classes, scrollContext
 } from './util';
-import Container from './Container';
-import position from './position';
+
 import './themes/default/scroller';
 
 const propTypes    = {
@@ -82,7 +79,7 @@ export default class UnvirtualizedScroller extends PureComponent {
 
 
     componentWillReceiveProps({ hash }) {
-        if (this.props.hash != hash) {
+        if (this.props.hash !== hash) {
             this._refresh();
         }
     }

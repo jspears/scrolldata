@@ -77,7 +77,7 @@ export default function position(newScrollTo, newOffsetTop, props,
 
     }
     //we don't want cached data to cause a state change
-    if (cachedData.length == data.length) {
+    if (cachedData.length === data.length) {
         let same = true;
         for (let i = 0, l = data.length; i < l; i++) {
             if (data[i] !== cachedData[i]) {

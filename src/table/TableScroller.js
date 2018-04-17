@@ -1,7 +1,5 @@
 import React, { PureComponent } from 'react';
-import {
-    any, arrayOf, bool, func, object, oneOf, shape, string,
-} from 'prop-types';
+import { any, arrayOf, bool, func, oneOf, shape, string, } from 'prop-types';
 
 import {
     boolOrFunc, fire, ignoreKeys, numberOrFunc, result, toggle
@@ -11,10 +9,10 @@ import { themeClass } from '../themes'
 import Scroller from '../Scroller';
 import ExpandableScroller from '../ExpandableScroller';
 import ColumnDefault, { columnPropTypes } from './Column';
-import IndeterminateCheckbox from './IndeterminateCheckbox';
+import renderSelectableFunc from './Selectable';
 import Cell from './Cell';
 import Row from './Row';
-import Blank from './Blank';
+import _Blank from './Blank';
 import '../themes/default/table';
 
 export const tablePropTypes = {
@@ -37,19 +35,6 @@ export const tablePropTypes = {
 const ignore = ignoreKeys(tablePropTypes);
 
 
-const Selectable       = ({ rowIndex, width, state, data, onSelect, className }) => {
-    return (<div className={tc('select')}
-                 style={{ minWidth: width, maxWidth: width }}>
-        <IndeterminateCheckbox rowIndex={rowIndex}
-                               state={state}
-
-                               data={data}
-                               onSelect={onSelect}/>
-    </div>);
-
-};
-Selectable.displayName = 'Selectable';
-
 export default class TableScroller extends PureComponent {
     static displayName = 'TableScroller';
 
@@ -64,13 +49,13 @@ export default class TableScroller extends PureComponent {
     static defaultProps = {
         columns         : [],
         rowRender       : props => <Row  {...props}/>,
-        renderRowAsText(data, key, config) {
+        renderRowAsText(data, key) {
             return data[key] == null ? '' : data[key];
         },
         renderCell      : Cell,
         headerRender    : ColumnDefault,
-        renderSelectable: Selectable,
-        renderBlankCell : Blank,
+        renderSelectable: renderSelectableFunc,
+        renderBlankCell : _Blank,
         selectedState   : 'INDETERMINATE',
         selected        : [],
         isVirtualized   : true,
@@ -85,7 +70,7 @@ export default class TableScroller extends PureComponent {
         isContainerExpandable: this.props.expandedContent != null,
     };
 
-    componentWillReceiveProps({ columns, hash, selected, selectedState, expanded, expandedContent }) {
+    componentWillReceiveProps({ columns, hash, selected, selectedState, rowCount, expanded, expandedContent }) {
         const state = {};
         if (this.props.columns !== columns) {
             state.columns = columns;
@@ -95,32 +80,38 @@ export default class TableScroller extends PureComponent {
             }
         }
 
-        if (this.props.selected != selected || this.props.selectedState
-                                               !== selectedState) {
+        if (this.props.selected !== selected || this.props.selectedState
+            !== selectedState) {
             state.selected      = selected;
             state.selectedState = selectedState;
             state.hash          = Date.now();
 
         }
-        if (this.props.expandedContent != expandedContent) {
+        if (this.props.expandedContent !== expandedContent) {
             state.isContainerExpandable = expandedContent != null;
             state.hash                  = Date.now();
         }
-        if (this.props.expanded != expanded) {
+        if (this.props.expanded !== expanded) {
             state.expanded = expanded;
         }
+        if (this.props.rowCount !== rowCount) {
+            state.rowCount = rowCount;
+            state.hash     = Date.now();
+        }
+
         if (this.props.hash !== hash) {
             state.hash = hash;
         }
+
         this.setState(state);
     }
 
 
     handleSort = (sortIndex) => {
         const sortDirection = this.state.sortDirection === 'ASC' ? 'DESC'
-            : 'ASC';
+                                                                 : 'ASC';
         if (fire(this.props.onSort, this.state.columns[sortIndex],
-                sortDirection) && fire(this.handleExpandToggle, [])) {
+            sortDirection) && fire(this.handleExpandToggle, [])) {
             this.setState({
                 sortIndex,
                 sortDirection,
@@ -140,13 +131,15 @@ export default class TableScroller extends PureComponent {
         }
     };
 
-    handleIndeterminateSelection = (data) => {
+    handleIndeterminateSelection = () => {
         let selectedState;
         switch (this.state.selectedState) {
 
             case 'ALL':
                 selectedState = 'INDETERMINATE';
                 break;
+            case 'NONE':
+                selectedState = 'ALL';
             case 'INDETERMINATE':
                 selectedState = 'ALL';
                 break;
@@ -159,10 +152,10 @@ export default class TableScroller extends PureComponent {
 
     isSelected(data) {
         if (this.state.selectedState === 'ALL') {
-            if (this.state.selected.length == 0) {
+            if (this.state.selected.length === 0) {
                 return 'checked';
             }
-            if (this.state.selected.indexOf(data) == -1) {
+            if (this.state.selected.indexOf(data) === -1) {
                 return 'checked';
             } else {
                 return 'unchecked';
@@ -170,18 +163,18 @@ export default class TableScroller extends PureComponent {
         }
 
         return this.state.selected.indexOf(data) !== -1 ? 'checked'
-            : 'unchecked';
+                                                        : 'unchecked';
 
     }
 
-    handleRowSelection = (data, select) => {
+    handleRowSelection = (data) => {
         let selected      = toggle(this.state.selected, data),
             selectedState = this.state.selectedState;
 
         const selectedLength = selected.length;
         const rowCount       = result(this.props.rowCount);
-        if (selectedLength == rowCount) {
-            selectedState = 'ALL';
+        if (selectedLength === rowCount) {
+            selectedState = selectedState !== 'ALL' ? 'ALL' : 'NONE';
             selected      = [];
         }
         if (fire(this.props.onRowSelect, selectedState, selected)) {
@@ -199,14 +192,14 @@ export default class TableScroller extends PureComponent {
         const ret         = [];
         const { columns } = this.state;
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
-            const { columnKey, width = 100, selectable, height, hidden, renderBlank = this.props.renderBlankCell } = columns[i];
+            const { width = 100, height, hidden, renderBlank = this.props.renderBlankCell } = columns[i];
             if (hidden) {
                 continue;
             }
             const Blank = renderBlank;
-            ret[c++]    = <Blank key={`cell-blank-${c}`}
-                                 width={width}
-                                 height={height}/>
+            ret[c++]    = (<Blank key={`cell-blank-${c}`}
+                                  width={width}
+                                  height={height}/>)
         }
 
 
@@ -239,6 +232,7 @@ export default class TableScroller extends PureComponent {
               } = this.props;
 
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
+            //eslint-disable-next-line no-unused-vars
             let { columnKey, cellRender, ...config } = columns[i];
             if (config.hidden) {
                 continue;
@@ -259,16 +253,16 @@ export default class TableScroller extends PureComponent {
 
                 const RenderCell = config.renderCell || renderCell;
 
-                children[c++] = <RenderCell data={data}
-                                            {...config}
-                                            key={`cell-${columnKey}-${i}`}
-                                            hash={this.state.hash}
-                                            columnKey={columnKey}
-                                            rowIndex={rowIndex}
-                                            colIndex={i}
-                                            height={height}
-                                            className={config.className}
-                />
+                children[c++] = (<RenderCell data={data}
+                                             {...config}
+                                             key={`cell-${columnKey}-${i}`}
+                                             hash={this.state.hash}
+                                             columnKey={columnKey}
+                                             rowIndex={rowIndex}
+                                             colIndex={i}
+                                             height={height}
+                                             className={config.className}
+                />)
             } else {
                 children[c++] = renderRowAsText(data, columnKey, config);
             }
@@ -278,6 +272,7 @@ export default class TableScroller extends PureComponent {
         if (this.state.isContainerExpandable) {
             cfg.isExpanded      = row.isExpanded;
             cfg.expandedContent = expandedContent;
+            cfg.expandedHeight  = result(this.props.expandedHeight, rowIndex);
             cfg.onToggle        = row.onToggle;
             cfg.className       = 'expandable';
         } else {
@@ -310,10 +305,10 @@ export default class TableScroller extends PureComponent {
         if (this._blanks) {
             return this._blanks
         }
-        return (this._blanks = <div className={tc('blank-row')}
-                                    style={{ height: row.rowHeight }}>
+        return (this._blanks = (<div className={tc('blank-row')}
+                                     style={{ height: row.rowHeight }}>
             {this.renderBlanks(row)}
-        </div>);
+        </div>));
     };
 
 
@@ -321,8 +316,8 @@ export default class TableScroller extends PureComponent {
         const { selectedState, selected: { length } } = this.state;
         const rowCount                                = result(
             this.props.rowCount);
-        if (selectedState == 'ALL') {
-            if (length == 0) {
+        if (selectedState === 'ALL') {
+            if (length === 0) {
                 return 'ALL';
             }
         }
@@ -354,16 +349,14 @@ export default class TableScroller extends PureComponent {
         const {
                   columns,
                   isContainerExpandable,
-                  hoverRowData,
-                  hoverOffset,
 
               } = this.state;
 
 
-        const { headerRender, height } = this.props;
-        const Column                   = headerRender;
-        const cols                     = [];
-        let rowWidth                   = 0;
+        const { headerRender } = this.props;
+        const Column           = headerRender;
+        const cols             = [];
+        let rowWidth           = 0;
 
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
             let col = columns[i];
@@ -388,19 +381,19 @@ export default class TableScroller extends PureComponent {
                     ...col,
                     sortable     : true,
                     sortDirection: (this.state.sortIndex === i
-                        ? this.state.sortDirection : null)
+                                    ? this.state.sortDirection : null)
                 }
             }
 
             rowWidth += col.width;
 
-            cols[c++] = <Column {...col}
-                                className={col.headerClassName}
-                                columnIndex={i}
-                                key={`column-${col.columnKey}-${i}-${c}`}
-                                onSort={this.handleSort}
-                                containerHeight={this.props.height}
-                                onColumnConfigChange={this.handleColumnConfigChange}/>
+            cols[c++] = (<Column {...col}
+                                 className={col.headerClassName}
+                                 columnIndex={i}
+                                 key={`column-${col.columnKey}-${i}-${c}`}
+                                 onSort={this.handleSort}
+                                 containerHeight={this.props.height}
+                                 onColumnConfigChange={this.handleColumnConfigChange}/>)
 
         }
 
@@ -412,18 +405,19 @@ export default class TableScroller extends PureComponent {
             UseScroller          = ExpandableScroller;
         }
 
-        return <div className={tc('container')} ref={this.refContainer}>
+        return (<div className={tc('container')} ref={this.refContainer}>
             <UseScroller {...props}
                          primaryKey={this.props.primaryKey}
                          virtualization={this.props.virtualization}
                          hash={this.state.hash}
                          width={rowWidth}
+                         rowCount={this.props.rowCount}
                          height={this.props.height}
                          className={tc('scroll-rows')}
                          scrollerClassName={tc(
                              this.props.virtualization === 'Virtualized'
-                                 ? 'scroll-list'
-                                 : 'unvirtualized-scroll-list')}
+                             ? 'scroll-list'
+                             : 'unvirtualized-scroll-list')}
                          rowData={this.rowData}
                          renderItem={this.renderItem}
                          renderBlank={this.renderBlank}>
@@ -435,7 +429,7 @@ export default class TableScroller extends PureComponent {
                     {cols}
                 </div>
             </UseScroller>
-        </div>
+        </div>)
     }
 }
 

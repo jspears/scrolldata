@@ -40,13 +40,13 @@ export default class Row extends PureComponent {
             height   : rowHeight,
         };
         if (!isIntersecting) {
-            return <div style={rowStyle} ref={onRef}
+            return (<div style={rowStyle} ref={onRef}
                         className={`${isExpanded ? tc(rowExpandedClass) : tc(
                             className)} ${tc(
-                            'notIntersecting')}`}>{children}</div>
+                            'notIntersecting')}`}>{children}</div>)
         }
         if (isExpanded) {
-            return <div style={rowStyle}
+            return (<div style={rowStyle}
                         ref={onRef}
                         className={tc(rowExpandedClass)}>
                 <div className={tc(className)}
@@ -61,10 +61,10 @@ export default class Row extends PureComponent {
                 <div className={tc(rowExpandedContentClass)}>
                     {result(expandedContent, this.props)}
                 </div>
-            </div>
+            </div>)
         }
 
-        return <div style={rowStyle}
+        return (<div style={rowStyle}
                     ref={onRef}
                     className={tc(className)}
                     onClick={this.handleToggle}>{children}{rowActions &&
@@ -75,7 +75,7 @@ export default class Row extends PureComponent {
                                                                onRowAction={onRowAction}
                                                                rowData={data}
 
-                                                           />}</div>;
+                                                           />}</div>);
     }
 }
 

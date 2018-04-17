@@ -12,8 +12,9 @@ import tc from './tc';
 
 const reverse = (fn) => (...args) => fn(...args) * -1;
 
-const expandedContent = ({ data: { overview: __html  } }) => (
+const expandedContent = ({ data: { overview: __html  }, expandedHeight, rowHeight }) => (
     <div key='expanded-content'
+         style={{height:expandedHeight}}
          className={tc(
              'expanded-content')}>
         <span className={tc('centerable')}
@@ -93,10 +94,10 @@ export default class TableExample extends Component {
     };
 
     renderExpandedNumberNum(rowIndex, idx) {
-        return <btn className="btn btn-default" role="group"
+        return <button className="btn btn-default" role="group"
                     key={`expanded-row-${rowIndex}`}
                     onClick={this.handleScrollToClick}
-                    data-row-index={rowIndex}>{rowIndex}</btn>
+                    data-row-index={rowIndex}>{rowIndex}</button>
     };
 
     renderExpandedNumber() {
@@ -136,7 +137,7 @@ export default class TableExample extends Component {
                         onChange={this.handleNumChange}
                         max={600}/>
             </Configure>
-            <h3>Virtualized Table</h3>
+            <h3>Virtualized Table using {this.props.virtualization}</h3>
             <div>
                 <div className="btn-group">{this.renderExpandedNumber()}</div>
             </div>

@@ -10,6 +10,7 @@ const Scrollers = {
     Intersection
 
 };
+
 export default class Scroller extends Component {
     static propTypes = {
         virtualization: oneOf(['Intersection', 'Virtualized', 'None'])
@@ -24,8 +25,8 @@ export default class Scroller extends Component {
                   virtualization,
                   ...props
               }        = this.props;
-        const Scroller = Scrollers[virtualization];
-        return <Scroller {...props}/>
+        const VScroller = Scrollers[virtualization];
+        return <VScroller {...props}/>
 
     }
 

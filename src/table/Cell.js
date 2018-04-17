@@ -1,7 +1,7 @@
-import React, { PureComponent, Component, isValidElement } from 'react';
-import { toString, classes, result, stringOrFunc } from '../util';
+import React, { isValidElement, PureComponent } from 'react';
+import { classes, stringOrFunc, toString } from '../util';
 import { themeClass } from '../themes/index'
-import { func, number, string, any, oneOfType, object } from 'prop-types';
+import { any, number, object, oneOfType, string } from 'prop-types';
 
 const format = (formatter, data, key) => {
     if (formatter == null) {
@@ -17,7 +17,7 @@ const format = (formatter, data, key) => {
                 return formatter;
             }
         default:
-            console.warn(`do not understand formatter %s`, formatter);
+            console.warn('do not understand formatter %s', formatter);
 
     }
 
@@ -31,7 +31,7 @@ class Cell extends PureComponent {
         height   : number,
         data     : any,
         className: string,
-        formatter: oneOfType([object,stringOrFunc]),
+        formatter: oneOfType([object, stringOrFunc]),
         columnKey: string
     };
 
@@ -46,8 +46,7 @@ class Cell extends PureComponent {
               } = this.props;
         return (<div style={{ minWidth: width, maxWidth: width, height }}
                      className={classes(tc('cell'), className)}>{format(
-            this.props.formatter,
-            data, columnKey)}</div>);
+            formatter, data, columnKey)}</div>);
     }
 }
 

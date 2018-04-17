@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { themeClass } from './themes';
 //import { viewport, scroller, container, sizer } from './Scroller.stylm';
-import {
-    any, array, func, number, object, oneOf, oneOfType, string,
-} from 'prop-types';
+import { any, func, number, object, oneOf, string } from 'prop-types';
 import {
     classes, createShouldComponentUpdate, EMPTY_ARRAY, fire, ignoreKeys,
     numberOrFunc, orProp, result, scrollContext
@@ -12,7 +10,7 @@ import Container from './Container';
 import position from './position';
 import './themes/default/scroller';
 
-const propTypes    = {
+const propTypesObj    = {
     //What to render item
     renderItem: func.isRequired,
     //Total number of rows
@@ -25,7 +23,7 @@ const propTypes    = {
     //height of container
     height     : numberOrFunc,
     //either rowsVisible or height, not both
-    rowsVisible: orProp(numberOrFunc, ['height']).isRequired,
+    rowsVisible: orProp([numberOrFunc, 'height']).isRequired,
     //style to be applied to root component
     style      : object,
     //className to be applied to root component
@@ -59,7 +57,7 @@ const propTypes    = {
     // data when necessary
     cacheAge            : number
 };
-const defaultProps = {
+const defaultPropsObj = {
     scrollTo  : 0,
     bufferSize: 0,
     className : '',
@@ -85,12 +83,12 @@ const defaultProps = {
 };
 
 
-const ignore = ignoreKeys(propTypes, defaultProps);
+const ignore = ignoreKeys(propTypesObj, defaultPropsObj);
 
 export default class VirtualizedScroller extends Component {
     static displayName  = 'VirtualizedScroller';
-    static propTypes    = propTypes;
-    static defaultProps = defaultProps;
+    static propTypes    = propTypesObj;
+    static defaultProps = defaultPropsObj;
     static contextTypes = scrollContext;
 
     state = {
@@ -131,7 +129,7 @@ export default class VirtualizedScroller extends Component {
 
 
     scrollTo(scrollTo) {
-        if (this.state.rowIndex != scrollTo) {
+        if (this.state.rowIndex !== scrollTo) {
             this.calculate(scrollTo, null, this.props);
         }
     }
@@ -176,11 +174,11 @@ export default class VirtualizedScroller extends Component {
         if (props.hash !== this.props.hash) {
             newState.page = { rowIndex: 0, data: [] };
         }
-        const suppressFire = this.state.rowIndex == newState.rowIndex &&
-                             newState.rowIndex == props.scrollTo;
+        const suppressFire = this.state.rowIndex === newState.rowIndex &&
+                             newState.rowIndex === props.scrollTo;
 
         if (suppressFire || fire(this.props.onScrollToChanged,
-                newState.rowIndex)) {
+            newState.rowIndex)) {
 
 
             const resp = this._fetchPage(newState);
@@ -194,10 +192,8 @@ export default class VirtualizedScroller extends Component {
     }
 
 
-    handleScroll = (coords) => {
-        const { scrollTop, height, width, scrollLeft } = coords;
-
-        if (this.state.offsetHeight != scrollTop) {
+    handleScroll = ({ scrollTop }) => {
+        if (this.state.offsetHeight !== scrollTop) {
             this.calculate(null, scrollTop, this.props, this.state.data);
         }
     };
@@ -227,11 +223,11 @@ export default class VirtualizedScroller extends Component {
             const rowIndex  = data[i];
             const rowHeight = data[i + 1];
             const _rowData  = rowOd !== -1
-                ? rowsData[rowOd++] : null;
+                              ? rowsData[rowOd++] : null;
 
             const renderer = _rowData == null && props.renderBlank
-                ? props.renderBlank
-                : props.renderItem;
+                             ? props.renderBlank
+                             : props.renderItem;
 
             ret[r] = renderer({
                 ...ignore(props),
@@ -268,8 +264,7 @@ export default class VirtualizedScroller extends Component {
                      style={{
                          height: totalHeight,
                          right : 0
-                     }}>
-                </div>
+                     }}/>
                 <div className={classes(tc('viewport'), viewportClassName)}
                      style={viewPortStyle}>
                     {this.renderItems()}
