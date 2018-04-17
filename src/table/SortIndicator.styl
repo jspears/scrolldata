@@ -9,6 +9,12 @@
     opacity .01
     padding 5px
 
+//show the next state on hover
+:hover > .icon:before, :hover + .icon:before {
+    opacity .5
+}
+
+
 //just a marker
 .ASC:before
     @extend .icon:before

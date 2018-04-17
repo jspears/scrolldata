@@ -2,16 +2,17 @@ import React, { PureComponent } from 'react';
 import { any, arrayOf, bool, func, oneOf, shape, string, } from 'prop-types';
 
 import {
-    boolOrFunc, fire, ignoreKeys, numberOrFunc, result, toggle
+    boolOrFunc, EMPTY_ARRAY, fire, ignoreKeys, numberOrFunc, result, toggle
 } from '../util';
 import { themeClass } from '../themes'
-
+import rowWidth from './rowWidth';
 import Scroller from '../Scroller';
 import ExpandableScroller from '../ExpandableScroller';
 import ColumnDefault, { columnPropTypes } from './Column';
 import renderSelectableFunc from './Selectable';
 import Cell from './Cell';
 import Row from './Row';
+import Header from './Header';
 import _Blank from './Blank';
 import '../themes/default/table';
 
@@ -65,20 +66,31 @@ export default class TableScroller extends PureComponent {
     state = {
         columns              : this.props.columns,
         hash                 : Date.now(),
+        width                : rowWidth(this.props.columns),
         selected             : this.props.selected,
+        sortDirection        : this.props.sortDirection,
+        sortIndex            : this.props.sortIndex,
         selectedState        : this.props.selectedState,
         isContainerExpandable: this.props.expandedContent != null,
     };
 
-    componentWillReceiveProps({ columns, hash, selected, selectedState, rowCount, expanded, expandedContent }) {
+    componentWillReceiveProps({ columns, hash, selected, selectedState, sortDirection, sortIndex, rowCount, expanded, expandedContent }) {
         const state = {};
-        if (this.props.columns !== columns) {
+        if (columns !== this.props.columns) {
+            state.hash    = Date.now();
             state.columns = columns;
-            if (this.state.columns !== columns) {
-                state.hash   = Date.now();
-                this._blanks = null;
-            }
         }
+
+        if (sortIndex !== this.props.sortIndex) {
+            state.sortIndex = sortIndex;
+            state.hash      = Date.now();
+        }
+
+        if (sortDirection !== this.props.sortDirection) {
+            state.sortDirection = sortDirection;
+            state.hash          = Date.now();
+        }
+
 
         if (this.props.selected !== selected || this.props.selectedState
             !== selectedState) {
@@ -107,11 +119,11 @@ export default class TableScroller extends PureComponent {
     }
 
 
-    handleSort = (sortIndex) => {
-        const sortDirection = this.state.sortDirection === 'ASC' ? 'DESC'
-                                                                 : 'ASC';
-        if (fire(this.props.onSort, this.state.columns[sortIndex],
-            sortDirection) && fire(this.handleExpandToggle, [])) {
+    handleSort = (sortColumn, sortDirection, sortIndex) => {
+
+        if (fire(this.props.onSort, sortColumn, sortDirection, sortIndex)
+            && fire(
+                this.handleExpandToggle, [])) {
             this.setState({
                 sortIndex,
                 sortDirection,
@@ -120,35 +132,25 @@ export default class TableScroller extends PureComponent {
         }
     };
 
-    handleColumnConfigChange = (columnIndex, config) => {
-
+    handleColumnConfigChange = (columnIndex, config, columns, width) => {
         if (fire(this.props.onColumnConfigChange, columnIndex, config)) {
-            const [...columns] = this.state.columns;
-
-            columns[columnIndex] =
-                Object.assign({}, columns[columnIndex], config);
-            this.setState({ columns, hash: Date.now() });
+            this.setState({
+                columns,
+                width,
+                hash: Date.now()
+            });
         }
     };
 
-    handleIndeterminateSelection = () => {
-        let selectedState;
-        switch (this.state.selectedState) {
-
-            case 'ALL':
-                selectedState = 'INDETERMINATE';
-                break;
-            case 'NONE':
-                selectedState = 'ALL';
-            case 'INDETERMINATE':
-                selectedState = 'ALL';
-                break;
-        }
+    handleIndeterminateSelection = (selectedState) => {
         if (fire(this.props.onRowSelect, selectedState)) {
-            this.setState({ selectedState, selected: [], hash: Date.now() })
+            this.setState({
+                selected: EMPTY_ARRAY,
+                selectedState
+            })
         }
-
     };
+
 
     isSelected(data) {
         if (this.state.selectedState === 'ALL') {
@@ -192,14 +194,18 @@ export default class TableScroller extends PureComponent {
         const ret         = [];
         const { columns } = this.state;
         for (let i = 0, c = 0, l = columns.length; i < l; i++) {
-            const { width = 100, height, hidden, renderBlank = this.props.renderBlankCell } = columns[i];
+            const {
+                      width              = 100,
+                      height,
+                      hidden,
+                      renderBlank: Blank = this.props.renderBlankCell
+                  } = columns[i];
             if (hidden) {
                 continue;
             }
-            const Blank = renderBlank;
-            ret[c++]    = (<Blank key={`cell-blank-${c}`}
-                                  width={width}
-                                  height={height}/>)
+            ret[c++] = (<Blank key={`cell-blank-${c}`}
+                               width={width}
+                               height={height}/>)
         }
 
 
@@ -312,29 +318,14 @@ export default class TableScroller extends PureComponent {
     };
 
 
-    selectedState() {
-        const { selectedState, selected: { length } } = this.state;
-        const rowCount                                = result(
-            this.props.rowCount);
-        if (selectedState === 'ALL') {
-            if (length === 0) {
-                return 'ALL';
-            }
-        }
-        if (length === rowCount) {
-            return 'ALL';
-        }
-        if (length === 0) {
-            return 'NONE';
-        }
-        return 'INDETERMINATE';
-    }
-
-    rowData = (rowIndex, count) => result(this.props.rowData, rowIndex,
-        count, {
-            sortColumn   : this.state.columns[this.state.sortIndex],
-            sortDirection: this.state.sortDirection
-        });
+    rowData = (rowIndex, count) => {
+        return result(this.props.rowData,
+            rowIndex,
+            count, {
+                sortColumn   : this.state.columns[this.state.sortIndex],
+                sortDirection: this.state.sortDirection
+            });
+    };
 
 
     handleExpandToggle = (expanded) => {
@@ -347,55 +338,9 @@ export default class TableScroller extends PureComponent {
 
     render() {
         const {
-                  columns,
                   isContainerExpandable,
 
               } = this.state;
-
-
-        const { headerRender } = this.props;
-        const Column           = headerRender;
-        const cols             = [];
-        let rowWidth           = 0;
-
-        for (let i = 0, c = 0, l = columns.length; i < l; i++) {
-            let col = columns[i];
-            if (col.hidden === true) {
-                continue;
-            }
-            if (col.selectable === true) {
-                col = {
-                    width    : 30,
-                    className: tc('cell-header-select'),
-                    label    : this.props.renderSelectable,
-                    ...col,
-                    //do not override
-                    sortable : false,
-                    resizable: false,
-                    onSelect : this.handleIndeterminateSelection,
-                    state    : this.selectedState()
-                }
-            }
-            if (col.sortable !== false) {
-                col = {
-                    ...col,
-                    sortable     : true,
-                    sortDirection: (this.state.sortIndex === i
-                                    ? this.state.sortDirection : null)
-                }
-            }
-
-            rowWidth += col.width;
-
-            cols[c++] = (<Column {...col}
-                                 className={col.headerClassName}
-                                 columnIndex={i}
-                                 key={`column-${col.columnKey}-${i}-${c}`}
-                                 onSort={this.handleSort}
-                                 containerHeight={this.props.height}
-                                 onColumnConfigChange={this.handleColumnConfigChange}/>)
-
-        }
 
         const props     = ignore(this.props);
         let UseScroller = Scroller;
@@ -405,12 +350,13 @@ export default class TableScroller extends PureComponent {
             UseScroller          = ExpandableScroller;
         }
 
+
         return (<div className={tc('container')} ref={this.refContainer}>
             <UseScroller {...props}
                          primaryKey={this.props.primaryKey}
                          virtualization={this.props.virtualization}
                          hash={this.state.hash}
-                         width={rowWidth}
+                         width={this.state.width}
                          rowCount={this.props.rowCount}
                          height={this.props.height}
                          className={tc('scroll-rows')}
@@ -421,13 +367,20 @@ export default class TableScroller extends PureComponent {
                          rowData={this.rowData}
                          renderItem={this.renderItem}
                          renderBlank={this.renderBlank}>
+                <Header key='header-container'
+                        selectedState={this.state.selectedState}
+                        headerRender={this.props.headerRender}
+                        className={this.props.headersClassName}
+                        selected={this.state.selected}
+                        renderSelectable={this.props.renderSelectable}
+                        columns={this.state.columns}
+                        onColumnConfigChange={this.handleColumnConfigChange}
+                        onRowSelect={this.handleIndeterminateSelection}
+                        sortDirection={this.state.sortDirection}
+                        sortIndex={this.state.sortIndex}
+                        onSort={this.handleSort}
 
-                <div key='header-container'
-                     className={`${tc(
-                         'cell-headers')} ${this.props.headersClassName}`}>
-                    {this.props.children}
-                    {cols}
-                </div>
+                />
             </UseScroller>
         </div>)
     }

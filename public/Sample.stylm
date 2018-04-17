@@ -8,6 +8,9 @@
     width 100px
     transform translate3d(-60%, 17px, 0)
 
+.select {
+}
+
 .textarea
 
     display none
@@ -26,7 +29,6 @@
 .value-container:hover .textarea, .textarea:hover
     display inline-block
     position fixed
-
 
 .input
     -webkit-appearance: none
@@ -175,7 +177,7 @@
         text-align-last: center;
 
 .checkbox
-    >input
+    > input
         visibility: hidden
     cursor pointer
 

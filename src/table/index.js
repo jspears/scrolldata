@@ -6,3 +6,5 @@ export Row from './Row';
 export RowActions from './RowActions';
 export SortIndicator from './SortIndicator';
 export TableScroller from './TableScroller';
+export Menu from './Menu';
+
