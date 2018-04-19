@@ -1,1 +1,4 @@
 @import '../../../table/SortIndicator.styl'
+.sortable {
+
+}

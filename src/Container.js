@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { func } from 'prop-types';
+import {findDOMNode} from 'react-dom';
 
 const EVENTS = [
     'resize',
@@ -30,7 +31,7 @@ export default class Container extends PureComponent {
 
                 const { scrollLeft, scrollTop } = this.node;
 
-                const notify = {
+                const notify          = {
                     distanceFromTop   : top,
                     distanceFromBottom: bottom,
                     containerHeight   : height,
@@ -38,9 +39,8 @@ export default class Container extends PureComponent {
                     scrollLeft,
                     scrollTop,
                     eventSource       : target === window ? document.body
-                        : this.node
+                                                          : this.node
                 };
-
                 const { subscribers } = this;
 
                 for (let i = 0, l = subscribers.length; i < l; i++) {
@@ -51,9 +51,12 @@ export default class Container extends PureComponent {
         }
     };
 
-    componentWillReceiveProps({ offsetHeight }) {
+    componentWillReceiveProps({ offsetHeight, scrollLeft }) {
         if (offsetHeight !== this.props.offsetHeight) {
             this.setState({ offsetHeight }, this._updateScrollTop);
+        }
+        if (scrollLeft !== this.props.scrollLeft) {
+            this.node.scrollLeft = scrollLeft;
         }
     }
 
@@ -94,15 +97,18 @@ export default class Container extends PureComponent {
     }
 
     setParent = (node) => {
-        this.node = node
+        this.node = findDOMNode(node);
     };
     getParent = () => this.node;
 
     render() {
         const {
                   /* eslint-disable-next-line no-unused-vars*/
-                  onMovement, offsetHeight, onTouchStart, onTouchMove, onTouchEnd,
-                  children, ...props } = this.props;
+                  onMovement, offsetHeight, onTouchStart,
+                  /* eslint-disable-next-line no-unused-vars*/
+                  onTouchMove, onTouchEnd, scrollLeft,
+                  children, ...props
+              } = this.props;
 
         return (
             <div {...props}

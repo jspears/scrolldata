@@ -16,3 +16,5 @@
     color transparent
     font-size .1
     white-space nowrap
+    min-width 100%;
+    max-width 100%;

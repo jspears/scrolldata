@@ -2,9 +2,9 @@ import React from 'react';
 import { themeClass } from '../themes';
 
 
-const SortIndicator = (props) => (
-    <i aria-label={`Sort ${props.sortDirection || 'ASC'}`}
-       className={tc('icon', props.sortDirection)}/>);
+const SortIndicator = ({ sortDirection = 'ASC' }) => (
+    <i aria-label={`Sort ${sortDirection}`}
+       className={tc('icon', sortDirection)}/>);
 
 SortIndicator.displayName = 'SortIndicator';
 

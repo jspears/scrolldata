@@ -1,11 +1,14 @@
 
-
-
 :hover ~ .row-actions, :hover > .row-actions, .row-actions:hover, .row-actions.display
     display flex
 
 .row-actions
     display none
+    position: sticky;
+    flex: none;
+    width: 0;
+    right: 10px;
+    top: 0;
 
 .actions
     display flex
@@ -20,9 +23,10 @@
     padding 0
     margin 0
     justify-content flex-end
-    position absolute
+    position sticky
     right: 0
     padding-right 5px
+
 //    height 100%
 
 //Label is here just for aria and for convience.
@@ -37,7 +41,6 @@
     background #fff
 
 .action-menu
-    position absolute
     display flex
     flex-direction column
     margin 0

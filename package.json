@@ -16,6 +16,7 @@
     "mrbuilder-plugin-emeth": "^2.0.3",
     "mrbuilder-plugin-html": "^2.0.3",
     "mrbuilder-plugin-stylus": "^2.0.3",
+    "mrbuilder-preset-app": "^2.0.3",
     "mrbuilder-preset-lib": "^2.0.3",
     "mrbuilder-preset-test": "^2.0.3"
   },
@@ -29,7 +30,7 @@
     "karma": "mrbuilder",
     "test": "mrbuilder",
     "start": "mrbuilder",
-    "demo": "mrbuilder-webpack --demo ./docs && git add docs",
+    "demo": "MRBUILDER_ENV=demo mrbuilder-webpack && git add docs",
     "gh-pages": "git subtree push --prefix docs origin gh-pages",
     "build": "mrbuilder",
     "preversion": "$npm_execpath run build && $npm_execpath run test"
@@ -47,6 +48,25 @@
       "mrbuilder-plugin-clean"
     ],
     "env": {
+      "demo": {
+        "plugins": [
+          [
+            "mrbuilder-plugin-webpack",
+            {
+              "demo": "./docs",
+              "entry": {
+                "index": "./public/index"
+              }
+            }
+          ],
+          [
+            "mrbuilder-plugin-html",
+            {
+              "exported": true
+            }
+          ]
+        ]
+      },
       "development": {
         "plugins": [
           [

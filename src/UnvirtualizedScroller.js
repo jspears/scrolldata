@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
-import { themeClass } from './themes';
-import {
-    any, number, func, string,  object, oneOf,
-} from 'prop-types';
-import {
-    numberOrFunc,  ignoreKeys,  classes, scrollContext
-} from './util';
+import theme, { themeClass } from 'emeth';
+import { any, func, number, object, oneOf, string, } from 'prop-types';
+import { classes, ignoreKeys, numberOrFunc, scrollContext } from './util';
+import UnvirtualizedScrollerStyle from './IntersectionScroller.stylm';
 
-import './themes/default/scroller';
+theme({
+    UnvirtualizedScroller: UnvirtualizedScrollerStyle
+});
+
 
 const propTypes    = {
     //What to render item
@@ -28,32 +28,30 @@ const propTypes    = {
     className: string,
 
     //Where to initialize table at
-    scrollTo            : numberOrFunc,
+    scrollTo         : numberOrFunc,
     //If defined when scrolling these blanks will be used
-    renderBlank         : func,
-    //Height of the blank
-    renderBlankRowHeight: numberOrFunc,
+    renderBlank      : func,
     //hash is a way to trigger a change when the underlying
     //data has changed but none of the parameters we care about
     //change
-    hash                : any,
+    hash             : any,
     //
-    onScrollToChanged   : func,
+    onScrollToChanged: func,
     //How many extra items to request before render for better scrolling
-    bufferSize          : numberOrFunc,
+    bufferSize       : numberOrFunc,
     //When the event fires, returning false will cancel the scroll
-    onScrollContainer   : func,
+    onScrollContainer: func,
     //Choose between top and translate, chrome sticky has a bug with translate
     //but translate renders a little faster.  So... pick your poison
-    viewPort            : oneOf(['top', 'translate']),
+    viewPort         : oneOf(['top', 'translate']),
     //styling classes
-    scrollerClassName   : string,
+    scrollerClassName: string,
     //Typically not used, but for completeness you can style the sizer element
-    sizerClassName      : string,
-    viewportClassName   : string,
+    sizerClassName   : string,
+    viewportClassName: string,
     //Typically a Date.now() of the lastCache, to ensure we are fetching new
     // data when necessary
-    cacheAge            : number
+    cacheAge         : number
 };
 const defaultProps = {
     scrollTo  : 0,
@@ -109,7 +107,8 @@ export default class UnvirtualizedScroller extends PureComponent {
 
         const ret = Array(data.length);
         for (let rowIndex = 0, l = data.length; rowIndex < l; rowIndex++) {
-            const rowData = data[rowIndex], id = rowData[props.primaryKey] || rowIndex;
+            const rowData = data[rowIndex],
+                  id      = rowData[props.primaryKey] || rowIndex;
             ret[rowIndex] = props.renderItem({
                 ...ignore(props),
                 hash    : null,
@@ -123,27 +122,21 @@ export default class UnvirtualizedScroller extends PureComponent {
 
     render() {
         const {
-                  props: {
-                      viewportClassName,
-                      viewPortStyle,
-                      children,
-                      scrollerClassName,
-                      className,
-                      style = {},
-                      width,
+                  viewportClassName,
+                  viewPortStyle,
+                  children,
+                  scrollerClassName,
+                  className,
+                  style = {},
+                  height
+              } = this.props;
 
-                  },
-              } = this;
-
-        return (<div
-            className={classes(tc('unvirtualized-container', 'container'),
-                className)}
-            style={{ ...style }}>
+        return (<div className={classes(tc('container'), className)}
+                     style={{ ...style }}>
             {children}
-            <div className={classes(tc('scroller', scrollerClassName))}
-                 style={{ minWidth: width + 16 }}>
-                <div className={classes(tc('unvirtualized', 'viewport'),
-                    viewportClassName)}
+            <div className={classes(tc('scroller'), scrollerClassName)}
+                 style={{ height }}>
+                <div className={classes(tc('viewport'), viewportClassName)}
                      style={viewPortStyle}>
                     {this.renderItems()}
                 </div>
@@ -152,4 +145,4 @@ export default class UnvirtualizedScroller extends PureComponent {
     }
 }
 
-const tc = themeClass({ displayName: 'Scroller' });
+const tc = themeClass(UnvirtualizedScroller);

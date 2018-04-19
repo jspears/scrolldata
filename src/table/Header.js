@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { any, arrayOf, func, oneOf, shape, string, } from 'prop-types';
 
-import { fire, result } from '../util';
+import { classes, EMPTY_ARRAY, fire, result } from '../util';
 import { themeClass } from '../themes'
 import { columnPropTypes } from './Column';
 import rowWidth from './rowWidth';
@@ -19,6 +19,7 @@ export const tablePropTypes = {
     onColumnConfigChange: func,
     onSort              : func,
     onRowSelect         : func,
+    virtualization      : string,
 };
 
 
@@ -30,7 +31,7 @@ export default class Header extends PureComponent {
     };
 
     static defaultProps = {
-        columns         : [],
+        columns         : EMPTY_ARRAY,
         selectedState   : 'INDETERMINATE',
         headersClassName: ''
     };
@@ -115,7 +116,7 @@ export default class Header extends PureComponent {
             if (col.selectable === true) {
                 col = {
                     width    : 30,
-                    className: tc('cell-header-select'),
+                    className: classes(tc('cell-header-select'), col.className),
                     label    : this.props.renderSelectable,
                     ...col,
                     //do not override
@@ -143,15 +144,13 @@ export default class Header extends PureComponent {
                                  onColumnConfigChange={this.handleColumnConfigChange}/>)
 
         }
-        const { width } = this.state;
-        return (<div style={{
-            minWidth: width,
-            maxWidth: width,
-            width
-        }} className={`${tc('cell-headers')} ${this.props.className}`}>
-            {this.props.children}
-            {cols}
-        </div>)
+        return (
+            <div className={classes(
+                tc('cell-headers', this.props.virtualization),
+                this.props.className)}>
+                {this.props.children}
+                {cols}
+            </div>)
     }
 }
 

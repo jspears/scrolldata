@@ -1,5 +1,5 @@
 import React, { Component, PureComponent } from 'react';
-import TableScroller from '../src/table/TableScroller';
+import TableScroller from '../src/table';
 import example from './companies.clean.json';
 import Configure, { numberChange } from './Configure';
 import Slider from './Slider'

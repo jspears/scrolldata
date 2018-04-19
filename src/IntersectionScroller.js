@@ -1,14 +1,18 @@
 //eslint-disable react/no-multi-comp
 import React, { Component, PureComponent } from 'react';
-import { themeClass } from './themes';
 import {
     any, bool, func, number, object, oneOf, shape, string,
 } from 'prop-types';
 import {
-    classes, ignoreKeys, numberOrFunc, orProp, result, scrollContext
+    classes, ignoreKeys, numberOrFunc, orProp, scrollContext
 } from './util';
 import createIntersectionRegistry from './intersectionRegistry';
-import './themes/default/scroller';
+import IntersectionScrollerStyle from './IntersectionScroller.stylm';
+import theme, { themeClass } from 'emeth';
+
+theme({
+    IntersectionScroller: IntersectionScrollerStyle
+});
 
 const propTypes = {
     //What to render item
@@ -81,7 +85,8 @@ const debounce = (fn, to, ti) => arg => {
 
 //Exposing for easier override.
 export const settings = {
-    debounce: 100
+    debounce      : 100,
+    scrollIntoView: { block: 'center', inline: 'nearest' }
 };
 
 class IntersectionComponent extends Component {
@@ -101,6 +106,10 @@ class IntersectionComponent extends Component {
 
 
     shouldComponentUpdate(props, nextState) {
+        if (this.domNode && props.scrollIntoView
+            !== this.props.scrollIntoView) {
+            this.domNode.scrollIntoView(settings.scrollIntoView);
+        }
         if (!this.state.isIntersecting && !nextState.isIntersecting) {
             return false;
         }
@@ -119,7 +128,8 @@ class IntersectionComponent extends Component {
     }
 
     render() {
-        const { rowIndex, data, rowHeight, expandedHeight } = this.props;
+        const { scrollIntoView, rowIndex, data, rowHeight, expandedHeight } = this.props;
+
         return this.props.renderItem({
             ...ignore(this.props),
             isIntersecting: this.state.isIntersecting,
@@ -143,36 +153,21 @@ export default class IntersectionScroller extends PureComponent {
         //data for the currently showing items
     };
 
-    constructor(props, ...rest) {
-        super(props, ...rest);
-
-    }
 
     componentWillReceiveProps(newProps) {
         if (newProps.intersectionRegistry !== this.props.intersectionRegistry) {
             console.warn(
-                'does not support changing intersection registry after construction');
+                'IntersectionScroller does not support changing intersection registry after construction');
         }
         if (this.props.hash !== newProps.hash || this.props.rowCount
             !== newProps.rowCount) {
             this._refresh(newProps);
         }
+        if (this.props.scrollTo !== newProps.scrollTo) {
+            this._refresh(newProps);
+        }
     }
 
-    calcHeight() {
-        if (this.props.height) {
-            return result(this.props.height, this.props.rowCount);
-        }
-        if (this.props.rowsVisible) {
-            if (typeof this.props.rowsVisible === 'function') {
-                return result(this.props.rowsVisible, this.props.rowCount);
-            }
-            return Math.min(this.props.rowsVisible, this.props.rowCount)
-                   * result(this.props.rowHeight, this.props.rowCount, this.props.rowIndex);
-        }
-        //fit container.
-        return;
-    }
 
     _refresh({ rowData, rowCount }) {
         const ret = rowData(0, rowCount);
@@ -206,6 +201,7 @@ export default class IntersectionScroller extends PureComponent {
                 (<IntersectionComponent
                     intersectionRegistry={props.intersectionRegistry}
                     renderItem={props.renderItem}
+                    scrollIntoView={rowIndex === props.scrollTo}
                     rowIndex={id}
                     expandedHeight={props.expandedHeight}
                     rowHeight={props.rowHeight}
@@ -223,29 +219,25 @@ export default class IntersectionScroller extends PureComponent {
                       children,
                       scrollerClassName,
                       className,
-                      style = {},
-                      width,
-
+                      style,
+                      height,
                   },
               } = this;
 
-        const height = this.calcHeight();
-
-        return (<div
-            className={classes(tc('unvirtualized-container', 'container'),
-                className)}
-            style={style}>
-            {children}
-            <div className={classes(tc('scroller', scrollerClassName))}
-                 style={{ minWidth: width + 16, height }}>
-                <div className={classes(tc('unvirtualized', 'viewport'),
-                    viewportClassName)}
-                     style={viewPortStyle}>
-                    {this.renderItems()}
+        return (
+            <div className={classes(tc('container'), className)} style={style}>
+                {children}
+                <div className={classes(tc('scroller', scrollerClassName))}
+                     style={{ height }}>
+                    <div className={classes(tc('viewport'),
+                        viewportClassName)}
+                         style={viewPortStyle}>
+                        {this.renderItems()}
+                    </div>
                 </div>
             </div>
-        </div>);
+        );
     }
 }
 
-const tc = themeClass({ displayName: 'Scroller' });
+const tc = themeClass(IntersectionScroller);

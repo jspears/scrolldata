@@ -2,7 +2,8 @@ import React, { PureComponent } from 'react';
 import { any, arrayOf, bool, func, oneOf, shape, string, } from 'prop-types';
 
 import {
-    boolOrFunc, EMPTY_ARRAY, fire, ignoreKeys, numberOrFunc, result, toggle
+    boolOrFunc, classes, EMPTY_ARRAY, fire, ignoreKeys, numberOrFunc, result,
+    toggle
 } from '../util';
 import { themeClass } from '../themes'
 import rowWidth from './rowWidth';
@@ -14,7 +15,6 @@ import Cell from './Cell';
 import Row from './Row';
 import Header from './Header';
 import _Blank from './Blank';
-import '../themes/default/table';
 
 export const tablePropTypes = {
     rowClassName        : string,
@@ -45,9 +45,11 @@ export default class TableScroller extends PureComponent {
         expandedContent: boolOrFunc,
         renderItem     : func,
         renderRowAsText: func,
+
     };
 
     static defaultProps = {
+        virtualization  : 'Intersection',
         columns         : [],
         rowRender       : props => <Row  {...props}/>,
         renderRowAsText(data, key) {
@@ -72,10 +74,43 @@ export default class TableScroller extends PureComponent {
         sortIndex            : this.props.sortIndex,
         selectedState        : this.props.selectedState,
         isContainerExpandable: this.props.expandedContent != null,
+        height               : TableScroller.calcHeight(this.props)
     };
 
-    componentWillReceiveProps({ columns, hash, selected, selectedState, sortDirection, sortIndex, rowCount, expanded, expandedContent }) {
+    static calcHeight({ height, rowHeight, rowCount, rowsVisible }) {
+        if (height) {
+            return result(height, rowCount);
+        }
+        if (rowsVisible) {
+            if (typeof rowsVisible === 'function') {
+                return result(rowsVisible, rowCount);
+            }
+            return Math.min(rowsVisible, rowCount) * result(rowHeight,
+                rowCount);
+        }
+        //fit container.
+        return;
+    }
+
+    componentWillReceiveProps({
+                                  columns, hash, selected, selectedState,
+                                  sortDirection,
+                                  sortIndex,
+                                  height,
+                                  rowHeight,
+                                  rowsVisible,
+                                  rowCount, expanded, expandedContent
+                              }) {
         const state = {};
+        if (rowCount !== this.props.rowCount
+            || height !== this.props.height
+            || rowHeight !== this.props.rowHeight
+            || rowsVisible !== this.props.rowsVisible) {
+            state.height =
+                TableScroller.calcHeight(
+                    { height, rowHeight, rowCount, rowsVisible });
+            state.hash   = Date.now();
+        }
         if (columns !== this.props.columns) {
             state.hash    = Date.now();
             state.columns = columns;
@@ -251,6 +286,7 @@ export default class TableScroller extends PureComponent {
                         ...config,
                         renderCell: renderSelectable,
                         data      : selectData,
+                        className : tc('selectable'),
                         onSelect  : this.handleRowSelection,
                         state     : this.isSelected(selectData)
                     }
@@ -349,25 +385,24 @@ export default class TableScroller extends PureComponent {
             props.expanded       = this.state.expanded;
             UseScroller          = ExpandableScroller;
         }
+        const virtualization = this.props.virtualization.toLowerCase();
 
-
-        return (<div className={tc('container')} ref={this.refContainer}>
+        return (<div className={classes(tc('container'), this.props.className)}>
             <UseScroller {...props}
+                         key='scroller'
                          primaryKey={this.props.primaryKey}
-                         virtualization={this.props.virtualization}
+                         virtualization={virtualization}
                          hash={this.state.hash}
                          width={this.state.width}
                          rowCount={this.props.rowCount}
-                         height={this.props.height}
+                         height={this.state.height}
                          className={tc('scroll-rows')}
-                         scrollerClassName={tc(
-                             this.props.virtualization === 'Virtualized'
-                             ? 'scroll-list'
-                             : 'unvirtualized-scroll-list')}
                          rowData={this.rowData}
                          renderItem={this.renderItem}
                          renderBlank={this.renderBlank}>
                 <Header key='header-container'
+                        width={this.state.width}
+                        virtualization={virtualization}
                         selectedState={this.state.selectedState}
                         headerRender={this.props.headerRender}
                         className={this.props.headersClassName}
@@ -379,7 +414,6 @@ export default class TableScroller extends PureComponent {
                         sortDirection={this.state.sortDirection}
                         sortIndex={this.state.sortIndex}
                         onSort={this.handleSort}
-
                 />
             </UseScroller>
         </div>)

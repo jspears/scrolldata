@@ -10,7 +10,8 @@
   },
   {
     "columnKey": "_id",
-    "width": 200
+    "width": 200,
+    "label": "id"
   },
   {
     "columnKey": "name",
@@ -18,15 +19,18 @@
   },
   {
     "columnKey": "crunchbase_url",
-    "width": 300
+    "width": 300,
+    "label": "Crunchbase"
   },
   {
     "columnKey": "homepage_url",
-    "width": 300
+    "width": 300,
+    "label": "Homepage"
   },
   {
     "columnKey": "total_money_raised",
-    "width": 100
+    "width": 100,
+    "label": "Total Raised"
   },
   {
     "columnKey": "description",
@@ -34,10 +38,12 @@
   },
   {
     "columnKey": "created_at",
-    "width": 200
+    "width": 200,
+    "label": "Created"
   },
   {
     "columnKey": "updated_at",
-    "width": 200
+    "width": 200,
+    "label": "Updated"
   }
 ]

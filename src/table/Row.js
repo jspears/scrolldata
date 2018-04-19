@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { themeClass } from '../themes';
-import { fire, result } from '../util';
+import { classes, fire, result } from '../util';
 import RowActions from './RowActions';
 
 
@@ -41,14 +41,15 @@ export default class Row extends PureComponent {
         };
         if (!isIntersecting) {
             return (<div style={rowStyle} ref={onRef}
-                        className={`${isExpanded ? tc(rowExpandedClass) : tc(
-                            className)} ${tc(
-                            'notIntersecting')}`}>{children}</div>)
+                         className={classes(
+                             isExpanded ? tc(rowExpandedClass) :
+                             tc(className),
+                             tc('notIntersecting'))}>{children}</div>)
         }
         if (isExpanded) {
             return (<div style={rowStyle}
-                        ref={onRef}
-                        className={tc(rowExpandedClass)}>
+                         ref={onRef}
+                         className={tc(rowExpandedClass)}>
                 <div className={tc(className)}
                      onClick={this.handleToggle}
 
@@ -65,17 +66,17 @@ export default class Row extends PureComponent {
         }
 
         return (<div style={rowStyle}
-                    ref={onRef}
-                    className={tc(className)}
-                    onClick={this.handleToggle}>{children}{rowActions &&
-                                                           <RowActions
-                                                               height={rowHeight}
-                                                               actions={rowActions}
-                                                               offsetLeft={offsetLeft}
-                                                               onRowAction={onRowAction}
-                                                               rowData={data}
+                     ref={onRef}
+                     className={tc(className)}
+                     onClick={this.handleToggle}>{children}{rowActions &&
+                                                            <RowActions
+                                                                height={rowHeight}
+                                                                actions={rowActions}
+                                                                offsetLeft={offsetLeft}
+                                                                onRowAction={onRowAction}
+                                                                rowData={data}
 
-                                                           />}</div>);
+                                                            />}</div>);
     }
 }
 

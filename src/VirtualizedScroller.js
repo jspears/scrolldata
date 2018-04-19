@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { themeClass } from './themes';
+import theme, { themeClass } from 'emeth';
 //import { viewport, scroller, container, sizer } from './Scroller.stylm';
 import { any, func, number, object, oneOf, string } from 'prop-types';
 import {
@@ -8,7 +8,11 @@ import {
 } from './util';
 import Container from './Container';
 import position from './position';
-import './themes/default/scroller';
+import VirtualizedScrollerStyle from './VirtualizedScroller.stylm';
+
+theme({
+    VirtualizedScroller: VirtualizedScrollerStyle
+});
 
 const propTypesObj    = {
     //What to render item
@@ -71,13 +75,11 @@ const defaultPropsObj = {
     translateViewPort(top) {
         return {
             transform: `translate3d(0,${top}px,0)`,
-            overflow : 'hidden'
         }
     },
     topViewPort(top) {
         return {
             top,
-            overflow: 'hidden'
         }
     }
 };
@@ -100,7 +102,8 @@ export default class VirtualizedScroller extends Component {
         totalHeight : 0,
         rowIndex    : null,//do not set it is needed to determine when to first
         // calculate scrollTo.
-        height      : this.props.height
+        height      : this.props.height,
+        scrollLeft  : 0
     };
 
 
@@ -199,6 +202,11 @@ export default class VirtualizedScroller extends Component {
     };
 
 
+    handleScrollLeft = ({ target: { scrollLeft } }) => {
+        this.setState({ scrollLeft });
+    };
+
+
     renderItems() {
         const {
                   state: { data, page },
@@ -246,27 +254,30 @@ export default class VirtualizedScroller extends Component {
                       children,
                       className,
                       scrollerClassName,
-                      viewportClassName, sizerClassName,
+                      viewportClassName,
+                      sizerClassName,
                       viewPort,
-                      width
-                  }, state: { totalHeight, height, offsetHeight = 0 }
+                      height
+                  }, state: { totalHeight, scrollLeft, offsetHeight = 0 }
               }             = this;
         const viewPortStyle = this.props[`${viewPort}ViewPort`](
             offsetHeight);
         return (<div className={classes(tc('container'), className)}
-                     style={{ ...this.props.style }}>
+                     style={{ ...this.props.style }}
+                     onScrollCapture={this.handleScrollLeft}>
             {children}
-            <Container onMovement={this.handleScroll}
+            <Container key='virtualized-container'
+                       onMovement={this.handleScroll}
                        className={classes(tc('scroller'), scrollerClassName)}
-                       style={{ height, minWidth: width + 16 }}
+                       style={{ height, left: scrollLeft }}
+                       scrollLeft={scrollLeft}
                        offsetHeight={offsetHeight}>
-                <div className={classes(tc('sizer'), sizerClassName)}
-                     style={{
-                         height: totalHeight,
-                         right : 0
-                     }}/>
-                <div className={classes(tc('viewport'), viewportClassName)}
-                     style={viewPortStyle}>
+                <div key='sizer'
+                     className={classes(tc('sizer'), sizerClassName)}
+                     style={{ height: totalHeight }}/>
+                <div key='viewport'
+                     className={classes(tc('viewport'), viewportClassName)}
+                     style={{ ...viewPortStyle }}>
                     {this.renderItems()}
                 </div>
             </Container>
@@ -274,4 +285,4 @@ export default class VirtualizedScroller extends Component {
     }
 }
 
-const tc = themeClass({ displayName: 'Scroller' });
+const tc = themeClass(VirtualizedScroller);

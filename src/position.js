@@ -43,10 +43,12 @@ export default function position(newScrollTo, newOffsetTop, props,
             viewHeight      = rowIndexHeight;
             viewRowCount++;
             totalHeight += rowIndexHeight;
+            if (viewRowCount === rowCount){
+                continue;
+            }
             //handle rowsVisible.
             if (rowsVisible > 0) {
-                for (; viewRowCount < rowsVisible && rowIndex++ < totalRows;
-                       viewRowCount++) {
+                while (viewRowCount++ <= rowsVisible && rowIndex++ < totalRows) {
 
                     const rHeight = result(rowHeight, rowIndex);
                     data[r++]     = rowIndex;
@@ -55,7 +57,7 @@ export default function position(newScrollTo, newOffsetTop, props,
                     totalHeight += rHeight;
                 }
             } else {
-                for (; viewHeight < height && ++rowIndex < totalRows;
+                for (; viewHeight <= height && ++rowIndex < totalRows;
                        viewRowCount++) {
 
                     const rHeight = result(rowHeight, rowIndex);

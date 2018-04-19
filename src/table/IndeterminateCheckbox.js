@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { any, object, oneOf } from 'prop-types';
 import { themeClass } from '../themes';
+import { classes } from '../util'
 
 /**
  * This is an indeterminate checkbox.  It allows for the third Boolean, null;
@@ -55,11 +56,11 @@ export default class IndeterminateCheckbox extends Component {
         }
 
         return (<i onClick={this.handleClick}
-                  style={this.props.style}
-                  data-data={this.props.data}
-                  className={tc('icon',
-                      state === 'check_box' ? 'checked' : 'unchecked',
-                      this.props.className)}>{state}</i>)
+                   style={this.props.style}
+                   data-data={this.props.data}
+                   className={classes(tc('icon',
+                       state === 'check_box' ? 'checked' : 'unchecked'),
+                       this.props.className)}>{state}</i>)
 
     }
 }

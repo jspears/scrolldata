@@ -1,32 +1,35 @@
 import React, { Component } from 'react';
 import { oneOf } from 'prop-types';
-import Virtualized from './VirtualizedScroller';
-import Intersection from './IntersectionScroller';
-import None from './UnvirtualizedScroller';
+import virtualized from './VirtualizedScroller';
+import intersection from './IntersectionScroller';
+import none from './UnvirtualizedScroller';
 
 const Scrollers = {
-    Virtualized,
-    None,
-    Intersection
+    virtualized,
+    none,
+    unvirtualized: none,
+    intersection
 
 };
 
 export default class Scroller extends Component {
     static propTypes = {
-        virtualization: oneOf(['Intersection', 'Virtualized', 'None'])
+        virtualization: oneOf(
+            ['Intersection', 'Virtualized', 'None', 'none', 'intersection', 'virtualized'])
     };
 
     static defaultProps = {
-        virtualization: 'None'
+        virtualization: 'none'
     };
 
     render() {
         const {
                   virtualization,
                   ...props
-              }        = this.props;
-        const VScroller = Scrollers[virtualization];
-        return <VScroller {...props}/>
+              }         = this.props;
+        const lv        = virtualization.toLowerCase();
+        const VScroller = Scrollers[lv];
+        return <VScroller {...props} virtualization={lv}/>
 
     }
 

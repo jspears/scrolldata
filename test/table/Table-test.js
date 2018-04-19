@@ -34,9 +34,9 @@ const columns      = [{
         resizable: true,
     },
     {
-        columnKey: 'contentPartner',
-        label    : 'Partner',
-        width    : 200,
+        columnKey: 'name',
+        label    : 'Name',
+        width    : 400,
         sortable : true,
     },
     {
@@ -57,46 +57,61 @@ const columns      = [{
         width    : 200,
         sortable : true,
     }];
-describe('Table', function () {
+describe.only('Table', function () {
     this.timeout(50000);
 
-    const rowData = (rowIndex, count) => {
-        const ret = Array(count);
-        for (let i = 0; i < count; i++) {
-            ret[i] = {
-                status         : i % 2,
-                _id            : `${rowIndex + i} - ${i} ${rowIndex}  ${count}`,
-                contentPartner : `Partner ${rowIndex}`,
-                contentPartner0: `Partner 0 ${rowIndex}`,
-                contentPartner1: `Partner 1 ${rowIndex}`,
-                contentPartner2: `Partner 2 ${rowIndex}`
+
+    ['Intersection', 'Virtualized', 'None'].forEach(function (virtualization) {
+        const rowData = (name) => (rowIndex, count) => {
+            const ret = Array(count);
+            for (let i = 0; i < count; i++) {
+                ret[i] = {
+                    status         : i % 2,
+                    _id            : `${virtualization}-${rowIndex
+                                                          + i}-${i}-${rowIndex}-${count}`,
+                    name           : name,
+                    contentPartner0: `Partner 0 ${rowIndex}`,
+                    contentPartner1: `Partner 1 ${rowIndex}`,
+                    contentPartner2: `Partner 2 ${rowIndex}`
+                }
             }
-        }
-        return ret;
-    };
+            return ret;
+        };
 
-    it('should render a table', function () {
+        it(`should render a table with ${virtualization}`, function () {
 
-        into(<div style={{ height: 600, width: 600 }}><TableScroller
-            height={500}
-            rowHeight={50}
-            rowData={rowData} rowCount={100} columns={columns}/></div>, true);
-    });
-    it('should render a small table', function () {
+            into(<div style={{ height: 600, width: 600 }}><TableScroller
+                    height={500}
+                    rowHeight={50}
+                    virtualization={virtualization}
+                    rowData={rowData(this.test.title)} rowCount={100}
+                    columns={columns}/></div>,
+                true);
+        });
 
-        into(<div style={{ height: 600, width: 600 }}><TableScroller
-            height={500}
-            rowHeight={50}
-            rowData={rowData} rowCount={2} columns={columns}/></div>, true);
-    });
-    it.only('should render a virtualized small table', function () {
+        it(`should render a ${virtualization} one item in table`, function () {
 
-        into(<TableScroller
-            width={'100vw'}
-            rowHeight={50}
-            virtualization={'Intersection'}
-            isVirtualized={true}
-            rowsVisible={1}
-            rowData={rowData} rowCount={1   } columns={columns}/>, true);
+            into(<TableScroller
+                width={'100vw'}
+                rowHeight={50}
+                virtualization={virtualization}
+                isVirtualized={true}
+                rowsVisible={1}
+                rowData={rowData(this.test.title)}
+                rowCount={1}
+                columns={columns}/>, true);
+        });
+        it(`should render a ${virtualization} small table`, function () {
+
+            into(<TableScroller
+                width={'100vw'}
+                rowHeight={50}
+                virtualization={virtualization}
+                isVirtualized={true}
+                rowsVisible={1}
+                rowData={rowData(this.test.title)}
+                rowCount={2}
+                columns={columns}/>, true);
+        });
     });
 });

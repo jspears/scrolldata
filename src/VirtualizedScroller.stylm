@@ -1,0 +1,12 @@
+@require './Scroller.styl'
+.viewport
+    min-width fit-content
+    position relative
+
+.scroller
+    max-width 100%
+    min-width 100%
+    overflow-x hidden
+    overflow-y auto
+    position relative
+

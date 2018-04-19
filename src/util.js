@@ -18,6 +18,7 @@ export const stringOrFunc = oneOfType([string, func]);
 export const numberOrFunc = oneOfType([number, func]);
 export const boolOrFunc   = oneOfType([bool, func]);
 export const EMPTY_ARRAY  = Object.freeze([]);
+export const EMPTY_OBJ    = Object.freeze({});
 export const indexOf      = Function.call.bind(Array.prototype.indexOf);
 
 
@@ -149,6 +150,12 @@ export const makeCompare = (formatter, key, options) => {
 
 export const orProp   = (which = []) => {
     const [current, ...rest] = which;
+    if (rest.length === 0){
+        if(current){
+            return current;
+        }
+        throw new Error('Needs at least 2 elements in the array, the validator for this field and the other field to check')
+    }
 
     function checkType(isRequired, props, propName, componentName,
                        location) {

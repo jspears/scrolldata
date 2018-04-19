@@ -7,4 +7,5 @@ export RowActions from './RowActions';
 export SortIndicator from './SortIndicator';
 export TableScroller from './TableScroller';
 export Menu from './Menu';
-
+export theme from '../themes/default/table';
+export default from './TableScroller';
