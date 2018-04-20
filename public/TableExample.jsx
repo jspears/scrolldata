@@ -1,16 +1,15 @@
 import React, { Component, PureComponent } from 'react';
-import TableScroller from '../src/table';
+import {TableScroller} from '../src';
 import example from './companies.clean.json';
 import Configure, { numberChange } from './Configure';
 import Slider from './Slider'
-import { makeCompare } from '../src/util'
+import { makeCompare, reverse } from '../src/util'
 import { fake } from './helper'
 import Sample from './Sample';
 import rowActions from './rowActions.json';
 import columns from './columns.json';
 import tc from './tc';
 
-const reverse = (fn) => (...args) => fn(...args) * -1;
 
 const expandedContent = ({ data: { overview: __html  }, expandedHeight, rowHeight }) => (
     <div key='expanded-content'

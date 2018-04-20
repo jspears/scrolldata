@@ -40,7 +40,7 @@ export const listen = (target, event, callback) => {
     return () => target.removeEventListener(event, callback);
 };
 
-export const stop = (fn) => function (e) {
+export const stop    = (fn) => function (e) {
     if (!e || (typeof e.stopPropagation !== 'function')) {
         return fn && fn.call(this, e);
     }
@@ -48,6 +48,7 @@ export const stop = (fn) => function (e) {
     e.preventDefault();
     return fn && fn.call(this, e);
 };
+export const reverse = (fn) => (...args) => fn(...args) * -1;
 
 export const clamp = (value, min, max) => min <= max ? Math.max(min,
     Math.min(value, max)) : clamp(value, max, min);
@@ -148,13 +149,14 @@ export const makeCompare = (formatter, key, options) => {
     }
 };
 
-export const orProp   = (which = []) => {
+export const orProp         = (which = []) => {
     const [current, ...rest] = which;
-    if (rest.length === 0){
-        if(current){
+    if (rest.length === 0) {
+        if (current) {
             return current;
         }
-        throw new Error('Needs at least 2 elements in the array, the validator for this field and the other field to check')
+        throw new Error(
+            'Needs at least 2 elements in the array, the validator for this field and the other field to check')
     }
 
     function checkType(isRequired, props, propName, componentName,
@@ -194,8 +196,28 @@ export const orProp   = (which = []) => {
     return chainedCheckType;
 
 };
-export const contains = (arr, value) => arr && arr.includes(value);
+export const contains       = (arr, value) => arr && arr.includes(value);
+export const rowDataFactory = (example) => (offset, count,
+                                            { sortColumn, sortDirection } = {}) => {
+    let ret;
+    if (sortColumn && sortDirection) {
+        let {
+                columnKey,
+                sorter,
+                formatter,
+            } = sortColumn;
 
+        let data = example.concat();
+        if (typeof sorter !== 'function') {
+            sorter = makeCompare(formatter, columnKey, sortColumn);
+        }
+        data.sort(sortDirection === 'DESC' ? reverse(sorter) : sorter);
+        ret = data.slice(offset, offset + count);
+    } else {
+        ret = example.slice(offset, offset + count);
+    }
+    return ret;
+};
 
 export const scrollContext = {
     subscribe  : func,

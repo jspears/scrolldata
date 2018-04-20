@@ -1,4 +1,4 @@
-@import '../../../table/TableScroller.styl'
+@import '../../../TableScroller.styl'
 @import './Row.stylm';
 
 .container

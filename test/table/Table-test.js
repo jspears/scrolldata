@@ -1,5 +1,5 @@
 import React from 'react';
-import TableScroller from '../../src/table/TableScroller';
+import TableScroller from '../../src/TableScroller';
 import { into } from '../support';
 import '../../src/themes/default/index';
 

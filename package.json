@@ -10,15 +10,14 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "hint.css": "^2.5.0",
-    "mrbuilder": "^2.0.3",
-    "mrbuilder-plugin-clean": "^2.0.3",
-    "mrbuilder-plugin-css": "^2.0.3",
-    "mrbuilder-plugin-emeth": "^2.0.3",
-    "mrbuilder-plugin-html": "^2.0.3",
-    "mrbuilder-plugin-stylus": "^2.0.3",
-    "mrbuilder-preset-app": "^2.0.3",
-    "mrbuilder-preset-lib": "^2.0.3",
-    "mrbuilder-preset-test": "^2.0.3"
+    "mrbuilder": "^2.0.4-5",
+    "mrbuilder-plugin-clean": "^2.0.4-5",
+    "mrbuilder-plugin-doc-prop-types": "^2.0.4-5",
+    "mrbuilder-plugin-emeth": "^2.0.4-5",
+    "mrbuilder-plugin-react-styleguidist": "^2.0.4-5",
+    "mrbuilder-plugin-stylus": "^2.0.4-5",
+    "mrbuilder-preset-app": "^2.0.4-5",
+    "mrbuilder-preset-lib": "^2.0.4-5"
   },
   "peerDependencies": {
     "emeth": "*",
@@ -30,30 +29,79 @@
     "karma": "mrbuilder",
     "test": "mrbuilder",
     "start": "mrbuilder",
-    "demo": "MRBUILDER_ENV=demo mrbuilder-webpack && git add docs",
-    "gh-pages": "git subtree push --prefix docs origin gh-pages",
-    "build": "mrbuilder",
+    "styleguide": "mrbuilder",
+    "start:styleguide": "mrbuilder",
+    "demo": "mrbuilder",
+    "lib": "mrbuilder",
+    "gh-pages": "git add docs && git subtree push --prefix docs origin gh-pages",
+    "build": "$npm_execpath run styleguide && $npm_execpath run demo &&  $npm_execpath run lib",
     "preversion": "$npm_execpath run build && $npm_execpath run test"
   },
   "mrbuilder": {
+    "presets": [
+      "mrbuilder-preset-lib"
+    ],
     "plugins": [
+      "mrbuilder-plugin-emeth",
+      "mrbuilder-plugin-stylus",
+      "mrbuilder-plugin-clean",
+      "mrbuilder-plugin-react",
+      [
+        "mrbuilder-plugin-less",
+        false
+      ],
       [
         "mrbuilder-plugin-css",
         {
-          "useNameHash": "style.css"
+          "useNameHash": "style.css",
+          "useStyleLoader": false
         }
-      ],
-      "mrbuilder-plugin-emeth",
-      "mrbuilder-plugin-stylus",
-      "mrbuilder-plugin-clean"
+      ]
     ],
     "env": {
-      "demo": {
+      "production": {
         "plugins": [
           [
             "mrbuilder-plugin-webpack",
             {
-              "demo": "./docs",
+              "useExternals": true,
+              "devtool": "source-map",
+              "library": "umd"
+            }
+          ]
+        ]
+      },
+      "styleguide": {
+        "plugins": [
+          [
+            "mrbuilder-plugin-clean",
+            {
+              "paths": [
+                "docs"
+              ]
+            }
+          ],
+          [
+            "mrbuilder-plugin-webpack",
+            {
+              "demo": "./docs"
+            }
+          ]
+        ]
+      },
+      "demo": {
+        "plugins": [
+          [
+            "mrbuilder-plugin-css",
+            {
+              "useNameHash": "[hash].style.css",
+              "useStyleLoader": false
+            }
+          ],
+          [
+            "mrbuilder-plugin-webpack",
+            {
+              "demo": "./docs/demo",
               "entry": {
                 "index": "./public/index"
               }
@@ -64,6 +112,10 @@
             {
               "exported": true
             }
+          ],
+          [
+            "mrbuilder-plugin-clean",
+            false
           ]
         ]
       },
