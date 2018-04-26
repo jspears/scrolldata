@@ -1,6 +1,6 @@
 {
   "name": "scrolldata",
-  "version": "5.0.0-1",
+  "version": "5.0.0-2",
   "description": "Table and virtualization help for tabular data",
   "main": "lib",
   "source": "src",
@@ -10,15 +10,14 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "hint.css": "^2.5.0",
-    "mrbuilder": "^2.0.4-5",
-    "mrbuilder-plugin-clean": "^2.0.4-5",
-    "mrbuilder-plugin-doc-prop-types": "^2.0.4-5",
-    "mrbuilder-plugin-emeth": "^2.0.4-5",
-    "mrbuilder-plugin-react-styleguidist": "^2.0.4-5",
-    "mrbuilder-plugin-stylus": "^2.0.4-5",
-    "mrbuilder-preset-app": "^2.0.4-5",
-    "mrbuilder-preset-lib": "^2.0.4-5",
-    "mrbuilder-preset-test": "^2.0.4-5"
+    "mrbuilder": "^2.1.1",
+    "mrbuilder-plugin-clean": "^2.1.1",
+    "mrbuilder-plugin-emeth": "^2.1.1",
+    "mrbuilder-plugin-less": "^2.1.1",
+    "mrbuilder-plugin-stylus": "^2.1.1",
+    "mrbuilder-preset-dev": "^2.1.1",
+    "mrbuilder-preset-lib": "^2.1.1",
+    "mrbuilder-preset-test": "^2.1.1"
   },
   "peerDependencies": {
     "emeth": "*",
@@ -33,7 +32,7 @@
     "styleguide": "mrbuilder",
     "start:styleguide": "mrbuilder",
     "demo": "mrbuilder",
-    "lib": "mrbuilder",
+    "lib": "MRBUILDER_ENV=lib mrbuilder",
     "gh-pages": "git add docs && git subtree push --prefix docs origin gh-pages",
     "build": "$npm_execpath run styleguide && $npm_execpath run demo &&  $npm_execpath run lib",
     "preversion": "$npm_execpath run build && $npm_execpath run test"
@@ -60,14 +59,18 @@
       ]
     ],
     "env": {
-      "production": {
+      "lib": {
         "plugins": [
           [
             "mrbuilder-plugin-webpack",
             {
               "useExternals": true,
               "devtool": "source-map",
-              "library": "umd"
+              "libraryTarget": "umd",
+              "mode": "none",
+              "output": {
+                "globalObject": "this"
+              }
             }
           ]
         ]
@@ -121,13 +124,8 @@
         ]
       },
       "development": {
-        "plugins": [
-          [
-            "mrbuilder-plugin-html",
-            {
-              "exported": true
-            }
-          ]
+        "presets": [
+          "mrbuilder-preset-dev"
         ]
       },
       "test": {
