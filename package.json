@@ -1,6 +1,6 @@
 {
   "name": "scrolldata",
-  "version": "5.0.0-2",
+  "version": "5.0.0-3",
   "description": "Table and virtualization help for tabular data",
   "main": "lib",
   "source": "src",
@@ -68,7 +68,7 @@
               "devtool": "source-map",
               "libraryTarget": "umd",
               "mode": "none",
-              "outputPath":"./lib",
+              "outputPath": "./lib",
               "output": {
                 "globalObject": "this"
               }
