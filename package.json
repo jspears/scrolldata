@@ -33,7 +33,7 @@
     "demo": "MRBUILDER_ENV=demo mrbuilder-webpack && git add docs",
     "gh-pages": "git subtree push --prefix docs origin gh-pages",
     "build": "mrbuilder",
-    "preversion": "$npm_execpath run build && $npm_execpath run test"
+    "prepublish": "$npm_execpath run build && $npm_execpath run test"
   },
   "mrbuilder": {
     "plugins": [
