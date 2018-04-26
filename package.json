@@ -35,7 +35,7 @@
     "lib": "MRBUILDER_ENV=lib mrbuilder",
     "gh-pages": "git add docs && git subtree push --prefix docs origin gh-pages",
     "build": "$npm_execpath run styleguide && $npm_execpath run demo &&  $npm_execpath run lib",
-    "preversion": "$npm_execpath run build && $npm_execpath run test"
+    "prepublish": "$npm_execpath run lib"
   },
   "mrbuilder": {
     "presets": [
@@ -68,6 +68,7 @@
               "devtool": "source-map",
               "libraryTarget": "umd",
               "mode": "none",
+              "outputPath":"./lib",
               "output": {
                 "globalObject": "this"
               }
