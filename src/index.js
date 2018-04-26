@@ -2,6 +2,10 @@ import { themeClass as _themeClass } from './themes'
 
 export intersectionRegistry from './intersectionRegistry';
 export ExpandableScroller from './ExpandableScroller';
+export IntersectionScroller from './IntersectionScroller';
+export UnvirtualizedScroller from './UnvirtualizedScroller';
+export Scroller from './Scroller';
+
 export Container from './Container';
 export * as table from './table';
 export Table from './table';
