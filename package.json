@@ -1,6 +1,6 @@
 {
   "name": "scrolldata",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "Table and virtualization help for tabular data",
   "main": "lib",
   "source": "src",
@@ -10,14 +10,16 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "hint.css": "^2.5.0",
-    "mrbuilder": "^2.1.1",
-    "mrbuilder-plugin-clean": "^2.1.1",
-    "mrbuilder-plugin-emeth": "^2.1.1",
-    "mrbuilder-plugin-less": "^2.1.1",
-    "mrbuilder-plugin-stylus": "^2.1.1",
-    "mrbuilder-preset-dev": "^2.1.1",
-    "mrbuilder-preset-lib": "^2.1.1",
-    "mrbuilder-preset-test": "^2.1.1"
+    "mrbuilder": "^3.0.0",
+    "mrbuilder-plugin-clean": "^3.0.0",
+    "mrbuilder-plugin-doc-prop-types": "^3.0.0",
+    "mrbuilder-plugin-emeth": "^3.0.0",
+    "mrbuilder-plugin-less": "^3.0.0",
+    "mrbuilder-plugin-react-styleguidist": "^3.0.0",
+    "mrbuilder-plugin-stylus": "^3.0.0",
+    "mrbuilder-preset-dev": "^3.0.0",
+    "mrbuilder-preset-lib": "^3.0.0",
+    "mrbuilder-preset-test": "^3.0.0"
   },
   "peerDependencies": {
     "emeth": "*",
@@ -35,7 +37,7 @@
     "lib": "MRBUILDER_ENV=lib mrbuilder",
     "gh-pages": "git add docs && git subtree push --prefix docs origin gh-pages",
     "build": "$npm_execpath run styleguide && $npm_execpath run demo &&  $npm_execpath run lib",
-    "prepublishOnly": "$npm_execpath run lib"
+    "prepublish": "$npm_execpath run lib"
   },
   "mrbuilder": {
     "presets": [
