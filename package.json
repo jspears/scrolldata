@@ -10,16 +10,16 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "hint.css": "^2.5.0",
-    "mrbuilder": "^3.0.0",
-    "mrbuilder-plugin-clean": "^3.0.0",
-    "mrbuilder-plugin-doc-prop-types": "^3.0.0",
-    "mrbuilder-plugin-emeth": "^3.0.0",
-    "mrbuilder-plugin-less": "^3.0.0",
-    "mrbuilder-plugin-react-styleguidist": "^3.0.0",
-    "mrbuilder-plugin-stylus": "^3.0.0",
-    "mrbuilder-preset-dev": "^3.0.0",
-    "mrbuilder-preset-lib": "^3.0.0",
-    "mrbuilder-preset-test": "^3.0.0"
+    "mrbuilder": "^3.0.4",
+    "mrbuilder-plugin-clean": "^3.0.4",
+    "mrbuilder-plugin-doc-prop-types": "^3.0.4",
+    "mrbuilder-plugin-emeth": "^3.0.4",
+    "mrbuilder-plugin-less": "^3.0.4",
+    "mrbuilder-plugin-react-styleguidist": "^3.0.4",
+    "mrbuilder-plugin-stylus": "^3.0.4",
+    "mrbuilder-preset-dev": "^3.0.4",
+    "mrbuilder-preset-lib": "^3.0.4",
+    "mrbuilder-preset-test": "^3.0.4"
   },
   "peerDependencies": {
     "emeth": "*",
