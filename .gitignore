@@ -4,3 +4,4 @@ node_modules
 npm-debug.*
 .build
 dist
+yarn-error.log

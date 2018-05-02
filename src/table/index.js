@@ -1,11 +1,31 @@
-export Blank from './Blank';
-export Cell from './Cell';
-export Column from './Column';
-export IndeterminateCheckbox from './IndeterminateCheckbox';
-export Row from './Row';
-export RowActions from './RowActions';
-export SortIndicator from './SortIndicator';
-export TableScroller from './TableScroller';
-export Menu from './Menu';
-export theme from '../themes/default/table';
-export default from './TableScroller';
+import _Blank from './Blank';
+import _Cell from './Cell';
+import _Column from './Column';
+import _IndeterminateCheckbox from './IndeterminateCheckbox';
+import _Row from './Row';
+import _RowActions from './RowActions';
+import _SortIndicator from './SortIndicator';
+import _TableScroller from '../TableScroller';
+import _Menu from './Menu';
+
+export const Blank                 = _Blank;
+export const Cell                  = _Cell;
+export const Column                = _Column;
+export const IndeterminateCheckbox = _IndeterminateCheckbox;
+export const Row                   = _Row;
+export const RowActions            = _RowActions;
+export const SortIndicator         = _SortIndicator;
+export const TableScroller         = _TableScroller;
+export const Menu                  = _Menu;
+
+export default {
+    Blank,
+    Cell,
+    Column,
+    IndeterminateCheckbox,
+    Row,
+    RowActions,
+    SortIndicator,
+    TableScroller,
+    Menu
+};

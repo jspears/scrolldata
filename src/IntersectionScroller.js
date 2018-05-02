@@ -128,7 +128,11 @@ class IntersectionComponent extends Component {
     }
 
     render() {
-        const { scrollIntoView, rowIndex, data, rowHeight, expandedHeight } = this.props;
+        const {
+                  //eslint-disable-next-line
+                  scrollIntoView,
+                  rowIndex, data, rowHeight, expandedHeight
+              } = this.props;
 
         return this.props.renderItem({
             ...ignore(this.props),
