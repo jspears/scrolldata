@@ -24,7 +24,11 @@ Advantages:
 
 
 ## Demo
-See it in action [demo](./demo/index.html)
+See it in action [demo](https://jspears.gihub.io/scrolldata/demo/index.html)
+
+And docs
+See it in action [docs](https://jspears.gihub.io/scrolldata/index.html)
+
 
 Or run it 
 
