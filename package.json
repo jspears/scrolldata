@@ -1,6 +1,6 @@
 {
   "name": "scrolldata",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "Table and virtualization help for tabular data",
   "main": "lib",
   "source": "src",
@@ -34,7 +34,7 @@
     "styleguide": "mrbuilder",
     "start:styleguide": "mrbuilder",
     "demo": "mrbuilder",
-    "start:demo":"mrbuilder",
+    "start:demo": "mrbuilder",
     "lib": "MRBUILDER_ENV=lib mrbuilder",
     "gh-pages": "git add docs && git subtree push --prefix docs origin gh-pages",
     "build": "$npm_execpath run styleguide && $npm_execpath run demo &&  $npm_execpath run lib",
@@ -82,7 +82,12 @@
       "styleguide": {
         "plugins": [
           [
-            "mrbuilder-plugin-react-styleguidist", {"components":["."]}
+            "mrbuilder-plugin-react-styleguidist",
+            {
+              "components": [
+                "."
+              ]
+            }
           ],
           [
             "mrbuilder-plugin-clean",
@@ -90,7 +95,7 @@
               "paths": [
                 "docs"
               ],
-              "ignore":"docs/demo"
+              "ignore": "docs/demo"
             }
           ],
           [
@@ -128,7 +133,9 @@
           [
             "mrbuilder-plugin-clean",
             {
-              "paths":["docs/demo"]
+              "paths": [
+                "docs/demo"
+              ]
             }
           ]
         ]
