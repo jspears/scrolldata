@@ -34,10 +34,11 @@
     "styleguide": "mrbuilder",
     "start:styleguide": "mrbuilder",
     "demo": "mrbuilder",
+    "start:demo":"mrbuilder",
     "lib": "MRBUILDER_ENV=lib mrbuilder",
     "gh-pages": "git add docs && git subtree push --prefix docs origin gh-pages",
     "build": "$npm_execpath run styleguide && $npm_execpath run demo &&  $npm_execpath run lib",
-    "prepublish": "$npm_execpath run lib"
+    "prepublish": "$npm_execpath run styleguide && $npm_execpath run demo && $npm_execpath run lib"
   },
   "mrbuilder": {
     "presets": [
@@ -81,11 +82,15 @@
       "styleguide": {
         "plugins": [
           [
+            "mrbuilder-plugin-react-styleguidist", {"components":["."]}
+          ],
+          [
             "mrbuilder-plugin-clean",
             {
               "paths": [
                 "docs"
-              ]
+              ],
+              "ignore":"docs/demo"
             }
           ],
           [
@@ -122,7 +127,9 @@
           ],
           [
             "mrbuilder-plugin-clean",
-            false
+            {
+              "paths":["docs/demo"]
+            }
           ]
         ]
       },

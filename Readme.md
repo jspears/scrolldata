@@ -1,5 +1,3 @@
-Scrolldata
-===
 It is yet another virtual scroller, with a few advantages. I did not want to
 write this component but all the components I tested missed something I needed.
 
@@ -10,16 +8,18 @@ I looked at
  * a couple of others, but they all had fatal flaws (table based layout, too many nodes, not configuration driven, etc...)
 
 
-* Very few additonal dom nodes.
-* Very few reflows and unnessary virtual tree updates.
+Advantages:
+  * Very few additonal dom nodes.
+  * Very few reflows and unnessary virtual tree updates.
   * can scrollTo row
   * does not ref any data not being shown.
-* Has a table
   * table is sortable
   * expandable
   * columns are resizable
-  * configurable
-  * Row level actions
+  * configuration based.
+  * Row level actions.
+  * Row level Menu.
+  * Custom renderers for rows, cells, columns,etc.
 
 
 
