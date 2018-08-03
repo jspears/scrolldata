@@ -4,7 +4,6 @@ import Expandable from './ExpandableExample';
 import Table from './TableExample';
 import example from './companies.clean.json';
 import { fake } from './helper'
-import 'subschema-css-bootstrap/lib/style.css';
 import Sample from './Sample.jsx';
 import tc from './tc';
 
