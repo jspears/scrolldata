@@ -3,7 +3,7 @@ import {classes, stringOrFunc, toString}        from '../util';
 import {themeClass}                             from '../themes/index'
 import {any, number, object, oneOfType, string} from 'prop-types';
 
-const format = (formatter, data, key) => {
+const format = (formatter, data, key, props) => {
     if (formatter == null) {
         return data[key] == null ? '' : toString(data[key]);
     }
@@ -11,7 +11,7 @@ const format = (formatter, data, key) => {
         case 'string':
             return toString(data[formatter]);
         case 'function':
-            return formatter(data, key);
+            return formatter(data, key, props);
         case 'object':
             if (isValidElement(formatter)) {
                 return formatter;
@@ -21,7 +21,7 @@ const format = (formatter, data, key) => {
 
     }
 
-}
+};
 
 class Cell extends PureComponent {
     static displayName = 'Cell';
