@@ -29,7 +29,7 @@ export default function position(newScrollTo, newOffsetTop, props,
         const rowIndexHeight = result(rowHeight, rowIndex);
         if (newOffsetTop != null) {
             //are we within the scrollTop?
-            if (newOffsetTop >= totalHeight && ( newOffsetTop <= totalHeight
+            if (newOffsetTop >= totalHeight && ( newOffsetTop < totalHeight
                                                  + rowIndexHeight)) {
                 //this is the newScrollTo now.
                 newScrollTo = rowIndex;
@@ -48,7 +48,7 @@ export default function position(newScrollTo, newOffsetTop, props,
             }
             //handle rowsVisible.
             if (rowsVisible > 0) {
-                while (viewRowCount++ <= rowsVisible && rowIndex++ < totalRows) {
+                while (viewRowCount++ < rowsVisible && rowIndex++ < totalRows) {
 
                     const rHeight = result(rowHeight, rowIndex);
                     data[r++]     = rowIndex;
@@ -67,7 +67,7 @@ export default function position(newScrollTo, newOffsetTop, props,
                     totalHeight += rHeight;
                 }
 
-                if (viewHeight < height && newScrollTo > 0) {
+                if (viewHeight <= height && newScrollTo > 0) {
                     //backup 1 and try again, so we can attempt to fill the
                     // area.
                     return position(newScrollTo - 1, null, props, cachedData)
