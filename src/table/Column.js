@@ -30,6 +30,7 @@ export const columnPropTypes = {
     sortable            : bool,
     resizable           : bool,
     filterable          : bool,
+    sortable            : bool,
     sortDirection       : sortDirectionType,
     sorted              : bool,
     columnKey           : string,
