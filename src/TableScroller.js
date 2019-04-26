@@ -28,7 +28,7 @@ export const tablePropTypes = {
     onRowSelect         : func,
     //If all all are selected, other wise an array of selected
     selected            : arrayOf(any),
-    selectedState       : oneOf(['ALL', 'INDETERMINATE']),
+    selectedState       : oneOf(['ALL', 'NONE', 'INDETERMINATE']),
     onColumnConfigChange: func,
     isVirtualized       : bool,
     primaryKey          : string,
@@ -54,7 +54,7 @@ export default class TableScroller extends PureComponent {
         renderSelectable    : func,
         onRowSelect         : func,
         selected            : arrayOf(any),
-        selectedState       : oneOf(['ALL', 'INDETERMINATE']),
+        selectedState       : oneOf(['ALL', 'NONE', 'INDETERMINATE']),
         onColumnConfigChange: func,
         isVirtualized       : bool,
         primaryKey          : string,
@@ -228,8 +228,9 @@ export default class TableScroller extends PureComponent {
         const selectedLength = selected.length;
         const rowCount       = result(this.props.rowCount);
         if (selectedLength === rowCount) {
-            selectedState = selectedState !== 'ALL' ? 'ALL' : 'NONE';
-            selected      = [];
+            selectedState = 'ALL';
+        } else if (selectedLength === 0) {
+            selectedState = 'NONE';
         }
         if (fire(this.props.onRowSelect, selectedState, selected)) {
             this.setState({
