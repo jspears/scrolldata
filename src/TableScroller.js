@@ -167,7 +167,7 @@ export default class TableScroller extends PureComponent {
             state.hash = hash;
         }
 
-        state.selectedState = (state.selected || []).length === state.rowCount ? 'ALL' : 'INDETERMINATE';
+        state.selectedState = (selected || []).length === rowCount ? 'ALL' : 'INDETERMINATE';
         state.selected = (state.selectedState === 'ALL') ? [] : (state.selected || []);
             
         this.setState(state);
