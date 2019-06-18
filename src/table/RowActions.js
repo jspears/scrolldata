@@ -1,13 +1,9 @@
 import React, { PureComponent } from 'react'
+import {any, arrayOf, bool, func, number, oneOfType, shape, string} from 'prop-types'
+import { findDOMNode, createPortal } from 'react-dom';
+import { Manager, Reference, Popper } from 'react-popper';
 import { themeClass } from '../themes';
-import {
-    any, arrayOf, bool, func, number, oneOfType, shape, string
-} from 'prop-types'
-import {
-    execLoop as removeListener, fire, listen, result, stop,
-} from '../util';
-import { findDOMNode } from 'react-dom';
-import Menu from './Menu';
+import {execLoop as removeListener, fire, listen, result, stop} from '../util';
 
 export default class RowActions extends PureComponent {
 
@@ -102,43 +98,55 @@ export default class RowActions extends PureComponent {
     };
 
 
-    renderMenu(menuActionList) {
+    renderMenu(menuActionList, {ref, style, placement}) {
         if (!menuActionList.length) {
             return;
         }
 
-        return (<Menu className={tc('action-menu')}>
-            {menuActionList.map(this.renderAction, this)}
-        </Menu>);
+        return (
+            <ul ref={ref} style={style} className={tc('action-menu')}
+                data-placement={placement}>
+                {menuActionList.map(this.renderAction, this)}
+            </ul>
+        );
     }
 
-    renderActions(actionList, hasMenu) {
+    renderActionMenu(menuActions) {  
+        const { state: { active } } = this;      
 
-        const {
-                  state: { active }
-              } = this;
+        return (
+            <Manager>
+                <Reference>
+                    {({ref}) => (
+                        <li key='action-menu' ref={ref} role="group"
+                            className={tc('menu-item', active && 'active')}
+                            onClick={this.handleMenu}>
+                            <i className={`${tc('icon')} ${this.props.moreClassName}`}
+                                aria-label={this.props.moreHint}>{this.props.moreIcon}</i>
+                        </li>
+                    )}
+                </Reference>
+                {
+                    (this.state.active) && (createPortal((
+                        <Popper positionFixed={true}>
+                            {(popperProps) => (
+                                this.renderMenu(menuActions, popperProps)
+                            )}
+                        </Popper>
+                    ), document.body))
+                }
+            </Manager>
+        );
+    }
 
-
+    renderActions(actionList) {
         const ret = [];
 
         for (let i = 0, l = actionList.length; i < l; i++) {
             ret[i] = this.renderAction(actionList[i])
         }
-        if (hasMenu) {
-            ret[ret.length] =
-                (<li key='action-menu'
-                     role="group"
-                     className={tc('menu-item', active && 'active')}
-                     onClick={this.handleMenu}>
-                    <i className={`${tc('icon')} ${this.props.moreClassName}`}
-                       aria-label={this.props.moreHint}
-                    >{this.props.moreIcon}</i>
 
-                </li>);
-
-        }
         return ret;
-
     }
 
     _rowRef = (node) => {
@@ -146,7 +154,7 @@ export default class RowActions extends PureComponent {
     };
 
     render() {
-        const { offsetLeft, rowData, maxRowActions, display } = this.props;
+        const { rowData, maxRowActions, display } = this.props;
 
         const hasIcons = [], menuActions = [];
         result(this.props.actions, rowData).forEach((action) => {
@@ -165,10 +173,9 @@ export default class RowActions extends PureComponent {
         return (<div className={tc('row-actions', display && 'display')}
                      ref={this._rowRef}>
             <ul role='menu' className={tc('actions')}>
-                {this.renderActions(hasIcons, hasMenu)}
-            </ul>
-            {this.state.active && this.renderMenu(
-                menuActions, offsetLeft)}
+                {this.renderActions(hasIcons)}
+                {hasMenu && this.renderActionMenu(menuActions)}
+            </ul>            
         </div>)
 
     }

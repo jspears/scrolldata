@@ -844,12 +844,12 @@
   background: #fff;
 }
 .d46ddbaf91455d730cf73c7c63ea288e_scrolldata_row-actions_action-menu {
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: box;
-  display: flex;
+  display: -webkit-inline-box;
+  display: -moz-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-box;
+  display: inline-flex;
   -webkit-box-orient: vertical;
   -moz-box-orient: vertical;
   -o-box-orient: vertical;
@@ -866,14 +866,11 @@
   color: #757575;
   list-style: none;
   line-height: 32px;
-  min-width: 250px;
+  min-width: 200px;
+  max-width: 200px;
   outline: none;
   text-align: left;
   white-space: nowrap;
-  z-index: 20;
-  margin-top: 40px;
-  margin-right: 5px;
-  margin-left: -30px;
 }
 .d46ddbaf91455d730cf73c7c63ea288e_scrolldata_row-actions_action-menu ._42cb3a7c4afe426b5b006963acd4d628_scrolldata_row-actions_action.b4787040b5068bc07eefe8b782ab83ef_scrolldata_row-actions_enabled:hover ._6c9fa33c117507c8640d142f0dfd685d_scrolldata_row-actions_icon {
   background-color: rgba(0,0,0,0.1);
