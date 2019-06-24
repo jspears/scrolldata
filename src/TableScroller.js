@@ -46,7 +46,7 @@ export default class TableScroller extends PureComponent {
 
     static propTypes = {
         rowClassName        : string,
-        columns             : arrayOf(columnPropTypes),
+        columns             : arrayOf(shape(columnPropTypes)),
         rowRender           : func,
         headerRender        : func,
         className           : string,
