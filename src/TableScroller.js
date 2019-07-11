@@ -86,10 +86,10 @@ export default class TableScroller extends PureComponent {
         columns              : this.props.columns,
         hash                 : Date.now(),
         width                : rowWidth(this.props.columns),
+        selected             : this.props.selected,
         sortDirection        : this.props.sortDirection,
         sortIndex            : this.props.sortIndex,
-        selected             : (this.props.selected || []).length === this.props.rowCount ? [] : this.props.selected,
-        selectedState        : (this.props.selected || []).length === this.props.rowCount ?  'ALL' : 'INDETERMINATE',
+        selectedState        : this.props.selectedState,
         isContainerExpandable: this.props.expandedContent != null,
         height               : TableScroller.calcHeight(this.props)
     };
@@ -167,9 +167,6 @@ export default class TableScroller extends PureComponent {
             state.hash = hash;
         }
 
-        state.selectedState = (selected || []).length === rowCount ? 'ALL' : 'INDETERMINATE';
-        state.selected = (state.selectedState === 'ALL') ? [] : (state.selected || []);
-            
         this.setState(state);
     }
 
@@ -232,7 +229,7 @@ export default class TableScroller extends PureComponent {
         const rowCount       = result(this.props.rowCount);
         if (selectedLength === rowCount) {
             selectedState = selectedState !== 'ALL' ? 'ALL' : 'NONE';
-            selected = [];
+            selected      = [];
         }
         if (fire(this.props.onRowSelect, selectedState, selected)) {
             this.setState({
@@ -434,7 +431,6 @@ export default class TableScroller extends PureComponent {
                         sortDirection={this.state.sortDirection}
                         sortIndex={this.state.sortIndex}
                         onSort={this.handleSort}
-                        rowCount={this.props.rowCount}
                 />
             </UseScroller>
         </div>)
