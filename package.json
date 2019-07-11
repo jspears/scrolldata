@@ -1,6 +1,6 @@
 {
   "name": "scrolldata",
-  "version": "7.0.1",
+  "version": "7.1.0",
   "description": "Table and virtualization help for tabular data",
   "main": "lib",
   "source": "src",
